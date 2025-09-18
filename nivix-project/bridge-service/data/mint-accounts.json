@@ -1,0 +1,19 @@
+{
+  "eurMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+  "usdMint": "7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T",
+  "eurTokenAccount": "8YnkGjeetMWEzhe2BFggpeeWjUxkhLvRVBCAzhEZvht5",
+  "usdTokenAccount": "68MJSqARTpujnFSoLQgkMCcimyKgya1Rqa77saB2g1ib",
+  "bridgeWallet": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+  "timestamp": "2025-09-05T15:06:04.696Z",
+  "inrMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+  "inrTokenAccount": "FRA1gktpizzRtsVGqDsCGxbgngWHTPCxXpMGM4mrMTVA",
+  "lastUpdated": "2025-09-05T16:50:28.727Z",
+  "gbpMint": "5gBytEK8J6p8ffqqB5jh82hme5udwvjd4gr4bFwwTgCJ",
+  "gbpTokenAccount": "BBdyagqPT9hWhBhPL6tmoxezoKZVUwWFptsgcbiFeL2A",
+  "jpyMint": "8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh",
+  "jpyTokenAccount": "E5eNJKJtcR2s1WJvBkCxLBHATMhFqaQpDxr7UwEg2Xo2",
+  "cadMint": "5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q",
+  "cadTokenAccount": "C4hJRJ268QLUoaznDzJH5mwwsed3TfhEunLVWVnbFuwq",
+  "audMint": "B9ASRwRngPPv6BpvVxXHawX4XEXfYHS1a4xJ5rEqHNjx",
+  "audTokenAccount": "BDUVPtvhjhf5bBJXmEmayo8s8fNogZ9y7QA9nzSAusx3"
+}

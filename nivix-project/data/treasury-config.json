@@ -1,0 +1,212 @@
+{
+  "thresholds": {
+    "INR": {
+      "min": 50000,
+      "max": 2000000,
+      "target": 500000,
+      "description": "Indian Rupee treasury balance thresholds"
+    },
+    "USD": {
+      "min": 1000,
+      "max": 50000,
+      "target": 10000,
+      "description": "US Dollar treasury balance thresholds"
+    },
+    "EUR": {
+      "min": 1000,
+      "max": 50000,
+      "target": 10000,
+      "description": "Euro treasury balance thresholds"
+    },
+    "GBP": {
+      "min": 800,
+      "max": 40000,
+      "target": 8000,
+      "description": "British Pound treasury balance thresholds"
+    },
+    "JPY": {
+      "min": 100000,
+      "max": 5000000,
+      "target": 1000000,
+      "description": "Japanese Yen treasury balance thresholds"
+    },
+    "CAD": {
+      "min": 1200,
+      "max": 60000,
+      "target": 12000,
+      "description": "Canadian Dollar treasury balance thresholds"
+    },
+    "AUD": {
+      "min": 1200,
+      "max": 60000,
+      "target": 12000,
+      "description": "Australian Dollar treasury balance thresholds"
+    }
+  },
+  "corridors": {
+    "IN": {
+      "currency": "INR",
+      "route": "direct",
+      "description": "India - Direct UPI/IMPS payout from local treasury",
+      "paymentMethods": ["UPI", "IMPS", "NEFT"],
+      "processingTime": "instant-30min",
+      "fees": {
+        "platform": 0.5,
+        "payment": 5
+      },
+      "limits": {
+        "min": 100,
+        "max": 200000,
+        "daily": 1000000
+      },
+      "fallbackRoute": "hybrid",
+      "bankingPartners": ["razorpay"]
+    },
+    "US": {
+      "currency": "USD",
+      "route": "hybrid",
+      "description": "USA - Stablecoin to ACH via partner",
+      "paymentMethods": ["ACH", "Wire"],
+      "processingTime": "1-3 business days",
+      "fees": {
+        "platform": 1.0,
+        "payment": 25
+      },
+      "limits": {
+        "min": 50,
+        "max": 10000,
+        "daily": 100000
+      },
+      "fallbackRoute": "direct"
+    },
+    "EU": {
+      "currency": "EUR",
+      "route": "hybrid",
+      "description": "Europe - Stablecoin to SEPA via partner",
+      "paymentMethods": ["SEPA", "Wire"],
+      "processingTime": "1-2 business days",
+      "fees": {
+        "platform": 0.8,
+        "payment": 15
+      },
+      "limits": {
+        "min": 50,
+        "max": 10000,
+        "daily": 100000
+      },
+      "fallbackRoute": "direct"
+    },
+    "UK": {
+      "currency": "GBP",
+      "route": "hybrid",
+      "description": "UK - Stablecoin to Faster Payments via partner",
+      "paymentMethods": ["FasterPayments", "Wire"],
+      "processingTime": "instant-2 hours",
+      "fees": {
+        "platform": 0.8,
+        "payment": 10
+      },
+      "limits": {
+        "min": 40,
+        "max": 8000,
+        "daily": 80000
+      },
+      "fallbackRoute": "direct"
+    },
+    "JP": {
+      "currency": "JPY",
+      "route": "hybrid",
+      "description": "Japan - Stablecoin to bank transfer via partner",
+      "paymentMethods": ["BankTransfer"],
+      "processingTime": "1-2 business days",
+      "fees": {
+        "platform": 1.0,
+        "payment": 300
+      },
+      "limits": {
+        "min": 1000,
+        "max": 1000000,
+        "daily": 10000000
+      },
+      "fallbackRoute": "direct"
+    },
+    "CA": {
+      "currency": "CAD",
+      "route": "hybrid",
+      "description": "Canada - Stablecoin to e-Transfer via partner",
+      "paymentMethods": ["eTransfer", "Wire"],
+      "processingTime": "30min-4 hours",
+      "fees": {
+        "platform": 0.9,
+        "payment": 20
+      },
+      "limits": {
+        "min": 50,
+        "max": 12000,
+        "daily": 120000
+      },
+      "fallbackRoute": "direct"
+    },
+    "AU": {
+      "currency": "AUD",
+      "route": "hybrid",
+      "description": "Australia - Stablecoin to NPP via partner",
+      "paymentMethods": ["NPP", "Wire"],
+      "processingTime": "instant-2 hours",
+      "fees": {
+        "platform": 0.9,
+        "payment": 15
+      },
+      "limits": {
+        "min": 50,
+        "max": 12000,
+        "daily": 120000
+      },
+      "fallbackRoute": "direct"
+    }
+  },
+  "riskLimits": {
+    "perUser": {
+      "daily": 50000,
+      "monthly": 500000,
+      "yearly": 2000000
+    },
+    "perTransaction": {
+      "max": 200000,
+      "riskScore": {
+        "low": 100000,
+        "medium": 50000,
+        "high": 10000
+      }
+    },
+    "systemLimits": {
+      "dailyVolume": 10000000,
+      "concurrentTransactions": 1000
+    }
+  },
+  "automation": {
+    "routingRules": {
+      "description": "Automated routing logic - NO USER INTERFACE",
+      "primaryRoute": "Use corridor default route",
+      "fallbackTriggers": {
+        "lowBalance": "Switch to fallback route when treasury balance < threshold.min",
+        "highVolume": "Switch to hybrid route during high volume periods",
+        "maintenanceMode": "Route all traffic to available systems"
+      },
+      "balanceRebalancing": {
+        "enabled": true,
+        "triggerThreshold": 0.2,
+        "targetThreshold": 0.6,
+        "description": "Auto-rebalance when balance drops below 20% of target"
+      }
+    },
+    "monitoring": {
+      "healthChecks": ["treasury_balance", "partner_apis", "payment_rails"],
+      "alertThresholds": {
+        "lowBalance": 0.3,
+        "failureRate": 0.05,
+        "responseTime": 30000
+      }
+    }
+  }
+}

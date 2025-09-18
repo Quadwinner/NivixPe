@@ -1,0 +1,9 @@
+{
+  "default": {
+    "platformFee": 0.005,
+    "networkFee": 0.002,
+    "corridorFee": 0.001,
+    "paymentFee": 0
+  },
+  "corridors": {}
+}

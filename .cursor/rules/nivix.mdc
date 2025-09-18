@@ -1,0 +1,66 @@
+---
+alwaysApply: true
+---
+do not use mock data 
+do not use hardcoded code 
+use real time data 
+build always for production ready
+configuration-based approaches always
+
+## Nivix Project Rules
+
+### Core Development Principles
+- Always use Solana devnet for blockchain operations
+- Never use mock data or hardcoded values in production code
+- Implement real-time data fetching and processing
+- Build with production-ready architecture from the start
+- Use configuration-based approaches for all settings
+
+### Blockchain & Smart Contracts
+- Deploy all Solana programs to devnet
+- Use real SPL tokens and accounts
+- Implement proper error handling for blockchain operations
+- Use Anchor framework for smart contract development
+- Always validate transaction signatures and accounts
+
+### API & Backend Services
+- Implement real API endpoints, no mock responses
+- Use environment-based configuration
+- Implement proper authentication and authorization
+- Use real database connections and queries
+- Handle errors gracefully with proper status codes
+
+### Frontend Development
+- Connect to real wallet providers (Phantom, Solflare)
+- Fetch real-time data from APIs and blockchain
+- Implement proper loading states and error handling
+- Use real transaction data and balances
+- No placeholder or dummy data in UI components
+
+### KYC & Compliance
+- Use Hyperledger Fabric for real compliance data
+- Implement actual KYC verification flows
+- Store compliance data securely
+- Use real identity verification services
+- Follow regulatory requirements for data handling
+
+### Treasury & Off-ramp
+- Implement real treasury management systems
+- Use actual banking APIs and payment rails
+- Handle real currency conversions and exchange rates
+- Implement proper reconciliation and audit trails
+- Use licensed payment providers for fiat payouts
+
+### Testing & Deployment
+- Test with real devnet transactions
+- Use actual API endpoints in testing
+- Deploy using the deploy-nivix-kyc.sh script
+- Implement comprehensive error scenarios
+- Monitor real transaction flows and performance
+
+### Git & Version Control
+- Always ask for confirmation before pushing to git
+- Commit with descriptive messages
+- Follow proper branching strategies
+- Review code changes before deployment
+

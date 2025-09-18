@@ -1,0 +1,54 @@
+{
+  "pools": {
+    "G3SWcU5Q1rYRhpYiZFa63kzJvUcXew1bDuPHPcXFXMdW": {
+      "address": "G3SWcU5Q1rYRhpYiZFa63kzJvUcXew1bDuPHPcXFXMdW",
+      "name": "Test Persistence Pool",
+      "admin": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "sourceCurrency": "EUR",
+      "destinationCurrency": "USD",
+      "sourceMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+      "destinationMint": "7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T",
+      "exchangeRate": "1.1",
+      "poolFeeRate": "30",
+      "totalSwapped": "0",
+      "totalVolume": "0",
+      "lastUpdated": "1757284730220",
+      "isActive": true,
+      "createdAt": "1757284730220"
+    },
+    "3LZW2fxQap2wWVWVghTdTWe8eMr5cjc6kcGvN2bEnHyr": {
+      "address": "3LZW2fxQap2wWVWVghTdTWe8eMr5cjc6kcGvN2bEnHyr",
+      "name": "test",
+      "admin": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "sourceCurrency": "EUR",
+      "destinationCurrency": "USD",
+      "sourceMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+      "destinationMint": "7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T",
+      "exchangeRate": "1.1",
+      "poolFeeRate": "30",
+      "totalSwapped": "0",
+      "totalVolume": "0",
+      "lastUpdated": "1757284749745",
+      "isActive": true,
+      "createdAt": "1757284749745"
+    },
+    "5e279vW9ZAoYbw1xiG9gkSjUcB2ySkGQ6A3TofHritHU": {
+      "address": "5e279vW9ZAoYbw1xiG9gkSjUcB2ySkGQ6A3TofHritHU",
+      "name": "test",
+      "admin": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "sourceCurrency": "EUR",
+      "destinationCurrency": "INR",
+      "sourceMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+      "destinationMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+      "exchangeRate": "1.1",
+      "poolFeeRate": "30",
+      "totalSwapped": "0",
+      "totalVolume": "0",
+      "lastUpdated": "1757284774071",
+      "isActive": true,
+      "createdAt": "1757284774071"
+    }
+  },
+  "lastUpdated": "2025-09-07T22:39:34.071Z",
+  "totalPools": 3
+}

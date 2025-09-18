@@ -1,0 +1,243 @@
+{
+  "PersistentAddress123": {
+    "userId": "persistent-test",
+    "solanaAddress": "PersistentAddress123",
+    "fullName": "Persistent Test User",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport123"
+    ],
+    "verificationDate": "2025-05-18T19:54:18.996Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-05-18T19:54:19.143Z"
+  },
+  "SecondAddress456": {
+    "userId": "second-test",
+    "solanaAddress": "SecondAddress456",
+    "fullName": "Second Test User",
+    "countryCode": "IN",
+    "idDocuments": [
+      "passport456"
+    ],
+    "verificationDate": "2025-05-18T19:54:41.211Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-05-18T19:54:41.350Z"
+  },
+  "8VyJ4EgKeto2vhVzq2wgwD9GrFz1wcWnGHP97buwxZj2": {
+    "userId": "test_user_1757062200",
+    "solanaAddress": "8VyJ4EgKeto2vhVzq2wgwD9GrFz1wcWnGHP97buwxZj2",
+    "fullName": "Test User 142000",
+    "countryCode": "US",
+    "idDocuments": {
+      "type": "passport",
+      "number": "P1757062200"
+    },
+    "verificationDate": "2025-09-05T08:50:00.995Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-05T08:50:01.013Z"
+  },
+  "test_solana_address_123": {
+    "userId": "test_user_123",
+    "solanaAddress": "test_solana_address_123",
+    "fullName": "Test User",
+    "countryCode": "US",
+    "idDocuments": [
+      {
+        "type": "passport",
+        "number": "123456789"
+      }
+    ],
+    "verificationDate": "2025-05-22T11:14:31.673Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-05-22T11:14:31.808Z"
+  },
+  "9AxVyJ4EgKeto2vhVzq2wgwD9GrFz1wcWnGHP97btest": {
+    "userId": "blockchain_test_002",
+    "solanaAddress": "9AxVyJ4EgKeto2vhVzq2wgwD9GrFz1wcWnGHP97btest",
+    "fullName": "Blockchain Test User",
+    "countryCode": "US",
+    "idDocuments": [
+      "drivers_license"
+    ],
+    "verificationDate": "2025-05-28T15:57:13.367Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-05-28T15:57:13.509Z"
+  },
+  "HW2UvqBGxp9NoqdxBpXXhY5QgmecE3KrMr6y8E5UhGHA": {
+    "userId": "test-kyc-user",
+    "solanaAddress": "HW2UvqBGxp9NoqdxBpXXhY5QgmecE3KrMr6y8E5UhGHA",
+    "fullName": "Test KYC User",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2025-06-06T18:36:21.496Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-06-06T18:36:21.649Z"
+  },
+  "DirectKycTest123XYZabcHH5QgmecE3KrMr6y8E5UhGHA": {
+    "userId": "test-direct-kyc",
+    "solanaAddress": "DirectKycTest123XYZabcHH5QgmecE3KrMr6y8E5UhGHA",
+    "fullName": "Direct KYC Test",
+    "countryCode": "IN",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2025-06-06T18:42:19.077Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-06-06T18:42:19.214Z"
+  },
+  "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5": {
+    "userId": "user_6G74ELnK",
+    "solanaAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "fullName": "Shubham  shubham",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2025-09-18T18:22:03.738Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-18T18:22:03.920Z"
+  },
+  "test123": {
+    "solanaAddress": "test123",
+    "fullName": "John Doe",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport123"
+    ],
+    "verificationDate": "2025-08-11T12:35:43.662Z",
+    "riskScore": 50,
+    "kycVerified": false,
+    "lastUpdated": "2025-08-11T12:35:45.900Z"
+  },
+  "BRIDGE_TEST_123": {
+    "userId": "bridge-test-user",
+    "solanaAddress": "BRIDGE_TEST_123",
+    "fullName": "Bridge Test User",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2025-08-11T12:41:50.202Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-08-11T12:41:50.365Z"
+  },
+  "BRIDGE_TEST_456": {
+    "userId": "bridge-test-user-456",
+    "solanaAddress": "BRIDGE_TEST_456",
+    "fullName": "Bridge Test User 456",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2025-08-11T13:04:45.610Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-08-11T13:04:45.748Z"
+  },
+  "5DFpSzZL9cTUny6Rfu92Yxm1vpadkvy9fL4QBdFQyiga": {
+    "userId": "kyc_auto_1755521537",
+    "solanaAddress": "5DFpSzZL9cTUny6Rfu92Yxm1vpadkvy9fL4QBdFQyiga",
+    "fullName": "Auto Test User",
+    "countryCode": "IN",
+    "idDocuments": [
+      "aadhaar-xxxx",
+      "pan-xxxx"
+    ],
+    "verificationDate": "2025-08-18T12:52:17.709Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-08-18T12:52:17.865Z"
+  },
+  "CauHK3m4DRTe6yPrBTDYQrzSvjsi8xN6BhppkZLCuZv9": {
+    "userId": "user_CauHK3m4",
+    "solanaAddress": "CauHK3m4DRTe6yPrBTDYQrzSvjsi8xN6BhppkZLCuZv9",
+    "fullName": "shubham shubham",
+    "countryCode": "CA",
+    "idDocuments": [
+      "national_id"
+    ],
+    "verificationDate": "2025-09-09T16:06:18.424Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-09T16:06:18.567Z"
+  },
+  "TestAddress123456789": {
+    "userId": "test_user_new",
+    "solanaAddress": "TestAddress123456789",
+    "fullName": "Test User After Restart",
+    "countryCode": "US",
+    "verificationDate": "2025-08-28T20:47:17.040Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-08-28T20:47:17.176Z"
+  },
+  "9WzZKhgZNXo3vRrVzMfWgGT1EFm7bQsXdFh26jKwR8k3": {
+    "userId": "test_user_002",
+    "solanaAddress": "9WzZKhgZNXo3vRrVzMfWgGT1EFm7bQsXdFh26jKwR8k3",
+    "fullName": "Jane Smith Test",
+    "countryCode": "CA",
+    "idDocuments": {
+      "type": "drivers_license",
+      "number": "DL987654321"
+    },
+    "verificationDate": "2025-08-28T17:59:29.613Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-08-28T17:59:29.757Z"
+  },
+  "test_address": {
+    "userId": "test_user",
+    "solanaAddress": "test_address",
+    "fullName": "Test User",
+    "countryCode": "US",
+    "idDocuments": [],
+    "verificationDate": "2025-09-04T21:47:10.553Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-04T21:47:10.704Z"
+  },
+  "TestFrontendAddress123": {
+    "userId": "test_frontend_user",
+    "solanaAddress": "TestFrontendAddress123",
+    "fullName": "Frontend Test User",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport123"
+    ],
+    "verificationDate": "2025-09-07T22:30:12.944Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-07T22:30:13.083Z"
+  },
+  "TestFixedAddress123": {
+    "solanaAddress": "TestFixedAddress123",
+    "fullName": "Test Fixed User",
+    "verificationDate": "2025-09-07T22:46:42.623Z",
+    "riskScore": 50,
+    "kycVerified": false,
+    "lastUpdated": "2025-09-07T22:46:44.653Z"
+  },
+  "undefined": {
+    "fullName": "Test User",
+    "countryCode": "US",
+    "verificationDate": "2025-09-18T18:31:12.610Z",
+    "riskScore": 50,
+    "kycVerified": false,
+    "lastUpdated": "2025-09-18T18:31:14.859Z"
+  },
+  "test-wallet": {
+    "solanaAddress": "test-wallet",
+    "verificationDate": "2025-09-17T17:31:07.406Z",
+    "riskScore": 50,
+    "kycVerified": false,
+    "lastUpdated": "2025-09-17T17:31:09.640Z"
+  },
+  "5fLRfWVrVbgaFbxzqMAnwZ5JKG9S4NdaKySvJfMvqzqk": {
+    "userId": "john.doe@test.com",
+    "solanaAddress": "5fLRfWVrVbgaFbxzqMAnwZ5JKG9S4NdaKySvJfMvqzqk",
+    "fullName": "John Doe",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport123.jpg"
+    ],
+    "verificationDate": "2025-09-17T17:33:39.014Z",
+    "riskScore": 50,
+    "kycVerified": true,
+    "lastUpdated": "2025-09-17T17:34:00.000Z"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "inrMint": "JBW5hVMASQkXGQsaCUUR1ZEZofJMVnvjTULMY3eGrTah",
+  "inrTokenAccount": "96tGWU5Ldj87M4fvi2tHfCexLNnHJxxFuw8gGCm69AJj",
+  "usdMint": "A3LvyK2YEzkXdWWkmHtWVhPTfUh8Gtb9ECHFCnxsZ4in",
+  "usdTokenAccount": "5B3CUYSTHJKoTi43aXQnYgyzi7FFdhB1uTf8Ft4TFnTc",
+  "treasuryWallet": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+  "timestamp": "2025-09-09T11:35:20.351Z",
+  "network": "devnet",
+  "testMode": true
+}

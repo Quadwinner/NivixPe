@@ -1,0 +1,243 @@
+{
+  "walletRegistry": {
+    "projectName": "Nivix Protocol",
+    "network": "Solana Devnet",
+    "createdDate": "2025-01-09",
+    "lastUpdated": "2025-01-09",
+    "version": "1.0.0",
+    "description": "Complete registry of all Nivix project wallets with private keys",
+    "warning": "⚠️ DEVELOPMENT ONLY - Contains private keys for devnet testing purposes",
+    "productionNote": "🚨 For production, replace with multi-signature wallets and hardware security modules"
+  },
+  
+  "coreWallets": {
+    "treasuryWallet": {
+      "name": "Treasury Management Wallet",
+      "purpose": "Controls treasury funds, manages withdrawals, and handles off-ramp operations",
+      "publicKey": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "privateKey": [112,205,92,120,52,210,233,21,150,177,113,233,182,119,87,87,20,233,225,223,55,100,228,230,88,113,227,228,7,174,187,46,8,33,62,236,227,129,121,225,148,96,242,209,30,90,89,11,211,111,53,51,156,158,108,77,210,91,202,173,166,25,209,3],
+      "filePath": "/data/treasury-keypair.json",
+      "responsibilities": [
+        "Multi-currency treasury management",
+        "Off-ramp withdrawal processing",
+        "Balance validation and threshold checks",
+        "Cross-currency liquidity management"
+      ],
+      "associatedTokenAccounts": {
+        "INR": "FRA1gktpizzRtsVGqDsCGxbgngWHTPCxXpMGM4mrMTVA",
+        "USD": "68MJSqARTpujnFSoLQgkMCcimyKgya1Rqa77saB2g1ib",
+        "EUR": "8YnkGjeetMWEzhe2BFggpeeWjUxkhLvRVBCAzhEZvht5",
+        "GBP": "BBdyagqPT9hWhBhPL6tmoxezoKZVUwWFptsgcbiFeL2A",
+        "JPY": "E5eNJKJtcR2s1WJvBkCxLBHATMhFqaQpDxr7UwEg2Xo2",
+        "CAD": "C4hJRJ268QLUoaznDzJH5mwwsed3TfhEunLVWVnbFuwq",
+        "AUD": "BDUVPtvhjhf5bBJXmEmayo8s8fNogZ9y7QA9nzSAusx3"
+      },
+      "securityLevel": "DEVELOPMENT_ONLY",
+      "productionRequirement": "Multi-signature (3-of-5) with hardware wallets"
+    },
+    
+    "bridgeWallet": {
+      "name": "Bridge Service Wallet",
+      "purpose": "Bridge service operations, transaction processing, and cross-chain interactions",
+      "publicKey": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "privateKey": [108,134,143,68,199,210,163,237,95,119,245,214,23,231,30,40,233,213,121,78,43,160,208,162,152,215,16,39,107,215,122,67,122,67,198,14,31,106,138,34,226,152,145,33,188,9,189,225,93,82,245,188,32,14,196,187,91,158,149,80,198,101,175,74],
+      "filePath": "/bridge-service/wallet/bridge-wallet.json",
+      "responsibilities": [
+        "Cross-chain transaction processing",
+        "Solana-Hyperledger Fabric bridge operations",
+        "API endpoint transaction signing",
+        "User transaction validation"
+      ],
+      "securityLevel": "DEVELOPMENT_ONLY",
+      "productionRequirement": "Separate hot/cold wallet setup with restricted permissions"
+    },
+    
+    "protocolWallet": {
+      "name": "Nivix Protocol Smart Contract Wallet",
+      "purpose": "Solana smart contract deployment and program authority",
+      "publicKey": "2KyVRxzJvwqHMHVBPFdBqzX8Qb7xA5cGtJH1YwE4mNpD",
+      "privateKey": [73,27,70,27,54,88,3,27,221,47,152,202,213,97,4,162,41,218,81,247,117,116,65,85,102,13,62,184,159,185,235,203,216,180,53,164,20,41,227,169,140,90,224,161,51,65,7,132,187,80,15,15,248,55,3,221,222,137,236,173,236,145,130,230],
+      "filePath": "/solana/nivix_protocol/target/deploy/nivix_protocol-keypair.json",
+      "responsibilities": [
+        "Smart contract deployment authority",
+        "Liquidity pool management",
+        "Program upgrade authority",
+        "On-chain protocol governance"
+      ],
+      "securityLevel": "DEVELOPMENT_ONLY",
+      "productionRequirement": "Multi-signature governance with time-locked upgrades"
+    }
+  },
+  
+  "mintAccounts": {
+    "description": "SPL Token mint accounts for different currencies",
+    "lastUpdated": "2025-09-05T16:50:28.727Z",
+    "currencies": {
+      "INR": {
+        "mintAddress": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+        "tokenAccount": "FRA1gktpizzRtsVGqDsCGxbgngWHTPCxXpMGM4mrMTVA",
+        "decimals": 6,
+        "symbol": "INR",
+        "name": "Indian Rupee Token"
+      },
+      "USD": {
+        "mintAddress": "7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T",
+        "tokenAccount": "68MJSqARTpujnFSoLQgkMCcimyKgya1Rqa77saB2g1ib",
+        "decimals": 6,
+        "symbol": "USD",
+        "name": "US Dollar Token"
+      },
+      "EUR": {
+        "mintAddress": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+        "tokenAccount": "8YnkGjeetMWEzhe2BFggpeeWjUxkhLvRVBCAzhEZvht5",
+        "decimals": 6,
+        "symbol": "EUR",
+        "name": "Euro Token"
+      },
+      "GBP": {
+        "mintAddress": "5gBytEK8J6p8ffqqB5jh82hme5udwvjd4gr4bFwwTgCJ",
+        "tokenAccount": "BBdyagqPT9hWhBhPL6tmoxezoKZVUwWFptsgcbiFeL2A",
+        "decimals": 6,
+        "symbol": "GBP",
+        "name": "British Pound Token"
+      },
+      "JPY": {
+        "mintAddress": "8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh",
+        "tokenAccount": "E5eNJKJtcR2s1WJvBkCxLBHATMhFqaQpDxr7UwEg2Xo2",
+        "decimals": 6,
+        "symbol": "JPY",
+        "name": "Japanese Yen Token"
+      },
+      "CAD": {
+        "mintAddress": "5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q",
+        "tokenAccount": "C4hJRJ268QLUoaznDzJH5mwwsed3TfhEunLVWVnbFuwq",
+        "decimals": 6,
+        "symbol": "CAD",
+        "name": "Canadian Dollar Token"
+      },
+      "AUD": {
+        "mintAddress": "B9ASRwRngPPv6BpvVxXHawX4XEXfYHS1a4xJ5rEqHNjx",
+        "tokenAccount": "BDUVPtvhjhf5bBJXmEmayo8s8fNogZ9y7QA9nzSAusx3",
+        "decimals": 6,
+        "symbol": "AUD",
+        "name": "Australian Dollar Token"
+      },
+      "USDC": {
+        "mintAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "tokenAccount": "To be created dynamically",
+        "decimals": 6,
+        "symbol": "USDC",
+        "name": "USD Coin (Devnet)",
+        "note": "Official USDC mint on Solana Devnet"
+      }
+    }
+  },
+  
+  "testWallets": {
+    "description": "Test wallets for development and testing purposes",
+    "validators": {
+      "validatorKeypair": {
+        "publicKey": "To be determined from file",
+        "privateKey": "Located in test-ledger/validator-keypair.json",
+        "purpose": "Local test validator operations"
+      },
+      "voteAccountKeypair": {
+        "publicKey": "To be determined from file", 
+        "privateKey": "Located in test-ledger/vote-account-keypair.json",
+        "purpose": "Validator voting operations"
+      },
+      "stakeAccountKeypair": {
+        "publicKey": "To be determined from file",
+        "privateKey": "Located in test-ledger/stake-account-keypair.json", 
+        "purpose": "Stake account operations"
+      },
+      "faucetKeypair": {
+        "publicKey": "To be determined from file",
+        "privateKey": "Located in test-ledger/faucet-keypair.json",
+        "purpose": "Test token distribution"
+      }
+    }
+  },
+  
+  "hyperledgerFabricWallets": {
+    "description": "Hyperledger Fabric network identities and certificates",
+    "note": "Fabric uses certificate-based identity management, not private keys like blockchain",
+    "adminIdentity": {
+      "organization": "Org1MSP",
+      "role": "admin",
+      "certificatePath": "/hyperledger/fabric/crypto-config/",
+      "purpose": "Fabric network administration and chaincode operations"
+    },
+    "userIdentity": {
+      "organization": "Org1MSP", 
+      "role": "client",
+      "certificatePath": "/hyperledger/fabric/crypto-config/",
+      "purpose": "KYC data operations and compliance queries"
+    }
+  },
+  
+  "securityNotes": {
+    "currentSecurity": "DEVELOPMENT ONLY - Single signature wallets with private keys in JSON files",
+    "productionRequirements": [
+      "Multi-signature wallets (minimum 3-of-5 signatures)",
+      "Hardware wallet integration (Ledger, Trezor, ColdCard)",
+      "Private key encryption with HSM",
+      "Role-based access controls",
+      "Geographic distribution of signers",
+      "Time-locked transactions for large amounts",
+      "Insurance coverage for treasury funds",
+      "Regular security audits and key rotation"
+    ],
+    "immediateActions": [
+      "Never use these keys on mainnet",
+      "Replace with multi-sig before production",
+      "Implement proper key management system",
+      "Set up monitoring and alerting",
+      "Create incident response procedures"
+    ]
+  },
+  
+  "accessMatrix": {
+    "treasuryOperations": {
+      "dailyOperations": "2-of-5 signatures required",
+      "largeWithdrawals": "3-of-5 signatures required", 
+      "emergencyOperations": "4-of-5 signatures required",
+      "treasuryRebalancing": "3-of-5 signatures required"
+    },
+    "protocolOperations": {
+      "smartContractUpgrades": "4-of-5 signatures + time lock",
+      "liquidityPoolChanges": "3-of-5 signatures",
+      "feeStructureChanges": "3-of-5 signatures",
+      "emergencyPause": "2-of-5 signatures"
+    },
+    "bridgeOperations": {
+      "routineTransactions": "Hot wallet (automated)",
+      "largeTransactions": "2-of-5 signatures",
+      "bridgeUpgrades": "3-of-5 signatures"
+    }
+  },
+  
+  "backupAndRecovery": {
+    "seedPhraseBackup": {
+      "method": "Steel plate backup in bank safety deposit boxes",
+      "locations": "Multiple geographic locations",
+      "access": "Requires 2 key holders present"
+    },
+    "keyRotation": {
+      "frequency": "Quarterly for hot wallets, annually for cold storage",
+      "procedure": "Multi-party ceremony with audit trail"
+    },
+    "disasterRecovery": {
+      "rto": "4 hours for critical operations",
+      "rpo": "1 hour maximum data loss",
+      "backupSites": "3 geographic regions"
+    }
+  },
+  
+  "complianceAndAudit": {
+    "auditTrail": "All wallet operations logged with timestamps and signatures",
+    "compliance": "SOC 2 Type II, ISO 27001 requirements",
+    "reporting": "Monthly wallet security reports to board",
+    "insurance": "Minimum $1M coverage for treasury operations"
+  }
+}

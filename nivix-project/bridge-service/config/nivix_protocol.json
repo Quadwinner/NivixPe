@@ -1,0 +1,1298 @@
+{
+  "address": "FavSaLCcw6qgpLob47uGPoNhJRsGjBMB1tSb7CZTavbw",
+  "metadata": {
+    "name": "nivix_protocol",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_currency",
+      "discriminator": [
+        51,
+        14,
+        112,
+        184,
+        177,
+        15,
+        208,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "wallet",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "token_account"
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "currency_code",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "add_liquidity",
+      "discriminator": [
+        181,
+        157,
+        89,
+        67,
+        143,
+        182,
+        52,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "liquidity_pool",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "user_source_account",
+          "writable": true
+        },
+        {
+          "name": "user_destination_account",
+          "writable": true
+        },
+        {
+          "name": "pool_source_account",
+          "writable": true
+        },
+        {
+          "name": "pool_destination_account",
+          "writable": true
+        },
+        {
+          "name": "liquidity_mint",
+          "writable": true
+        },
+        {
+          "name": "user_liquidity_account",
+          "writable": true
+        },
+        {
+          "name": "pool_authority",
+          "docs": [
+            "The authority that can sign for the pool accounts"
+          ],
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "The user that owns the source funds"
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "source_amount",
+          "type": "u64"
+        },
+        {
+          "name": "destination_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_liquidity_pool",
+      "discriminator": [
+        175,
+        75,
+        181,
+        165,
+        224,
+        254,
+        6,
+        131
+      ],
+      "accounts": [
+        {
+          "name": "platform",
+          "writable": true
+        },
+        {
+          "name": "liquidity_pool",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "source_mint"
+        },
+        {
+          "name": "destination_mint"
+        },
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "pool_name",
+          "type": "string"
+        },
+        {
+          "name": "source_currency",
+          "type": "string"
+        },
+        {
+          "name": "destination_currency",
+          "type": "string"
+        },
+        {
+          "name": "initial_exchange_rate",
+          "type": "u64"
+        },
+        {
+          "name": "pool_fee_rate",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "get_pool_info",
+      "discriminator": [
+        9,
+        48,
+        220,
+        101,
+        22,
+        240,
+        78,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "liquidity_pool",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_platform",
+      "discriminator": [
+        119,
+        201,
+        101,
+        45,
+        75,
+        122,
+        89,
+        3
+      ],
+      "accounts": [
+        {
+          "name": "platform",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "platform_name",
+          "type": "string"
+        },
+        {
+          "name": "admin_key",
+          "type": "pubkey"
+        },
+        {
+          "name": "fee_rate",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "process_transfer",
+      "discriminator": [
+        212,
+        115,
+        192,
+        211,
+        191,
+        149,
+        132,
+        69
+      ],
+      "accounts": [
+        {
+          "name": "platform",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "from_wallet",
+          "writable": true
+        },
+        {
+          "name": "to_wallet",
+          "writable": true
+        },
+        {
+          "name": "from_token_account",
+          "writable": true
+        },
+        {
+          "name": "to_token_account",
+          "writable": true
+        },
+        {
+          "name": "transaction_record",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "user",
+            "from_wallet"
+          ]
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "source_currency",
+          "type": "string"
+        },
+        {
+          "name": "destination_currency",
+          "type": "string"
+        },
+        {
+          "name": "_recipient_wallet_seed",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "memo",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "record_offline_transaction",
+      "discriminator": [
+        96,
+        24,
+        181,
+        5,
+        18,
+        166,
+        33,
+        43
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "offline_record",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "source_currency",
+          "type": "string"
+        },
+        {
+          "name": "destination_currency",
+          "type": "string"
+        },
+        {
+          "name": "recipient",
+          "type": "pubkey"
+        },
+        {
+          "name": "bluetooth_tx_id",
+          "type": "string"
+        },
+        {
+          "name": "signature",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "timestamp",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "register_currency",
+      "discriminator": [
+        247,
+        229,
+        115,
+        204,
+        45,
+        36,
+        179,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "platform",
+          "writable": true
+        },
+        {
+          "name": "currency",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  117,
+                  114,
+                  114,
+                  101,
+                  110,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "currency_code",
+          "type": "string"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "register_user",
+      "discriminator": [
+        2,
+        241,
+        150,
+        223,
+        99,
+        214,
+        116,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "platform",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        },
+        {
+          "name": "kyc_status",
+          "type": "bool"
+        },
+        {
+          "name": "home_currency",
+          "type": "string"
+        },
+        {
+          "name": "risk_score",
+          "type": "u8"
+        },
+        {
+          "name": "country_code",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "swap_currencies",
+      "discriminator": [
+        113,
+        109,
+        213,
+        0,
+        141,
+        173,
+        201,
+        138
+      ],
+      "accounts": [
+        {
+          "name": "liquidity_pool",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "user_source_account",
+          "writable": true
+        },
+        {
+          "name": "user_destination_account",
+          "writable": true
+        },
+        {
+          "name": "swap_record",
+          "writable": true
+        },
+        {
+          "name": "pool_source_account",
+          "writable": true
+        },
+        {
+          "name": "pool_destination_account",
+          "writable": true
+        },
+        {
+          "name": "pool_authority",
+          "docs": [
+            "The authority that can sign for the pool accounts"
+          ],
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "The user that owns the source funds"
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_in",
+          "type": "u64"
+        },
+        {
+          "name": "minimum_amount_out",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sync_offline_transaction",
+      "discriminator": [
+        204,
+        110,
+        6,
+        233,
+        17,
+        237,
+        40,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "offline_record",
+          "writable": true
+        },
+        {
+          "name": "from_wallet",
+          "writable": true
+        },
+        {
+          "name": "to_wallet",
+          "writable": true
+        },
+        {
+          "name": "from_token_account",
+          "writable": true
+        },
+        {
+          "name": "to_token_account",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_pool_rate",
+      "discriminator": [
+        68,
+        133,
+        88,
+        63,
+        221,
+        39,
+        202,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "liquidity_pool",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_exchange_rate",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Currency",
+      "discriminator": [
+        191,
+        62,
+        116,
+        219,
+        163,
+        67,
+        229,
+        200
+      ]
+    },
+    {
+      "name": "LiquidityPool",
+      "discriminator": [
+        66,
+        38,
+        17,
+        64,
+        188,
+        80,
+        68,
+        129
+      ]
+    },
+    {
+      "name": "OfflineTransaction",
+      "discriminator": [
+        79,
+        17,
+        84,
+        102,
+        234,
+        73,
+        8,
+        112
+      ]
+    },
+    {
+      "name": "Platform",
+      "discriminator": [
+        77,
+        92,
+        204,
+        58,
+        187,
+        98,
+        91,
+        12
+      ]
+    },
+    {
+      "name": "SwapRecord",
+      "discriminator": [
+        216,
+        205,
+        168,
+        22,
+        23,
+        102,
+        170,
+        190
+      ]
+    },
+    {
+      "name": "TransactionRecord",
+      "discriminator": [
+        206,
+        23,
+        5,
+        97,
+        161,
+        157,
+        25,
+        107
+      ]
+    },
+    {
+      "name": "User",
+      "discriminator": [
+        159,
+        117,
+        95,
+        227,
+        239,
+        151,
+        58,
+        236
+      ]
+    },
+    {
+      "name": "Wallet",
+      "discriminator": [
+        24,
+        89,
+        59,
+        139,
+        81,
+        154,
+        232,
+        95
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient balance for this operation"
+    },
+    {
+      "code": 6001,
+      "name": "KycRequired",
+      "msg": "KYC verification is required for this operation"
+    },
+    {
+      "code": 6002,
+      "name": "PlatformInactive",
+      "msg": "The platform is currently inactive"
+    },
+    {
+      "code": 6003,
+      "name": "UserInactive",
+      "msg": "The user account is inactive"
+    },
+    {
+      "code": 6004,
+      "name": "AdminRequired",
+      "msg": "Only the admin can perform this operation"
+    },
+    {
+      "code": 6005,
+      "name": "ExceedsOfflineLimit",
+      "msg": "Offline transaction amount exceeds the limit"
+    },
+    {
+      "code": 6006,
+      "name": "AlreadySynced",
+      "msg": "This offline transaction has already been synced"
+    },
+    {
+      "code": 6007,
+      "name": "PoolInactive",
+      "msg": "The liquidity pool is inactive"
+    },
+    {
+      "code": 6008,
+      "name": "SlippageExceeded",
+      "msg": "Slippage tolerance exceeded"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidRiskScore",
+      "msg": "Invalid risk score provided"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidCurrencyPair",
+      "msg": "Invalid currency pair for liquidity pool"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidExchangeRate",
+      "msg": "Invalid exchange rate provided"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidCurrencyCode",
+      "msg": "Invalid currency code provided"
+    }
+  ],
+  "types": [
+    {
+      "name": "Currency",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "code",
+            "type": "string"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidityPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "source_currency",
+            "type": "string"
+          },
+          {
+            "name": "destination_currency",
+            "type": "string"
+          },
+          {
+            "name": "source_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "destination_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "exchange_rate",
+            "type": "u64"
+          },
+          {
+            "name": "pool_fee_rate",
+            "type": "u64"
+          },
+          {
+            "name": "total_swapped",
+            "type": "u64"
+          },
+          {
+            "name": "total_volume",
+            "type": "u64"
+          },
+          {
+            "name": "last_updated",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OfflineTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transaction_id",
+            "type": "string"
+          },
+          {
+            "name": "from_user",
+            "type": "pubkey"
+          },
+          {
+            "name": "to_user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "source_currency",
+            "type": "string"
+          },
+          {
+            "name": "destination_currency",
+            "type": "string"
+          },
+          {
+            "name": "bluetooth_tx_id",
+            "type": "string"
+          },
+          {
+            "name": "signature",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "offline_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "synced",
+            "type": "bool"
+          },
+          {
+            "name": "sync_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "risk_score",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Platform",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "fee_rate",
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "total_transactions",
+            "type": "u64"
+          },
+          {
+            "name": "total_fees_collected",
+            "type": "u64"
+          },
+          {
+            "name": "supported_currencies",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "swap_id",
+            "type": "string"
+          },
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_in",
+            "type": "u64"
+          },
+          {
+            "name": "amount_out",
+            "type": "u64"
+          },
+          {
+            "name": "pool_fee",
+            "type": "u64"
+          },
+          {
+            "name": "source_currency",
+            "type": "string"
+          },
+          {
+            "name": "destination_currency",
+            "type": "string"
+          },
+          {
+            "name": "exchange_rate",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transaction_id",
+            "type": "string"
+          },
+          {
+            "name": "from_user",
+            "type": "pubkey"
+          },
+          {
+            "name": "to_user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "fee_amount",
+            "type": "u64"
+          },
+          {
+            "name": "source_currency",
+            "type": "string"
+          },
+          {
+            "name": "destination_currency",
+            "type": "string"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "TransactionStatus"
+              }
+            }
+          },
+          {
+            "name": "risk_score",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Failed"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "User",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "username",
+            "type": "string"
+          },
+          {
+            "name": "kyc_verified",
+            "type": "bool"
+          },
+          {
+            "name": "home_currency",
+            "type": "string"
+          },
+          {
+            "name": "risk_score",
+            "type": "u8"
+          },
+          {
+            "name": "country_code",
+            "type": "string"
+          },
+          {
+            "name": "total_sent",
+            "type": "u64"
+          },
+          {
+            "name": "total_received",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Wallet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "currency_code",
+            "type": "string"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}

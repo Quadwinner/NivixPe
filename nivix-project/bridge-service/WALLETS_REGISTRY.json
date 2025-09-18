@@ -1,0 +1,27 @@
+{
+  "coreWallets": {
+    "treasuryWallet": {
+      "address": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "type": "treasury",
+      "description": "Main treasury wallet for holding tokens"
+    },
+    "bridgeWallet": {
+      "address": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "type": "bridge",
+      "description": "Bridge wallet with mint authority"
+    }
+  },
+  "liquidityWallets": {
+    "mainPool": {
+      "address": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "type": "liquidity",
+      "description": "Main liquidity pool wallet"
+    }
+  },
+  "lastUpdated": "2025-09-10T14:35:00.000Z",
+  "version": "1.0.0"
+}
+
+
+
+
