@@ -47,7 +47,7 @@ export RAZORPAY_KEY_SECRET="yKfmYVMY9NTrxW9sNj4N4VO2"
 
 # Enable PayU payouts (Cashfree is disabled in code)
 export PAYU_MERCHANT_ID="527849c20b1e690147b48325b0818452fa360716274c769494db1dbc256c6158"
-export PAYU_API_KEY="9043ce9547b48342a65649d62ce4b6d04315443b0e087f65c7b088036e78fac9"
+export PAYU_API_KEY="YOUR_PAYU_API_KEY_HERE"
 export PAYU_BASE_URL="https://payouts.payu.in/api/v1"
 
 # Set Cashfree payout environment variables (Working credentials)
