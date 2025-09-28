@@ -73,7 +73,7 @@ interface PoolResponse {
 }
 
 const LiquidityPools: React.FC = () => {
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, signTransaction } = useWallet();
   const [pools, setPools] = useState<Pool[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -172,7 +172,7 @@ const LiquidityPools: React.FC = () => {
   };
 
   const handleSwap = async () => {
-    if (!selectedPool || !connected || !publicKey) {
+    if (!selectedPool || !connected || !publicKey || !signTransaction) {
       setError('Please select a pool and connect your wallet');
       return;
     }
@@ -188,7 +188,7 @@ const LiquidityPools: React.FC = () => {
         userDestinationAccount: publicKey.toString(),
         poolSourceAccount: selectedPool.sourceMint,
         poolDestinationAccount: selectedPool.destinationMint
-      });
+      }, signTransaction);
       
       if (data.success) {
         setSuccess(`Swap completed successfully! Amount out: ${data.amountOut}`);

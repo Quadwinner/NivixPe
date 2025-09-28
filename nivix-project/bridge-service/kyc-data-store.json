@@ -95,9 +95,9 @@
     "idDocuments": [
       "passport"
     ],
-    "verificationDate": "2025-09-18T18:22:03.738Z",
+    "verificationDate": "2025-09-25T15:33:03.714Z",
     "riskScore": 50,
-    "lastUpdated": "2025-09-18T18:22:03.920Z"
+    "lastUpdated": "2025-09-25T15:33:03.846Z"
   },
   "test123": {
     "solanaAddress": "test123",
@@ -239,5 +239,27 @@
     "riskScore": 50,
     "kycVerified": true,
     "lastUpdated": "2025-09-17T17:34:00.000Z"
+  },
+  "test-address": {
+    "userId": "test123",
+    "solanaAddress": "test-address",
+    "fullName": "Test User",
+    "countryCode": "US",
+    "idDocuments": [],
+    "verificationDate": "2025-09-18T20:55:55.383Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-18T20:55:55.521Z"
+  },
+  "test-address-456": {
+    "userId": "test456",
+    "solanaAddress": "test-address-456",
+    "fullName": "Test User 2",
+    "countryCode": "US",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2025-09-18T20:56:25.488Z",
+    "riskScore": 50,
+    "lastUpdated": "2025-09-18T20:56:25.617Z"
   }
 }

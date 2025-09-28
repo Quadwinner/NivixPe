@@ -16,6 +16,29 @@ lsof -ti:3002 | xargs kill -9 2>/dev/null || true
 ps aux | grep "node.*index.js" | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null || true
 sleep 3
 
+# 1.5. Setup Go environment for Hyperledger Fabric
+echo "🔧 Setting up Go environment..."
+if ! command -v go &> /dev/null; then
+    echo "Installing Go..."
+    mkdir -p ~/go-install
+    cd ~/go-install
+    curl -L https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -o go.tar.gz
+    tar -xzf go.tar.gz
+    cd "$PROJECT_ROOT"
+fi
+
+# Add Go to PATH
+export PATH=$HOME/go-install/go/bin:$PATH
+export GOPATH=$HOME/go
+
+# Verify Go installation
+if command -v go &> /dev/null; then
+    echo "✅ Go installed: $(go version)"
+else
+    echo "❌ Go installation failed"
+    exit 1
+fi
+
 # 2. Start Hyperledger Fabric network
 echo "🏗️ Starting Hyperledger Fabric..."
 cd fabric-samples/test-network
@@ -24,9 +47,11 @@ cd fabric-samples/test-network
 
 # 3. Deploy chaincode
 echo "📦 Deploying chaincode..."
+export PATH=$HOME/go-install/go/bin:$PATH
+export GOPATH=$HOME/go
 ./network.sh deployCC -ccn nivix-kyc -ccp ./chaincode-nivix-kyc -ccl go -c mychannel -cccg ./chaincode-nivix-kyc/collections_config.json
 
-# 4. Setup fabric invoke script
+# 4. Setup fabric invoke scripts
 echo "📜 Setting up fabric script..." 
 cd "$PROJECT_ROOT"
 cp bridge-service/fabric-invoke.sh /tmp/fabric-invoke.sh

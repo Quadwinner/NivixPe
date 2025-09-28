@@ -5514,5 +5514,776 @@
       "automatedTransfer": true,
       "transferType": "automated_payout"
     }
+  },
+  {
+    "id": "onramp_1758222353006_tqrih3",
+    "status": "processing",
+    "createdAt": "2025-09-18T19:05:53.006Z",
+    "updatedAt": "2025-09-18T19:06:18.210Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 10000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "120.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJApjqtklmDXx7",
+    "razorpayPaymentId": "pay_RJApuOebo7vAxY",
+    "transactionSignature": "4fCZ6eziEPQf1eDURGwFMfcgYjBKkSBhNzuWXvq6QPzShNtBuyoUg36vn9DnU3jrKn5fUo1CZCa56rfo3PXYf43A",
+    "deliveredAt": "2025-09-18T19:06:18.203Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758222378210_1qiuto",
+    "mintTransactionHash": "4fCZ6eziEPQf1eDURGwFMfcgYjBKkSBhNzuWXvq6QPzShNtBuyoUg36vn9DnU3jrKn5fUo1CZCa56rfo3PXYf43A",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:05:53.006Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:06:15.923Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:06:18.203Z",
+        "message": "Crypto delivered successfully. Transaction: 4fCZ6eziEPQf1eDURGwFMfcgYjBKkSBhNzuWXvq6QPzShNtBuyoUg36vn9DnU3jrKn5fUo1CZCa56rfo3PXYf43A"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T19:05:53.006Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758222777546_xh0hok",
+    "status": "processing",
+    "createdAt": "2025-09-18T19:12:57.546Z",
+    "updatedAt": "2025-09-18T19:13:20.266Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 10000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "120.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJAxCcc83qWhnM",
+    "razorpayPaymentId": "pay_RJAxLiWps5c9Mt",
+    "transactionSignature": "21KNLYrFHCziPSZd3sfaXjpAC5JZ6BLmvgeUpHG8cR3Z6Ruyq3mUx8iLL94pDywFYejdhFGBGRxnNifnEVU5dGap",
+    "deliveredAt": "2025-09-18T19:13:20.260Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758222800266_kw1m94",
+    "mintTransactionHash": "21KNLYrFHCziPSZd3sfaXjpAC5JZ6BLmvgeUpHG8cR3Z6Ruyq3mUx8iLL94pDywFYejdhFGBGRxnNifnEVU5dGap",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:12:57.546Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:13:18.368Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:13:20.260Z",
+        "message": "Crypto delivered successfully. Transaction: 21KNLYrFHCziPSZd3sfaXjpAC5JZ6BLmvgeUpHG8cR3Z6Ruyq3mUx8iLL94pDywFYejdhFGBGRxnNifnEVU5dGap"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T19:12:57.546Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758223631234_j87p0q",
+    "status": "processing",
+    "createdAt": "2025-09-18T19:27:11.234Z",
+    "updatedAt": "2025-09-18T19:27:32.493Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 10000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "120.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJBCENTTSvnfkn",
+    "razorpayPaymentId": "pay_RJBCMKf0ODi4ey",
+    "transactionSignature": "4NBn3R47bbPqPt26AKE5C5afG5N3ujjxwDiUpZxWkZJnTDoVvGNAucepUQT4Cr81DUL4UbTHanXqKNvZ5ur43P8s",
+    "deliveredAt": "2025-09-18T19:27:32.488Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758223652493_6sbmgi",
+    "mintTransactionHash": "4NBn3R47bbPqPt26AKE5C5afG5N3ujjxwDiUpZxWkZJnTDoVvGNAucepUQT4Cr81DUL4UbTHanXqKNvZ5ur43P8s",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:27:11.234Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:27:30.676Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:27:32.488Z",
+        "message": "Crypto delivered successfully. Transaction: 4NBn3R47bbPqPt26AKE5C5afG5N3ujjxwDiUpZxWkZJnTDoVvGNAucepUQT4Cr81DUL4UbTHanXqKNvZ5ur43P8s"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T19:27:11.234Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758224064876_947yt2",
+    "status": "processing",
+    "createdAt": "2025-09-18T19:34:24.876Z",
+    "updatedAt": "2025-09-18T19:34:47.875Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "12.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJBJrtucTvgGbW",
+    "razorpayPaymentId": "pay_RJBK0Y4Lgi3pc8",
+    "transactionSignature": "2zpBWqF4iab9cErQKJCj3BCHtEDhDPtKT7SnchuAXGK1YPcuNETJNaZd2mmSg1VpQQfKqFUWruCqYSY5CnqEBXtY",
+    "deliveredAt": "2025-09-18T19:34:47.868Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758224087874_wtoaun",
+    "mintTransactionHash": "2zpBWqF4iab9cErQKJCj3BCHtEDhDPtKT7SnchuAXGK1YPcuNETJNaZd2mmSg1VpQQfKqFUWruCqYSY5CnqEBXtY",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:34:24.876Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:34:45.212Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:34:47.868Z",
+        "message": "Crypto delivered successfully. Transaction: 2zpBWqF4iab9cErQKJCj3BCHtEDhDPtKT7SnchuAXGK1YPcuNETJNaZd2mmSg1VpQQfKqFUWruCqYSY5CnqEBXtY"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T19:34:24.876Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758224410520_xnsreg",
+    "status": "processing",
+    "createdAt": "2025-09-18T19:40:10.520Z",
+    "updatedAt": "2025-09-18T19:40:34.383Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 10000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "120.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJBPx0AWzikTxF",
+    "razorpayPaymentId": "pay_RJBQ6LXy9vB04V",
+    "transactionSignature": "2oZr2GURP4EfFyXJ6CfG93osigM1N6grFHWhtfwZ5WWsPMrykvYTLrpPRVTrP1CB4jLaDKbydaTGa5QntTxcNLGb",
+    "deliveredAt": "2025-09-18T19:40:34.378Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758224434383_9dp9s3",
+    "mintTransactionHash": "2oZr2GURP4EfFyXJ6CfG93osigM1N6grFHWhtfwZ5WWsPMrykvYTLrpPRVTrP1CB4jLaDKbydaTGa5QntTxcNLGb",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:40:10.520Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:40:31.255Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T19:40:34.378Z",
+        "message": "Crypto delivered successfully. Transaction: 2oZr2GURP4EfFyXJ6CfG93osigM1N6grFHWhtfwZ5WWsPMrykvYTLrpPRVTrP1CB4jLaDKbydaTGa5QntTxcNLGb"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T19:40:10.520Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758225909831_ldzmji",
+    "status": "processing",
+    "createdAt": "2025-09-18T20:05:09.831Z",
+    "updatedAt": "2025-09-18T20:05:32.637Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "12.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJBqMJhZ4maZqa",
+    "razorpayPaymentId": "pay_RJBqUGVk1XWpnG",
+    "transactionSignature": "4bAYiQYC2qv6P9gg7PxHzYzRG1xhN3BBpmgtVzjpHnYWitHboy5xuDyZSjCt8YRcj5u4e8faQsGMrzPCpUQcgN65",
+    "deliveredAt": "2025-09-18T20:05:32.630Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758225932637_cyfmog",
+    "mintTransactionHash": "4bAYiQYC2qv6P9gg7PxHzYzRG1xhN3BBpmgtVzjpHnYWitHboy5xuDyZSjCt8YRcj5u4e8faQsGMrzPCpUQcgN65",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T20:05:09.831Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T20:05:30.418Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T20:05:32.630Z",
+        "message": "Crypto delivered successfully. Transaction: 4bAYiQYC2qv6P9gg7PxHzYzRG1xhN3BBpmgtVzjpHnYWitHboy5xuDyZSjCt8YRcj5u4e8faQsGMrzPCpUQcgN65"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T20:05:09.831Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758229231415_xe4cum",
+    "status": "processing",
+    "createdAt": "2025-09-18T21:00:31.415Z",
+    "updatedAt": "2025-09-18T21:00:53.033Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "12.000000",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.012,
+    "razorpayOrderId": "order_RJCmpuSyt0hNmY",
+    "razorpayPaymentId": "pay_RJCmxKa9EamEhf",
+    "transactionSignature": "Vkk9mhT5Aq2XvMTVE1EMRKxFsP8EeyEvtQx3o23B2wapon1emWmZHtg5whZS2X1jMqwznhymg2SyDpam1UiNCSX",
+    "deliveredAt": "2025-09-18T21:00:53.026Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758229253032_h9x8mv",
+    "mintTransactionHash": "Vkk9mhT5Aq2XvMTVE1EMRKxFsP8EeyEvtQx3o23B2wapon1emWmZHtg5whZS2X1jMqwznhymg2SyDpam1UiNCSX",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-18T21:00:31.415Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-18T21:00:51.125Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-18T21:00:53.026Z",
+        "message": "Crypto delivered successfully. Transaction: Vkk9mhT5Aq2XvMTVE1EMRKxFsP8EeyEvtQx3o23B2wapon1emWmZHtg5whZS2X1jMqwznhymg2SyDpam1UiNCSX"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-18T21:00:31.415Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758271842678_r9nud3",
+    "status": "pending_payment",
+    "createdAt": "2025-09-19T08:50:42.678Z",
+    "updatedAt": "2025-09-19T08:50:42.678Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "USD",
+    "cryptoAmount": "83250.000000",
+    "cryptoCurrency": "INR",
+    "cryptoTokenMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+    "exchangeRate": 83.25,
+    "razorpayOrderId": null,
+    "razorpayPaymentId": null,
+    "paymentMethod": null,
+    "transactionSignature": null,
+    "deliveredAt": null,
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": false,
+    "readyForBurn": false,
+    "offrampOrderId": null,
+    "mintTransactionHash": null,
+    "automatedTransferStatus": null,
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-19T08:50:42.678Z",
+        "message": "Order created successfully"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-19T08:50:42.678Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758488716623_3ihpws",
+    "status": "processing",
+    "createdAt": "2025-09-21T21:05:16.623Z",
+    "updatedAt": "2025-09-21T21:05:41.789Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "11.343013",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.011343012704174229,
+    "razorpayOrderId": "order_RKOTDsQQfmUlNB",
+    "razorpayPaymentId": "pay_RKOTOTTZ95sNAj",
+    "transactionSignature": "3sZLkp9ompnLcBsEPcxr5BkWFr1vDMMM74LPdHR1h9wsHUjyZ7tVcqXAse3u8dmgSnMkub369bkVuNTJuZSohqC4",
+    "deliveredAt": "2025-09-21T21:05:41.778Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758488741789_fi0ua4",
+    "mintTransactionHash": "3sZLkp9ompnLcBsEPcxr5BkWFr1vDMMM74LPdHR1h9wsHUjyZ7tVcqXAse3u8dmgSnMkub369bkVuNTJuZSohqC4",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-21T21:05:16.623Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-21T21:05:39.447Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-21T21:05:41.778Z",
+        "message": "Crypto delivered successfully. Transaction: 3sZLkp9ompnLcBsEPcxr5BkWFr1vDMMM74LPdHR1h9wsHUjyZ7tVcqXAse3u8dmgSnMkub369bkVuNTJuZSohqC4"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-21T21:05:16.623Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758489178933_gzwcpn",
+    "status": "pending_payment",
+    "createdAt": "2025-09-21T21:12:58.933Z",
+    "updatedAt": "2025-09-21T21:12:58.933Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "USD",
+    "cryptoAmount": "88160.000000",
+    "cryptoCurrency": "INR",
+    "cryptoTokenMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+    "exchangeRate": 88.16,
+    "razorpayOrderId": null,
+    "razorpayPaymentId": null,
+    "paymentMethod": null,
+    "transactionSignature": null,
+    "deliveredAt": null,
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": false,
+    "readyForBurn": false,
+    "offrampOrderId": null,
+    "mintTransactionHash": null,
+    "automatedTransferStatus": null,
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-21T21:12:58.933Z",
+        "message": "Order created successfully"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-21T21:12:58.933Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758490519358_inrkgi",
+    "status": "pending_payment",
+    "createdAt": "2025-09-21T21:35:19.358Z",
+    "updatedAt": "2025-09-21T21:35:19.358Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "GBP",
+    "cryptoAmount": "118814.016173",
+    "cryptoCurrency": "INR",
+    "cryptoTokenMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+    "exchangeRate": 118.81401617250674,
+    "razorpayOrderId": null,
+    "razorpayPaymentId": null,
+    "paymentMethod": null,
+    "transactionSignature": null,
+    "deliveredAt": null,
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": false,
+    "readyForBurn": false,
+    "offrampOrderId": null,
+    "mintTransactionHash": null,
+    "automatedTransferStatus": null,
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-21T21:35:19.358Z",
+        "message": "Order created successfully"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-21T21:35:19.358Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758814439208_6hir26",
+    "status": "processing",
+    "createdAt": "2025-09-25T15:33:59.208Z",
+    "updatedAt": "2025-09-25T15:34:27.502Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "11.262530",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.011262529564140105,
+    "razorpayOrderId": "order_RLsxkTslGMbaKu",
+    "razorpayPaymentId": "pay_RLsxxBhMcVBOBe",
+    "transactionSignature": "5mEJxSd1JGpWpEBYUr3zRQt5UefV2p7E9u73Evv9nfyBMzf1FaZ5LgTVGTLQurtfjZ4Umqd1FuSsgS62DuCZHQeA",
+    "deliveredAt": "2025-09-25T15:34:27.494Z",
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": true,
+    "readyForBurn": true,
+    "offrampOrderId": "offramp_1758814467501_f5niaw",
+    "mintTransactionHash": "5mEJxSd1JGpWpEBYUr3zRQt5UefV2p7E9u73Evv9nfyBMzf1FaZ5LgTVGTLQurtfjZ4Umqd1FuSsgS62DuCZHQeA",
+    "automatedTransferStatus": "awaiting_burn",
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-25T15:33:59.208Z",
+        "message": "Order created successfully"
+      },
+      {
+        "step": "payment_processed",
+        "status": "completed",
+        "timestamp": "2025-09-25T15:34:23.986Z",
+        "message": "Payment confirmed successfully"
+      },
+      {
+        "step": "crypto_delivered",
+        "status": "completed",
+        "timestamp": "2025-09-25T15:34:27.494Z",
+        "message": "Crypto delivered successfully. Transaction: 5mEJxSd1JGpWpEBYUr3zRQt5UefV2p7E9u73Evv9nfyBMzf1FaZ5LgTVGTLQurtfjZ4Umqd1FuSsgS62DuCZHQeA"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-25T15:33:59.208Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758814844913_7905o2",
+    "status": "pending_payment",
+    "createdAt": "2025-09-25T15:40:44.913Z",
+    "updatedAt": "2025-09-25T15:40:44.913Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "INR",
+    "cryptoAmount": "11.262530",
+    "cryptoCurrency": "USD",
+    "cryptoTokenMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+    "exchangeRate": 0.011262529564140105,
+    "razorpayOrderId": null,
+    "razorpayPaymentId": null,
+    "paymentMethod": null,
+    "transactionSignature": null,
+    "deliveredAt": null,
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": false,
+    "readyForBurn": false,
+    "offrampOrderId": null,
+    "mintTransactionHash": null,
+    "automatedTransferStatus": null,
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-25T15:40:44.913Z",
+        "message": "Order created successfully"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-25T15:40:44.913Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
+  },
+  {
+    "id": "onramp_1758814896691_d6r275",
+    "status": "pending_payment",
+    "createdAt": "2025-09-25T15:41:36.691Z",
+    "updatedAt": "2025-09-25T15:41:36.691Z",
+    "userAddress": "6G74ELnKsDCWDg7w6QCWsZ99dBweiHg55NtAwmpB2KW5",
+    "userEmail": null,
+    "userPhone": null,
+    "fiatAmount": 1000,
+    "fiatCurrency": "GBP",
+    "cryptoAmount": "119502.018843",
+    "cryptoCurrency": "INR",
+    "cryptoTokenMint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+    "exchangeRate": 119.50201884253029,
+    "razorpayOrderId": null,
+    "razorpayPaymentId": null,
+    "paymentMethod": null,
+    "transactionSignature": null,
+    "deliveredAt": null,
+    "automatedTransfer": true,
+    "recipientDetails": {
+      "name": "Test User",
+      "accountNumber": "026291800001191",
+      "ifscCode": "YESB0000262",
+      "email": "shubhamkush012@gmail.com",
+      "phone": "8824013820"
+    },
+    "transferType": "automated_payout",
+    "burnRequired": false,
+    "readyForBurn": false,
+    "offrampOrderId": null,
+    "mintTransactionHash": null,
+    "automatedTransferStatus": null,
+    "steps": [
+      {
+        "step": "order_created",
+        "status": "completed",
+        "timestamp": "2025-09-25T15:41:36.691Z",
+        "message": "Order created successfully"
+      }
+    ],
+    "metadata": {
+      "requestedAt": "2025-09-25T15:41:36.691Z",
+      "ipAddress": "::1",
+      "automatedTransfer": true,
+      "transferType": "automated_payout"
+    }
   }
 ]
