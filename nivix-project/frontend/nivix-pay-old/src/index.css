@@ -395,3 +395,26 @@
 .animate-pulse-glow {
   animation: pulseGlow 2s ease-in-out infinite;
 }
+
+/* Scrolling ticker animation */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-left {
+  animation: scrollLeft 30s linear infinite;
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.scroll-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
