@@ -52,116 +52,256 @@ const Home: React.FC = () => {
         </Button>
       </motion.div>
 
-      {/* Hero Section with Gradient Background */}
-      <section className="relative py-24 md:py-32 bg-gradient-to-b from-[#EEF2FF] via-white to-white overflow-hidden">
+      {/* Hero Section - Modern Fintech Design */}
+      <section className="relative py-28 lg:py-36 bg-gradient-to-b from-[#EEF2FF] via-[#F9FAFB] to-[#FFFFFF] overflow-hidden">
         {/* Animated Background Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
             animate={{
               x: [0, 100, 0],
-              y: [0, -100, 0],
+              y: [0, -50, 0],
               scale: [1, 1.2, 1],
             }}
             transition={{
               duration: 20,
               repeat: Infinity,
-              ease: "linear"
+              ease: "easeInOut"
             }}
-            className="absolute top-20 right-20 w-96 h-96 bg-accent/5 rounded-full blur-3xl"
+            className="absolute top-20 right-20 w-[500px] h-[500px] bg-blue-400/30 rounded-full blur-3xl opacity-30"
           />
           <motion.div
             animate={{
-              x: [0, -100, 0],
-              y: [0, 100, 0],
-              scale: [1, 1.3, 1],
+              x: [0, -80, 0],
+              y: [0, 80, 0],
+              scale: [1, 1.15, 1],
             }}
             transition={{
               duration: 25,
               repeat: Infinity,
-              ease: "linear"
+              ease: "easeInOut"
             }}
-            className="absolute -bottom-20 -left-20 w-[32rem] h-[32rem] bg-blue-400/5 rounded-full blur-3xl"
+            className="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-accent/20 rounded-full blur-3xl opacity-20"
           />
         </div>
 
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10">
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-            className="max-w-4xl"
-          >
-            <motion.div variants={fadeInUp} className="inline-block mb-6">
-              <span className="px-4 py-2 bg-accent/10 text-accent text-sm font-semibold rounded-full border border-accent/20">
-                Built on Solana for instant global transfers
-              </span>
-            </motion.div>
-
-            <motion.h1
-              variants={fadeInUp}
-              className="text-5xl md:text-6xl lg:text-[64px] font-bold text-[#111827] mb-6 leading-[1.1]"
-              style={{ fontWeight: 700 }}
-            >
-              Send Money Anywhere,
-              <br />
-              <span className="bg-gradient-to-r from-accent to-accent-800 bg-clip-text text-transparent">
-                Pay Almost Nothing
-              </span>
-            </motion.h1>
-
-            <motion.p
-              variants={fadeInUp}
-              className="text-xl md:text-2xl text-[#6B7280] max-w-3xl leading-relaxed mb-10"
-              style={{ fontWeight: 400 }}
-            >
-              Nivix Pay combines the speed of blockchain with the familiarity of bank transfers.
-              Send SOL, USDC, or convert to local currencies like INR, USD, EUR - all in one place.
-            </motion.p>
-
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+          {/* Two Column Layout */}
+          <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+            {/* Left Column - Text Content (60%) */}
             <motion.div
-              variants={fadeInUp}
-              id="hero-cta"
-              className="flex flex-wrap items-center gap-4 mb-16"
-            >
-              <WalletMultiButton className="!bg-gradient-to-r from-accent to-accent-800 hover:shadow-glow !rounded-lg !px-8 !py-4 !font-semibold !text-base transform hover:scale-105 transition-all duration-200" />
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate('/automated-transfer')}
-                className="!border-2 !border-[#E5E7EB] hover:!border-accent !px-8 !py-4 !text-base hover:shadow-md transform hover:scale-105 transition-all duration-200"
-              >
-                See How It Works →
-              </Button>
-            </motion.div>
-
-            {/* Modern Stat Cards */}
-            <motion.div
+              initial="initial"
+              animate="animate"
               variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              className="lg:col-span-3"
             >
-              {[
-                { value: 0.00001, prefix: '$', label: 'avg. transaction fee', decimals: 5 },
-                { value: 1, prefix: '<', suffix: ' sec', label: 'transaction time', decimals: 0 },
-                { value: 24, suffix: '/7', label: 'always online', decimals: 0 }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-white rounded-xl p-6 border border-[#E5E7EB] shadow-card hover:shadow-premium transition-all duration-200"
+              {/* Brand Tagline */}
+              <motion.div variants={fadeInUp} className="mb-6">
+                <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">
+                  Built on Solana • Real-time Global Transfers
+                </span>
+              </motion.div>
+
+              {/* Main Headline */}
+              <motion.h1
+                variants={fadeInUp}
+                className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-[1.1]"
+              >
+                Send Money Anywhere,{' '}
+                <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                  Pay Almost Nothing
+                </span>
+              </motion.h1>
+
+              {/* Subtitle */}
+              <motion.p
+                variants={fadeInUp}
+                className="text-lg lg:text-xl text-gray-600 max-w-xl leading-relaxed mb-8"
+              >
+                Experience the power of blockchain transfers with the simplicity of your local bank.
+                Send SOL, USDC, or convert to INR, USD, EUR — instantly and securely.
+              </motion.p>
+
+              {/* CTA Buttons */}
+              <motion.div
+                variants={fadeInUp}
+                id="hero-cta"
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6"
+              >
+                <button className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-base hover:bg-blue-700 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+                  Get Started
+                </button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => navigate('/automated-transfer')}
+                  className="!border-2 !border-blue-600 !text-blue-600 hover:!bg-blue-50 !px-8 !py-4 !text-base !font-semibold !rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105"
                 >
-                  <div className="text-3xl md:text-4xl font-bold text-[#111827] mb-1">
-                    {stat.prefix}
-                    <CountUp end={stat.value} decimals={stat.decimals} duration={2} />
-                    {stat.suffix}
+                  See How It Works →
+                </Button>
+              </motion.div>
+
+              {/* Trust Signals */}
+              <motion.div
+                variants={fadeInUp}
+                className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-8"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🔒</span>
+                  <span className="font-medium">Secure</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">⚡</span>
+                  <span className="font-medium">Instant</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🌍</span>
+                  <span className="font-medium">Multi-Currency Support</span>
+                </div>
+              </motion.div>
+
+              {/* Quick Stats - Inline/Compact */}
+              <motion.div
+                variants={fadeInUp}
+                className="border-t border-gray-200 pt-6"
+              >
+                <div className="grid grid-cols-3 gap-6">
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">
+                      $<CountUp end={0.00001} decimals={5} duration={2} />
+                    </div>
+                    <div className="text-xs text-gray-600 uppercase tracking-wide">
+                      Avg. Fee
+                    </div>
                   </div>
-                  <div className="text-sm text-[#6B7280]" style={{ fontWeight: 400 }}>
-                    {stat.label}
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">
+                      &lt;<CountUp end={1} duration={2} /> sec
+                    </div>
+                    <div className="text-xs text-gray-600 uppercase tracking-wide">
+                      Transfer Time
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">
+                      <CountUp end={24} duration={2} />/7
+                    </div>
+                    <div className="text-xs text-gray-600 uppercase tracking-wide">
+                      Always Online
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Column - Hero Illustration (40%) */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:col-span-2 hidden lg:block"
+            >
+              <div className="relative">
+                {/* Main Illustration Container */}
+                <motion.div
+                  animate={{
+                    y: [0, -20, 0],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="relative"
+                >
+                  {/* 3D Card Visual */}
+                  <div className="relative w-full aspect-square max-w-md mx-auto">
+                    {/* Background Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
+
+                    {/* Main Card */}
+                    <motion.div
+                      whileHover={{ scale: 1.05, rotateY: 5 }}
+                      className="relative bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl shadow-2xl p-8 transform perspective-1000"
+                      style={{ transformStyle: 'preserve-3d' }}
+                    >
+                      {/* Card Content */}
+                      <div className="text-white space-y-6">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="text-sm opacity-80 mb-1">From</div>
+                            <div className="font-bold text-xl">🇺🇸 USD</div>
+                          </div>
+                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div className="text-center py-4">
+                          <div className="text-5xl font-bold mb-2">$1,000</div>
+                          <div className="text-sm opacity-80">Instant Transfer</div>
+                        </div>
+
+                        <div className="flex justify-between items-end">
+                          <div>
+                            <div className="text-sm opacity-80 mb-1">To</div>
+                            <div className="font-bold text-xl">🇮🇳 INR</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-xs opacity-80">Fee</div>
+                            <div className="font-bold text-green-300">$0.00001</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Decorative Elements */}
+                      <div className="absolute -top-4 -right-4 w-24 h-24 bg-purple-500/30 rounded-full blur-xl" />
+                      <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-400/30 rounded-full blur-xl" />
+                    </motion.div>
+
+                    {/* Floating Currency Icons */}
+                    <motion.div
+                      animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="absolute -top-8 -left-8 bg-white rounded-2xl shadow-xl p-4 text-3xl"
+                    >
+                      💸
+                    </motion.div>
+
+                    <motion.div
+                      animate={{ y: [0, 10, 0], rotate: [0, -5, 0] }}
+                      transition={{ duration: 3.5, repeat: Infinity }}
+                      className="absolute -bottom-4 -right-8 bg-white rounded-2xl shadow-xl p-4 text-3xl"
+                    >
+                      ⚡
+                    </motion.div>
+
+                    <motion.div
+                      animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                      className="absolute top-1/4 -right-12 bg-white rounded-2xl shadow-xl p-4 text-3xl"
+                    >
+                      🌍
+                    </motion.div>
                   </div>
                 </motion.div>
-              ))}
+
+                {/* Success Indicator */}
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 1, duration: 0.5 }}
+                  className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-semibold"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Transfer Complete!</span>
+                </motion.div>
+              </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
