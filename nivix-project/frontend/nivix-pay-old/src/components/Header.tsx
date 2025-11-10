@@ -1,182 +1,152 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
-  IconButton, 
-  Menu, 
-  MenuItem, 
-  Box, 
-  Container,
-  useMediaQuery,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import MenuIcon from '@mui/icons-material/Menu';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import SendIcon from '@mui/icons-material/Send';
-import QrCodeIcon from '@mui/icons-material/QrCode';
 import PersonIcon from '@mui/icons-material/Person';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import ScienceIcon from '@mui/icons-material/Science';
-import PaymentIcon from '@mui/icons-material/Payment';
-import BugReportIcon from '@mui/icons-material/BugReport';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import styled from 'styled-components';
-
-const StyledWalletButton = styled.div`
-  .wallet-adapter-button {
-    background-color: #5D5FEF;
-    color: white;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-`;
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import HomeIcon from '@mui/icons-material/Home';
 
 const navItems = [
-  { label: 'Dashboard', path: '/', icon: <DashboardIcon /> },
-  { label: 'Automated Transfer', path: '/automated-transfer', icon: <AutorenewIcon /> },
-  { label: 'Payment App', path: '/payment-app', icon: <AccountBalanceWalletIcon /> },
-  { label: 'Complete Off-ramp', path: '/complete-offramp', icon: <PaymentIcon /> },
-  { label: 'Simple Payout', path: '/simple-payout', icon: <PaymentIcon /> },
-  { label: 'Send', path: '/send', icon: <SendIcon /> },
-  { label: 'Receive', path: '/receive', icon: <QrCodeIcon /> },
-  { label: 'Liquidity Pools', path: '/liquidity-pools', icon: <SwapHorizIcon /> },
-  { label: 'Comprehensive Testing', path: '/comprehensive-testing', icon: <ScienceIcon /> },
-  { label: 'Admin Dashboard', path: '/admin-dashboard', icon: <DashboardIcon /> },
-  { label: 'Cashfree Test', path: '/cashfree-test', icon: <BugReportIcon /> },
-  { label: 'Off-ramp Testing', path: '/offramp-testing', icon: <ScienceIcon /> },
-  { label: 'Profile', path: '/profile', icon: <PersonIcon /> },
-  { label: 'KYC Verification', path: '/kyc', icon: <VerifiedUserIcon /> },
-  { label: 'KYC Admin', path: '/kyc-admin', icon: <VerifiedUserIcon /> },
+  { label: 'Home', path: '/', icon: HomeIcon },
+  { label: 'Automated Transfer', path: '/automated-transfer', icon: AutorenewIcon },
+  { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHorizIcon },
+  { label: 'Profile', path: '/profile', icon: PersonIcon },
+  { label: 'KYC Verification', path: '/kyc', icon: VerifiedUserIcon },
 ];
 
 const Header: React.FC = () => {
-  const theme = useTheme();
   const location = useLocation();
   const { connected } = useWallet();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        NIVIX PAY
-      </Typography>
-      <List>
-        {navItems.map((item) => (
-          <ListItem 
-            button
-            component={Link} 
-            to={item.path}
-            key={item.label}
-            selected={location.pathname === item.path}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.label} />
-          </ListItem>
-        ))}
-      </List>
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-        <StyledWalletButton>
-          <WalletMultiButton />
-        </StyledWalletButton>
-      </Box>
-    </Box>
-  );
-
   return (
-    <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-      <Container maxWidth="lg">
-        <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            component={Link}
+    <header className="sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
+      <nav className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link
             to="/"
-            sx={{
-              flexGrow: 1,
-              color: 'white',
-              textDecoration: 'none',
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
+            className="flex items-center space-x-2 text-text hover:text-accent transition-colors"
           >
-            <AccountBalanceWalletIcon sx={{ mr: 1 }} />
-            NIVIX PAY
-          </Typography>
+            <AccountBalanceWalletIcon className="w-6 h-6" />
+            <span className="text-xl font-bold tracking-tight">NIVIX PAY</span>
+          </Link>
 
-          {isMobile ? (
-            <>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="end"
-                onClick={handleDrawerToggle}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Drawer
-                anchor="right"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                ModalProps={{
-                  keepMounted: true,
-                }}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
-                  '& .MuiDrawer-paper': { 
-                    boxSizing: 'border-box', 
-                    width: 280,
-                    backgroundColor: theme.palette.background.default
-                  },
-                }}
-              >
-                {drawer}
-              </Drawer>
-            </>
-          ) : (
-            <>
-              <Box sx={{ display: 'flex', gap: 2, mr: 4 }}>
-                {navItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    component={Link}
-                    to={item.path}
-                    startIcon={item.icon}
-                    color={location.pathname === item.path ? 'primary' : 'inherit'}
-                    sx={{ fontWeight: location.pathname === item.path ? 600 : 400 }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </Box>
-              <StyledWalletButton>
+          {/* Desktop Navigation - Only visible on large screens */}
+          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center mx-4">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.label}
+                  to={item.path}
+                  className={`flex items-center space-x-1.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                    isActive
+                      ? 'bg-accent text-white'
+                      : 'text-text-muted hover:text-text hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Right side: Wallet Button (desktop) and Menu Toggle (mobile) */}
+          <div className="flex items-center space-x-2">
+            {/* Desktop Wallet Button */}
+            <div className="hidden lg:block">
+              <WalletMultiButton />
+            </div>
+            {/* Mobile Menu Toggle Button */}
+            <button
+              onClick={handleDrawerToggle}
+              className="lg:hidden p-2 rounded-xl text-text hover:bg-gray-100 transition-colors focus-ring"
+              aria-label="Toggle menu"
+              type="button"
+            >
+              {mobileOpen ? (
+                <CloseIcon className="w-6 h-6" />
+              ) : (
+                <MenuIcon className="w-6 h-6" />
+              )}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu - Only visible when mobileOpen is true */}
+      {mobileOpen && (
+        <>
+          {/* Mobile Menu Overlay */}
+          <div
+            className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={handleDrawerToggle}
+          />
+          
+          {/* Mobile Menu Sidebar */}
+          <div className="lg:hidden fixed inset-y-0 right-0 z-50 w-80 bg-surface shadow-xl transform transition-transform duration-300 ease-in-out">
+            <div className="flex flex-col h-full">
+              {/* Mobile Header */}
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <span className="text-lg font-bold text-text">Menu</span>
+                <button
+                  onClick={handleDrawerToggle}
+                  className="p-2 rounded-xl text-text hover:bg-gray-100 transition-colors"
+                  type="button"
+                  aria-label="Close menu"
+                >
+                  <CloseIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Mobile Navigation */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-2">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Link
+                        key={item.label}
+                        to={item.path}
+                        onClick={handleDrawerToggle}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                          isActive
+                            ? 'bg-accent text-white'
+                            : 'text-text-muted hover:text-text hover:bg-gray-50'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Mobile Wallet Button */}
+              <div className="p-4 border-t border-border">
                 <WalletMultiButton />
-              </StyledWalletButton>
-            </>
-          )}
-        </Toolbar>
-      </Container>
-    </AppBar>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </header>
   );
 };
 
-export default Header; 
+export default Header;

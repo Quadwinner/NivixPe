@@ -412,61 +412,53 @@ const PaymentApp: React.FC = () => {
         tokenAmount // amount to burn
       );
 
-      // Create transaction
-      const transaction = new Transaction().add(burnInstruction);
-      
-      // Get recent blockhash with retry logic
-      let blockhash;
-      let lastValidBlockHeight;
+      // Function to build, sign and send a fresh transaction (avoids reusing processed tx)
+      const sendFresh = async (): Promise<string> => {
+        // Create transaction
+        const tx = new Transaction().add(burnInstruction);
+        // Fresh recent blockhash
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
+        tx.recentBlockhash = blockhash;
+        tx.lastValidBlockHeight = lastValidBlockHeight;
+        tx.feePayer = publicKey;
+        // Sign
+        const signed = await signTransaction(tx);
+        // Send without simulation (real send only)
+        return await connection.sendRawTransaction(signed.serialize(), {
+          skipPreflight: true
+        });
+      };
+
+      // Send with robust retry that rebuilds the tx each attempt
+      console.log('📡 Sending token burn transaction...');
+      let signature: string | undefined = undefined;
       let attempts = 0;
       const maxAttempts = 3;
-
       while (attempts < maxAttempts) {
         try {
-          console.log(`🔄 Getting blockhash (attempt ${attempts + 1}/${maxAttempts})...`);
-          const blockhashInfo = await connection.getLatestBlockhash('confirmed');
-          blockhash = blockhashInfo.blockhash;
-          lastValidBlockHeight = blockhashInfo.lastValidBlockHeight;
-          console.log(`✅ Blockhash obtained: ${blockhash.substring(0, 8)}...`);
-          break;
-        } catch (error) {
-          attempts++;
-          console.warn(`⚠️ Blockhash attempt ${attempts} failed:`, error);
-          if (attempts >= maxAttempts) {
-            throw new Error(`Failed to get blockhash after ${maxAttempts} attempts: ${error}`);
-          }
-          // Wait before retry
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-      }
-
-      transaction.recentBlockhash = blockhash;
-      transaction.lastValidBlockHeight = lastValidBlockHeight;
-      transaction.feePayer = publicKey;
-
-      // Sign transaction
-      const signedTransaction = await signTransaction(transaction);
-
-      // Send transaction with retry logic
-      console.log('📡 Sending token burn transaction...');
-      let signature;
-      attempts = 0;
-
-      while (attempts < maxAttempts) {
-        try {
-          signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
-            skipPreflight: false,
-            preflightCommitment: 'confirmed'
-          });
+          signature = await sendFresh();
           console.log(`✅ Transaction sent: ${signature}`);
           break;
-        } catch (error) {
+        } catch (e: any) {
           attempts++;
-          console.warn(`⚠️ Send attempt ${attempts} failed:`, error);
-          if (attempts >= maxAttempts) {
-            throw new Error(`Failed to send transaction after ${maxAttempts} attempts: ${error}`);
+          const msg = e?.message || String(e);
+          console.warn(`⚠️ Send attempt ${attempts} failed: ${msg}`);
+          // If already processed, proceed to confirmation (treat as sent)
+          if (msg.includes('already been processed')) {
+            // We don't have the signature in this branch; requery recent confirmed signatures for the fee payer as a fallback
+            try {
+              const sigs = await connection.getSignaturesForAddress(publicKey, { limit: 1 }, 'confirmed');
+              if (sigs && sigs.length > 0) {
+                signature = sigs[0].signature;
+                break;
+              }
+            } catch (_) {}
+            // If we cannot determine, retry fresh
           }
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          if (attempts >= maxAttempts) {
+            throw new Error(msg);
+          }
+          await new Promise(r => setTimeout(r, 1500));
         }
       }
 
@@ -477,10 +469,12 @@ const PaymentApp: React.FC = () => {
 
       // Confirm transaction with proper options
       console.log(`⏳ Confirming transaction: ${signature}`);
-      const confirmation = await connection.confirmTransaction(
+      const latest = await connection.getLatestBlockhash('confirmed');
+      const confirmation = await connection.confirmTransaction({
         signature,
-        'confirmed'
-      );
+        blockhash: latest.blockhash,
+        lastValidBlockHeight: latest.lastValidBlockHeight
+      }, 'confirmed');
 
       if (confirmation.value.err) {
         throw new Error(`Transaction failed: ${confirmation.value.err}`);

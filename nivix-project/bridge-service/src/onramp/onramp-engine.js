@@ -101,31 +101,32 @@ class OnrampEngine {
                 exchangeRate = null;
             }
 
-            // Use fallback rate if exchange rate service failed
+            // Use emergency fallback rate if exchange rate service failed
             if (exchangeRate === null || exchangeRate === undefined || isNaN(exchangeRate)) {
-                console.warn(`⚠️ Using hardcoded fallback rate for ${fiatCurrency}/${cryptoCurrency}`);
-                // Hardcoded fallback rates for testing
-                const fallbackRates = {
-                    'INR_USD': 0.012,
-                    'USD_INR': 83.25,
-                    'EUR_USD': 1.10,
-                    'USD_EUR': 0.91,
-                    'GBP_USD': 1.27,
-                    'USD_GBP': 0.79
-                };
-                
-                const key = `${fiatCurrency}_${cryptoCurrency}`;
-                const reverseKey = `${cryptoCurrency}_${fiatCurrency}`;
-                
-                if (fallbackRates[key]) {
-                    exchangeRate = fallbackRates[key];
-                } else if (fallbackRates[reverseKey]) {
-                    exchangeRate = 1 / fallbackRates[reverseKey];
-                } else {
-                    exchangeRate = 1.0; // Default
+                console.error(`❌ Exchange rate service failed for ${fiatCurrency}/${cryptoCurrency}`);
+
+                const productionConfig = require('../config/production-config');
+
+                try {
+                    const emergencyRates = productionConfig.getEmergencyExchangeRates();
+                    console.warn(`⚠️ Using EMERGENCY fallback rate for ${fiatCurrency}/${cryptoCurrency} - Production systems should fix rate service!`);
+
+                    const key = `${fiatCurrency}_${cryptoCurrency}`;
+                    const reverseKey = `${cryptoCurrency}_${fiatCurrency}`;
+
+                    if (emergencyRates[key]) {
+                        exchangeRate = emergencyRates[key];
+                    } else if (emergencyRates[reverseKey]) {
+                        exchangeRate = 1 / emergencyRates[reverseKey];
+                    } else {
+                        exchangeRate = 1.0; // Default
+                    }
+
+                    console.log(`📊 Using emergency fallback rate: ${fiatCurrency}/${cryptoCurrency} = ${exchangeRate}`);
+                } catch (configError) {
+                    console.error(`❌ Emergency rates not available in production:`, configError.message);
+                    throw new Error(`Exchange rate service failed and no emergency fallback available`);
                 }
-                
-                console.log(`📊 Using fallback rate: ${fiatCurrency}/${cryptoCurrency} = ${exchangeRate}`);
             }
 
             // Calculate amounts based on what was provided
@@ -713,17 +714,14 @@ class OnrampEngine {
      * Get crypto token mint address by currency code
      */
     getCryptoTokenMint(currency) {
-        const tokenMints = {
-            'USD': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg', // Our custom USD token
-            'INR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE', // Our custom INR token
-            'EUR': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T', // Our custom EUR token
-            'GBP': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh', // Our custom GBP token
-            'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh', // Our custom JPY token
-            'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q', // Our custom CAD token
-            'AUD': 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'  // Mock AUD token
-        };
+        const productionConfig = require('../config/production-config');
 
-        return tokenMints[currency.toUpperCase()] || null;
+        try {
+            return productionConfig.getTokenMint(currency);
+        } catch (error) {
+            console.error(`❌ Failed to get token mint for ${currency}:`, error.message);
+            return null;
+        }
     }
 
     /**

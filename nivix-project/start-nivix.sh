@@ -4,7 +4,7 @@
 echo "🚀 Starting Nivix Project"
 echo "========================="
 
-PROJECT_ROOT="/media/shubham/OS/for linux work/blockchain solana/nivix-project"
+PROJECT_ROOT="/media/OS/for linux work/blockchain solana/nivix-project"
 cd "$PROJECT_ROOT"
 
 # 1. Clean up any existing processes
@@ -18,16 +18,30 @@ sleep 3
 
 # 1.5. Setup Go environment for Hyperledger Fabric
 echo "🔧 Setting up Go environment..."
+
+# If a previous local Go install exists, add it to PATH before checking
+if [ -x "$HOME/go-install/go/bin/go" ]; then
+    export PATH=$HOME/go-install/go/bin:$PATH
+fi
+
 if ! command -v go &> /dev/null; then
     echo "Installing Go..."
     mkdir -p ~/go-install
     cd ~/go-install
-    curl -L https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -o go.tar.gz
-    tar -xzf go.tar.gz
+    # Download only if not already present
+    if [ ! -f go.tar.gz ]; then
+        curl -L https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -o go.tar.gz
+    fi
+    # Extract only if not already extracted
+    if [ ! -x "$HOME/go-install/go/bin/go" ]; then
+        tar -xzf go.tar.gz
+    fi
     cd "$PROJECT_ROOT"
+    # Ensure PATH includes the newly installed Go
+    export PATH=$HOME/go-install/go/bin:$PATH
 fi
 
-# Add Go to PATH
+# Add Go envs (idempotent)
 export PATH=$HOME/go-install/go/bin:$PATH
 export GOPATH=$HOME/go
 
@@ -45,11 +59,42 @@ cd fabric-samples/test-network
 ./network.sh down 2>/dev/null || true
 ./network.sh up createChannel -ca -c mychannel
 
-# 3. Deploy chaincode
+# 3. Deploy chaincode with better error handling
 echo "📦 Deploying chaincode..."
 export PATH=$HOME/go-install/go/bin:$PATH
 export GOPATH=$HOME/go
-./network.sh deployCC -ccn nivix-kyc -ccp ./chaincode-nivix-kyc -ccl go -c mychannel -cccg ./chaincode-nivix-kyc/collections_config.json
+
+# Clean up old chaincode packages
+rm -f nivix-kyc.tar.gz 2>/dev/null || true
+
+# Deploy with retries
+MAX_RETRIES=3
+RETRY_COUNT=0
+DEPLOY_SUCCESS=false
+
+while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$DEPLOY_SUCCESS" = false ]; do
+    echo "Attempting chaincode deployment (attempt $((RETRY_COUNT+1))/$MAX_RETRIES)..."
+    
+    if ./network.sh deployCC -ccn nivix-kyc -ccp ./chaincode-nivix-kyc -ccl go -c mychannel -cccg ./chaincode-nivix-kyc/collections_config.json 2>&1 | tee /tmp/deploy.log; then
+        if grep -q "Chaincode definition committed on channel" /tmp/deploy.log; then
+            DEPLOY_SUCCESS=true
+            echo "✅ Chaincode deployed successfully!"
+        fi
+    fi
+    
+    if [ "$DEPLOY_SUCCESS" = false ]; then
+        RETRY_COUNT=$((RETRY_COUNT+1))
+        if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+            echo "⚠️  Deployment failed, waiting 5 seconds before retry..."
+            sleep 5
+        fi
+    fi
+done
+
+if [ "$DEPLOY_SUCCESS" = false ]; then
+    echo "⚠️  Chaincode deployment failed after $MAX_RETRIES attempts"
+    echo "📝 Continuing anyway - chaincode might already be deployed"
+fi
 
 # 4. Setup fabric invoke scripts
 echo "📜 Setting up fabric script..." 

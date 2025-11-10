@@ -1,0 +1,60 @@
+{
+  "treasuryWallet": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+  "bridgeWallet": "9AUPuyMUqYKo5QbbykrR3PfpJwZUDPapiS72AS25EteT",
+  "balances": {
+    "EUR": {
+      "account": "4Lh8PRunyEDH9Huo968HB5qHJpPBTUo5r1FjTpB4eNfG",
+      "mint": "GDxSRBr59UF8bYZ8YXY1badddmRuQm1NtiQ2drK6m9mA",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    },
+    "USD": {
+      "account": "AzQv2whju7f5SWQi2my7EYKDUyhrsaEbimkGgEhfFY2G",
+      "mint": "6bnA6PbiAnqZyxxd9VAhUAE7yJdUsyHfF5vD3GrFshRb",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    },
+    "INR": {
+      "account": "Fu8UmDEZdoWGvz5dJbuqv5VpwSzGsBtqMRYkfmhzwbZo",
+      "mint": "ByNvp4hVCKp3nXnzkp1eKc4NAe2JHoZZwW7SUA7rVf8y",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    },
+    "GBP": {
+      "account": "F5niH9K6AZLGCPg1x5WEZec8o92bC3sbhZQvxRZFUzfD",
+      "mint": "9wkz628K5jw25vuAVn7copdnLHn4K5RYime6onJNR7de",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    },
+    "JPY": {
+      "account": "Hc5exwCxTpfK5ZZe4VCFDJsY1XYPYGnCqhvJjvFtLTqr",
+      "mint": "DCC4kACrBDhpNYDxRAQ1RyJjtQEYtdksGihupVFXuNCm",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    },
+    "CAD": {
+      "account": "7YXLF8G5RukGUdJGzribbbNS568GzhH929VTrwLZQeun",
+      "mint": "G59pYLNCdw2XhPP96L8kh5rdciCDhmdcuWcuW4DedVBM",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    },
+    "AUD": {
+      "account": "GapTuB76aLyASnnUiEXGSfekFCeZK9n2tiQdBjKvMVDD",
+      "mint": "CKdEAXrwxZnBN4LKdZPj6bHs9dh1axFPiYLS66kyX5CB",
+      "balance": 100000,
+      "owner": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+      "status": "✅ FUNDED"
+    }
+  },
+  "totalBalance": 700000,
+  "fundedCurrencies": 7,
+  "totalCurrencies": 7,
+  "verificationDate": "2025-09-29T17:14:43.887Z",
+  "status": "FULLY_FUNDED"
+}

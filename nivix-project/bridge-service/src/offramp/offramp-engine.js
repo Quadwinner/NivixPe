@@ -1094,7 +1094,11 @@ class OfframpEngine {
     async loadTreasuryKeypair() {
         try {
             // Load bridge wallet from WALLETS_REGISTRY.json (has burn authority)
-            const registryPath = '/media/shubham/OS/for linux work/blockchain solana/nivix-project/WALLETS_REGISTRY.json';
+            const fallbackRegistry = '/media/OS/for linux work/blockchain solana/nivix-project/WALLETS_REGISTRY.json';
+            const envRegistry = process.env.WALLETS_REGISTRY_PATH;
+            const registryPath = (envRegistry && fs.existsSync(envRegistry))
+                ? envRegistry
+                : (fs.existsSync(fallbackRegistry) ? fallbackRegistry : envRegistry || fallbackRegistry);
             
             if (fs.existsSync(registryPath)) {
                 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
@@ -1290,16 +1294,14 @@ class OfframpEngine {
      * Get crypto token mint address for currency
      */
     getCryptoTokenMint(currency) {
-        const tokenMints = {
-            'USD': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg', // Our custom USD token
-            'INR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE', // Our custom INR token
-            'EUR': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T', // Our custom EUR token
-            'GBP': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh', // Our custom GBP token
-            'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh', // Our custom JPY token
-            'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q', // Our custom CAD token
-            'AUD': 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'  // Mock AUD token
-        };
-        return tokenMints[currency.toUpperCase()] || null;
+        const productionConfig = require('../config/production-config');
+
+        try {
+            return productionConfig.getTokenMint(currency);
+        } catch (error) {
+            console.error(`❌ Failed to get token mint for ${currency}:`, error.message);
+            return null;
+        }
     }
 
     /**
