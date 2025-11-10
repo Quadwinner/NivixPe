@@ -1,51 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  Paper, 
-  Typography, 
-  Box, 
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  TextField,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  MenuItem,
-  InputLabel,
-  Select,
-  SelectChangeEvent,
-  Alert,
-  Checkbox,
-  FormHelperText,
-  CircularProgress,
-  Card,
-  CardContent,
-  Grid
-} from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import styled from 'styled-components';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { submitKYC } from '../services/apiService';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Badge } from '../components/ui/Badge';
 
-const StyledWalletButton = styled.div`
-  .wallet-adapter-button {
-    background-color: #5D5FEF;
-    color: white;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 600;
-    width: 100%;
-  }
-`;
-
-// Define steps for KYC process
 const steps = [
   'Personal Information',
   'Address Verification',
@@ -58,78 +22,53 @@ const KYC: React.FC = () => {
   const { connected, publicKey } = useWallet();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
-    // Personal Information
     firstName: '',
     lastName: '',
     dateOfBirth: '',
     email: '',
     phone: '',
     nationality: '',
-    
-    // Address
     streetAddress: '',
     city: '',
     state: '',
     postalCode: '',
     country: '',
-    
-    // Identity Documents
     documentType: '',
     documentNumber: '',
-    documentFront: null,
-    documentBack: null,
-    selfie: null,
-    
-    // Terms
+    documentFront: null as File | null,
+    documentBack: null as File | null,
+    selfie: null as File | null,
     termsAccepted: false
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [kycStatus, setKycStatus] = useState('pending'); // pending, approved, rejected
+  const [kycStatus, setKycStatus] = useState('pending');
 
-  // Handle form field changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    const { name, value, checked } = e.target as HTMLInputElement;
-    if (name === 'termsAccepted') {
-      setFormData({
-        ...formData,
-        [name]: checked
-      });
-    } else if (name) {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked, type } = e.target;
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
     }
   };
 
-  // Handle select changes
-  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name) {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Handle file inputs
   const handleFileUpload = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData({
-        ...formData,
-        [name]: e.target.files[0]
-      });
+      setFormData({ ...formData, [name]: e.target.files[0] });
     }
   };
 
-  // Validate form data for current step
   const validateStep = () => {
     const errors: Record<string, string> = {};
     
     switch (activeStep) {
-      case 0: // Personal Information
+      case 0:
         if (!formData.firstName) errors.firstName = 'First name is required';
         if (!formData.lastName) errors.lastName = 'Last name is required';
         if (!formData.dateOfBirth) errors.dateOfBirth = 'Date of birth is required';
@@ -141,24 +80,21 @@ const KYC: React.FC = () => {
         if (!formData.phone) errors.phone = 'Phone number is required';
         if (!formData.nationality) errors.nationality = 'Nationality is required';
         break;
-        
-      case 1: // Address
+      case 1:
         if (!formData.streetAddress) errors.streetAddress = 'Street address is required';
         if (!formData.city) errors.city = 'City is required';
         if (!formData.state) errors.state = 'State/Province is required';
         if (!formData.postalCode) errors.postalCode = 'Postal code is required';
         if (!formData.country) errors.country = 'Country is required';
         break;
-        
-      case 2: // Identity Documents
+      case 2:
         if (!formData.documentType) errors.documentType = 'Document type is required';
         if (!formData.documentNumber) errors.documentNumber = 'Document number is required';
         if (!formData.documentFront) errors.documentFront = 'Front side of document is required';
         if (!formData.documentBack) errors.documentBack = 'Back side of document is required';
         if (!formData.selfie) errors.selfie = 'Selfie is required';
         break;
-        
-      case 3: // Terms & Submit
+      case 3:
         if (!formData.termsAccepted) errors.termsAccepted = 'You must accept the terms and conditions';
         break;
     }
@@ -167,38 +103,28 @@ const KYC: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Handle next step
   const handleNext = () => {
     if (validateStep()) {
       setActiveStep((prevStep) => prevStep + 1);
     }
   };
 
-  // Handle back
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     if (validateStep()) {
       setIsSubmitting(true);
-      
       try {
-        // Get the wallet address from the connected wallet
         const walletAddress = publicKey?.toString() || '';
-        
         if (!walletAddress) {
-          console.error('No wallet connected');
           alert('Please connect your wallet first');
           setIsSubmitting(false);
           return;
         }
         
-        // Create a unique user ID based on the wallet address
         const userId = `user_${walletAddress.substring(0, 8)}`;
-        
-        // Prepare the KYC data for submission
         const kycData = {
           userId: userId,
           solanaAddress: walletAddress,
@@ -207,23 +133,14 @@ const KYC: React.FC = () => {
           idDocuments: [formData.documentType]
         };
         
-        console.log('Submitting KYC data:', kycData);
-        
-        // Submit KYC data to Hyperledger Fabric through bridge service
         const result = await submitKYC(kycData);
-        
         if (result.success) {
-          // KYC submission successful
-          console.log('KYC submission successful:', result);
           setActiveStep(4);
-          setKycStatus('pending'); // Initial status is pending
+          setKycStatus('pending');
         } else {
-          // KYC submission failed
-          console.error('Failed to submit KYC data:', result.message);
           alert(`KYC submission failed: ${result.message || 'Unknown error'}`);
         }
       } catch (error: any) {
-        console.error('Error submitting KYC data:', error);
         alert(`Error submitting KYC data: ${error?.message || 'Unknown error'}`);
       } finally {
         setIsSubmitting(false);
@@ -231,357 +148,323 @@ const KYC: React.FC = () => {
     }
   };
 
-  // Render the current step form
   const renderStepContent = () => {
     switch (activeStep) {
-      case 0: // Personal Information
+      case 0:
         return (
           <div>
-            <Typography variant="h6" gutterBottom>
-              Personal Information
-            </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
+            <h3 className="text-xl font-semibold text-text mb-2">Personal Information</h3>
+            <p className="text-sm text-text-muted mb-6">
               Please provide your basic personal information for KYC verification.
-            </Typography>
+            </p>
             
-            <Grid container spacing={3}>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
                   label="First Name"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  error={!!formErrors.firstName}
-                  helperText={formErrors.firstName}
+                error={formErrors.firstName}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              <Input
                   label="Last Name"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  error={!!formErrors.lastName}
-                  helperText={formErrors.lastName}
+                error={formErrors.lastName}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              <Input
                   label="Date of Birth"
                   name="dateOfBirth"
                   type="date"
-                  InputLabelProps={{ shrink: true }}
                   value={formData.dateOfBirth}
                   onChange={handleChange}
-                  error={!!formErrors.dateOfBirth}
-                  helperText={formErrors.dateOfBirth}
+                error={formErrors.dateOfBirth}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Nationality</InputLabel>
-                  <Select
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">Nationality</label>
+                <select
                     name="nationality"
                     value={formData.nationality}
-                    label="Nationality"
                     onChange={handleSelectChange}
-                    error={!!formErrors.nationality}
+                  className={`input ${formErrors.nationality ? 'border-red-500' : ''}`}
                   >
-                    <MenuItem value="US">United States</MenuItem>
-                    <MenuItem value="CA">Canada</MenuItem>
-                    <MenuItem value="UK">United Kingdom</MenuItem>
-                    <MenuItem value="AU">Australia</MenuItem>
-                    <MenuItem value="IN">India</MenuItem>
-                    <MenuItem value="SG">Singapore</MenuItem>
-                  </Select>
+                  <option value="">Select Nationality</option>
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="AU">Australia</option>
+                  <option value="IN">India</option>
+                  <option value="SG">Singapore</option>
+                </select>
                   {formErrors.nationality && (
-                    <FormHelperText error>{formErrors.nationality}</FormHelperText>
+                  <p className="mt-1 text-sm text-red-600">{formErrors.nationality}</p>
                   )}
-                </FormControl>
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              <Input
                   label="Email"
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  error={!!formErrors.email}
-                  helperText={formErrors.email}
+                error={formErrors.email}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              <Input
                   label="Phone Number"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  error={!!formErrors.phone}
-                  helperText={formErrors.phone}
+                error={formErrors.phone}
                 />
-              </Grid>
-            </Grid>
+            </div>
           </div>
         );
         
-      case 1: // Address
+      case 1:
         return (
           <div>
-            <Typography variant="h6" gutterBottom>
-              Address Information
-            </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
+            <h3 className="text-xl font-semibold text-text mb-2">Address Information</h3>
+            <p className="text-sm text-text-muted mb-6">
               Please provide your current residential address.
-            </Typography>
+            </p>
             
-            <Grid container spacing={3}>
-              <Grid xs={12}>
-                <TextField
-                  fullWidth
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <Input
                   label="Street Address"
                   name="streetAddress"
                   value={formData.streetAddress}
                   onChange={handleChange}
-                  error={!!formErrors.streetAddress}
-                  helperText={formErrors.streetAddress}
+                  error={formErrors.streetAddress}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              <Input
                   label="City"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  error={!!formErrors.city}
-                  helperText={formErrors.city}
+                error={formErrors.city}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              <Input
                   label="State / Province"
                   name="state"
                   value={formData.state}
                   onChange={handleChange}
-                  error={!!formErrors.state}
-                  helperText={formErrors.state}
+                error={formErrors.state}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              <Input
                   label="Postal Code"
                   name="postalCode"
                   value={formData.postalCode}
                   onChange={handleChange}
-                  error={!!formErrors.postalCode}
-                  helperText={formErrors.postalCode}
+                error={formErrors.postalCode}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Country</InputLabel>
-                  <Select
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">Country</label>
+                <select
                     name="country"
                     value={formData.country}
-                    label="Country"
                     onChange={handleSelectChange}
-                    error={!!formErrors.country}
+                  className={`input ${formErrors.country ? 'border-red-500' : ''}`}
                   >
-                    <MenuItem value="US">United States</MenuItem>
-                    <MenuItem value="CA">Canada</MenuItem>
-                    <MenuItem value="UK">United Kingdom</MenuItem>
-                    <MenuItem value="AU">Australia</MenuItem>
-                    <MenuItem value="IN">India</MenuItem>
-                    <MenuItem value="SG">Singapore</MenuItem>
-                  </Select>
+                  <option value="">Select Country</option>
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="AU">Australia</option>
+                  <option value="IN">India</option>
+                  <option value="SG">Singapore</option>
+                </select>
                   {formErrors.country && (
-                    <FormHelperText error>{formErrors.country}</FormHelperText>
+                  <p className="mt-1 text-sm text-red-600">{formErrors.country}</p>
                   )}
-                </FormControl>
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           </div>
         );
         
-      case 2: // Identity Documents
+      case 2:
         return (
           <div>
-            <Typography variant="h6" gutterBottom>
-              Identity Documents
-            </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
+            <h3 className="text-xl font-semibold text-text mb-2">Identity Documents</h3>
+            <p className="text-sm text-text-muted mb-6">
               Please upload clear photos of your identity documents.
-            </Typography>
+            </p>
             
-            <Grid container spacing={3}>
-              <Grid xs={12} sm={6}>
-                <FormControl fullWidth error={!!formErrors.documentType}>
-                  <InputLabel>Document Type</InputLabel>
-                  <Select
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">Document Type</label>
+                  <select
                     name="documentType"
                     value={formData.documentType}
-                    label="Document Type"
                     onChange={handleSelectChange}
+                    className={`input ${formErrors.documentType ? 'border-red-500' : ''}`}
                   >
-                    <MenuItem value="passport">Passport</MenuItem>
-                    <MenuItem value="national_id">National ID Card</MenuItem>
-                    <MenuItem value="driving_license">Driving License</MenuItem>
-                  </Select>
+                    <option value="">Select Document Type</option>
+                    <option value="passport">Passport</option>
+                    <option value="national_id">National ID Card</option>
+                    <option value="driving_license">Driving License</option>
+                  </select>
                   {formErrors.documentType && (
-                    <FormHelperText>{formErrors.documentType}</FormHelperText>
+                    <p className="mt-1 text-sm text-red-600">{formErrors.documentType}</p>
                   )}
-                </FormControl>
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+                </div>
+                <Input
                   label="Document Number"
                   name="documentNumber"
                   value={formData.documentNumber}
                   onChange={handleChange}
-                  error={!!formErrors.documentNumber}
-                  helperText={formErrors.documentNumber}
+                  error={formErrors.documentNumber}
                 />
-              </Grid>
+              </div>
               
-              <Grid xs={12}>
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    fullWidth
-                    sx={{ p: 2, border: formErrors.documentFront ? '1px solid red' : undefined }}
-                  >
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
                     Upload Front Side of Document
+                </label>
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg className="w-8 h-8 mb-2 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p className="mb-2 text-sm text-text-muted">
+                      <span className="font-semibold">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-text-muted">PNG, JPG, PDF (MAX. 5MB)</p>
+                  </div>
                     <input
                       type="file"
-                      hidden
+                    className="hidden"
                       accept="image/*"
                       onChange={handleFileUpload('documentFront')}
                     />
-                  </Button>
+                </label>
                   {formData.documentFront && (
-                    <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
-                      File selected: {(formData.documentFront as File).name}
-                    </Typography>
+                  <p className="mt-2 text-sm text-accent">
+                    File selected: {formData.documentFront.name}
+                  </p>
                   )}
                   {formErrors.documentFront && (
-                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                      {formErrors.documentFront}
-                    </Typography>
+                  <p className="mt-1 text-sm text-red-600">{formErrors.documentFront}</p>
                   )}
-                </Box>
-              </Grid>
+              </div>
               
-              <Grid xs={12}>
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    fullWidth
-                    sx={{ p: 2, border: formErrors.documentBack ? '1px solid red' : undefined }}
-                  >
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
                     Upload Back Side of Document
+                </label>
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg className="w-8 h-8 mb-2 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p className="mb-2 text-sm text-text-muted">
+                      <span className="font-semibold">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-text-muted">PNG, JPG, PDF (MAX. 5MB)</p>
+                  </div>
                     <input
                       type="file"
-                      hidden
+                    className="hidden"
                       accept="image/*"
                       onChange={handleFileUpload('documentBack')}
                     />
-                  </Button>
+                </label>
                   {formData.documentBack && (
-                    <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
-                      File selected: {(formData.documentBack as File).name}
-                    </Typography>
+                  <p className="mt-2 text-sm text-accent">
+                    File selected: {formData.documentBack.name}
+                  </p>
                   )}
                   {formErrors.documentBack && (
-                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                      {formErrors.documentBack}
-                    </Typography>
+                  <p className="mt-1 text-sm text-red-600">{formErrors.documentBack}</p>
                   )}
-                </Box>
-              </Grid>
+              </div>
               
-              <Grid xs={12}>
-                <Box>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    fullWidth
-                    sx={{ p: 2, border: formErrors.selfie ? '1px solid red' : undefined }}
-                  >
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
                     Upload Selfie with Document
+                </label>
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg className="w-8 h-8 mb-2 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p className="mb-2 text-sm text-text-muted">
+                      <span className="font-semibold">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-text-muted">PNG, JPG (MAX. 5MB)</p>
+                  </div>
                     <input
                       type="file"
-                      hidden
+                    className="hidden"
                       accept="image/*"
                       onChange={handleFileUpload('selfie')}
                     />
-                  </Button>
+                </label>
                   {formData.selfie && (
-                    <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
-                      File selected: {(formData.selfie as File).name}
-                    </Typography>
+                  <p className="mt-2 text-sm text-accent">
+                    File selected: {formData.selfie.name}
+                  </p>
                   )}
                   {formErrors.selfie && (
-                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                      {formErrors.selfie}
-                    </Typography>
+                  <p className="mt-1 text-sm text-red-600">{formErrors.selfie}</p>
                   )}
-                </Box>
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           </div>
         );
         
-      case 3: // Terms & Submit
+      case 3:
         return (
           <div>
-            <Typography variant="h6" gutterBottom>
-              Review & Submit
-            </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
+            <h3 className="text-xl font-semibold text-text mb-2">Review & Submit</h3>
+            <p className="text-sm text-text-muted mb-6">
               Please review your information and accept the terms and conditions.
-            </Typography>
+            </p>
             
-            <Alert severity="info" sx={{ mb: 3 }}>
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl mb-6">
+              <p className="text-sm text-blue-800">
               Your KYC information will be securely stored on the Hyperledger Fabric private blockchain.
               Only authorized validators will be able to verify your identity.
-            </Alert>
+              </p>
+            </div>
             
-            <Box sx={{ mb: 3 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
+            <div className="mb-6">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
                     name="termsAccepted"
                     checked={formData.termsAccepted}
                     onChange={handleChange}
-                  />
-                }
-                label="I confirm that the information provided is accurate and I accept the terms and conditions."
-              />
+                  className="mt-1 w-5 h-5 text-accent border-border rounded focus:ring-accent"
+                />
+                <span className="text-sm text-text">
+                  I confirm that the information provided is accurate and I accept the terms and conditions.
+                </span>
+              </label>
               {formErrors.termsAccepted && (
-                <FormHelperText error>{formErrors.termsAccepted}</FormHelperText>
+                <p className="mt-1 text-sm text-red-600">{formErrors.termsAccepted}</p>
               )}
-            </Box>
+            </div>
             
             <Button
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              fullWidth
-              size="large"
-              sx={{ mt: 2 }}
+              className="w-full"
             >
-              {isSubmitting ? <CircularProgress size={24} /> : 'Submit KYC Information'}
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Submitting...
+                </span>
+              ) : (
+                'Submit KYC Information'
+              )}
             </Button>
           </div>
         );
@@ -591,121 +474,110 @@ const KYC: React.FC = () => {
     }
   };
 
-  // Render success state
   const renderSuccess = () => (
-    <Box sx={{ textAlign: 'center', py: 4 }}>
-      <Box sx={{ mb: 3 }}>
-        <VerifiedUserIcon color="success" sx={{ fontSize: 64 }} />
-      </Box>
-      <Typography variant="h5" gutterBottom>
-        KYC Verification Successful!
-      </Typography>
-      <Typography variant="body1" paragraph>
+    <div className="text-center py-12">
+      <div className="mb-6">
+        <CheckCircleIcon className="w-16 h-16 text-green-600 mx-auto" />
+      </div>
+      <h2 className="text-2xl font-semibold text-text mb-4">KYC Verification Successful!</h2>
+      <p className="text-text-muted mb-6">
         Your identity has been verified. You now have full access to the Nivix Protocol.
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/')}
-        sx={{ mt: 2 }}
-      >
+      </p>
+      <Button variant="primary" onClick={() => navigate('/')}>
         Go to Dashboard
       </Button>
-    </Box>
+    </div>
   );
 
   if (!connected) {
     return (
-      <Container maxWidth="sm">
-        <Box
-          sx={{
-            mt: 8,
-            mb: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="h4" component="h1" gutterBottom>
-            KYC Verification
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph sx={{ mb: 4 }}>
+      <div className="max-w-2xl mx-auto py-12">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-text mb-4">KYC Verification</h1>
+          <p className="text-lg text-text-muted mb-8">
             Connect your wallet to complete the KYC verification process
-          </Typography>
+          </p>
           
-          <Card sx={{ 
-            width: '100%', 
-            maxWidth: 500, 
-            backgroundColor: 'rgba(93, 95, 239, 0.05)',
-            border: '1px solid rgba(93, 95, 239, 0.2)',
-            borderRadius: 2,
-            p: 2,
-            mb: 4
-          }}>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h6" gutterBottom>
-                Connect Wallet
-              </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
+          <Card className="max-w-md mx-auto bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-text mb-2">Connect Wallet</h2>
+              <p className="text-sm text-text-muted mb-6">
                 Connect your Solana wallet to verify your identity
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <StyledWalletButton>
+              </p>
                   <WalletMultiButton />
-                </StyledWalletButton>
-              </Box>
-            </CardContent>
+            </div>
           </Card>
-        </Box>
-      </Container>
+        </div>
+      </div>
     );
   }
   
   return (
-    <Container maxWidth="md">
-      <Paper elevation={0} sx={{ p: 4, mt: 4, mb: 4, borderRadius: 2 }}>
+    <div className="max-w-4xl mx-auto py-8">
+      <Card>
         {kycStatus === 'approved' ? (
           renderSuccess()
         ) : (
           <>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-              KYC Verification
-            </Typography>
+            <h1 className="text-3xl font-bold text-text mb-6">KYC Verification</h1>
             
-            <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+            {/* Progress Steps */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                {steps.map((step, index) => (
+                  <div key={step} className="flex items-center flex-1">
+                    <div className="flex flex-col items-center flex-1">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-200 ${
+                        index < activeStep
+                          ? 'bg-accent text-white'
+                          : index === activeStep
+                          ? 'bg-accent text-white ring-4 ring-accent/20'
+                          : 'bg-gray-200 text-text-muted'
+                      }`}>
+                        {index < activeStep ? (
+                          <CheckCircleIcon className="w-6 h-6" />
+                        ) : (
+                          index + 1
+                        )}
+                      </div>
+                      <p className={`mt-2 text-xs font-medium text-center ${
+                        index <= activeStep ? 'text-text' : 'text-text-muted'
+                      }`}>
+                        {step}
+                      </p>
+                    </div>
+                    {index < steps.length - 1 && (
+                      <div className={`flex-1 h-1 mx-2 ${
+                        index < activeStep ? 'bg-accent' : 'bg-gray-200'
+                      }`} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
             
-            <Box sx={{ mb: 4 }}>
+            <div className="mb-6">
               {renderStepContent()}
-            </Box>
+            </div>
             
             {activeStep !== steps.length - 1 && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div className="flex justify-between pt-6 border-t border-border">
                 <Button
+                  variant="secondary"
                   disabled={activeStep === 0}
                   onClick={handleBack}
                 >
                   Back
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                >
+                <Button variant="primary" onClick={handleNext}>
                   Next
                 </Button>
-              </Box>
+              </div>
             )}
           </>
         )}
-      </Paper>
-    </Container>
+      </Card>
+    </div>
   );
 };
 

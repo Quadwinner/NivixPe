@@ -1,0 +1,36 @@
+{
+  "treasuryWallet": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+  "bridgeWallet": "9AUPuyMUqYKo5QbbykrR3PfpJwZUDPapiS72AS25EteT",
+  "transfers": {
+    "EUR": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    },
+    "USD": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    },
+    "INR": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    },
+    "GBP": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    },
+    "JPY": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    },
+    "CAD": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    },
+    "AUD": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: Transfer\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4470 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details.",
+      "success": false
+    }
+  },
+  "timestamp": "2025-09-29T17:12:35.925Z",
+  "totalAmountPerCurrency": 100000
+}

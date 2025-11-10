@@ -1,0 +1,28 @@
+{
+  "treasuryWallet": "YjfXqKhVSUQAh3xJj8wpgd6up7ZM3h5KtSz6gnDsRfQ",
+  "accounts": {
+    "EUR": {
+      "error": ""
+    },
+    "USD": {
+      "error": "Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x4. \nLogs: \n[\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]\",\n  \"Program log: Instruction: MintTo\",\n  \"Program log: Error: owner does not match\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4279 of 200000 compute units\",\n  \"Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA failed: custom program error: 0x4\"\n]. \nCatch the `SendTransactionError` and call `getLogs()` on it for full details."
+    },
+    "INR": {
+      "error": ""
+    },
+    "GBP": {
+      "error": ""
+    },
+    "JPY": {
+      "error": ""
+    },
+    "CAD": {
+      "error": ""
+    },
+    "AUD": {
+      "error": ""
+    }
+  },
+  "lastMinted": "2025-09-29T17:07:29.803Z",
+  "totalMinted": 100000
+}

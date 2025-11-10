@@ -176,13 +176,46 @@ export const submitKYC = async (data: any) => {
  */
 
 /**
- * Fetch all liquidity pools
+ * Fetch all liquidity pools (using simple pool balances)
  * @returns Promise with pools data
  */
 export const fetchLiquidityPools = async () => {
-  const response = await fetch(`${BRIDGE_URL}/api/pools`);
-  if (!response.ok) throw new Error('Failed to fetch liquidity pools');
-  return await response.json();
+  try {
+    const response = await fetch(`${BRIDGE_URL}/api/pools`);
+    if (!response.ok) throw new Error('Failed to fetch liquidity pools');
+    const data = await response.json();
+    
+    if (data.success && data.pools) {
+      return {
+        success: true,
+        message: 'Pools loaded successfully',
+        pools: data.pools
+      };
+    } else {
+      throw new Error('Invalid pools data');
+    }
+  } catch (error) {
+    console.error('Error fetching pools:', error);
+    return {
+      success: false,
+      message: 'Failed to load pools',
+      pools: []
+    };
+  }
+};
+
+// Helper function to get currency mint addresses
+const getCurrencyMint = (currency: string): string => {
+  const currencyMints: { [key: string]: string } = {
+    'EUR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE',
+    'USD': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T',
+    'INR': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg',
+    'GBP': '5gBytEK8J6p8ffqqB5jh82hme5udwvjd4gr4bFwwTgCJ',
+    'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh',
+    'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q',
+    'AUD': 'B9ASRwRngPPv6BpvVxXHawX4XEXfYHS1a4xJ5rEqHNjx'
+  };
+  return currencyMints[currency] || currencyMints['USD'];
 };
 
 /**
@@ -197,7 +230,7 @@ export const fetchPool = async (poolAddress: string) => {
 };
 
 /**
- * Create a new liquidity pool
+ * Create a new liquidity pool (mock function for simple pool)
  * @param data Pool creation data
  * @returns Promise with creation result
  */
@@ -208,35 +241,34 @@ export const createLiquidityPool = async (data: {
   exchangeRate: number;
   poolFeeRate: number;
 }) => {
-  // Map currencies to their mint addresses (loaded from mint-accounts.json)
-  const currencyMints: { [key: string]: string } = {
-    'EUR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE',
-    'USD': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T',
-    'INR': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg',
-    'GBP': '5gBytEK8J6p8ffqqB5jh82hme5udwvjd4gr4bFwwTgCJ',
-    'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh',
-    'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q',
-    'AUD': 'B9ASRwRngPPv6BpvVxXHawX4XEXfYHS1a4xJ5rEqHNjx'
-  };
+  try {
+    const response = await fetch(`${BRIDGE_URL}/api/pools/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        poolName: data.name,
+        sourceCurrency: data.sourceCurrency,
+        destinationCurrency: data.destinationCurrency,
+        sourceMint: getCurrencyMint(data.sourceCurrency),
+        destinationMint: getCurrencyMint(data.destinationCurrency),
+        initialExchangeRate: data.exchangeRate,
+        poolFeeRate: data.poolFeeRate
+      })
+    });
 
-  const sourceMint = currencyMints[data.sourceCurrency] || currencyMints['EUR'];
-  const destinationMint = currencyMints[data.destinationCurrency] || currencyMints['USD'];
+    if (!response.ok) {
+      throw new Error('Failed to create liquidity pool');
+    }
 
-  const response = await fetch(`${BRIDGE_URL}/api/pools/create`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      poolName: data.name,
-      sourceCurrency: data.sourceCurrency,
-      destinationCurrency: data.destinationCurrency,
-      sourceMint: sourceMint,
-      destinationMint: destinationMint,
-      initialExchangeRate: data.exchangeRate,
-      poolFeeRate: data.poolFeeRate
-    })
-  });
-  if (!response.ok) throw new Error('Failed to create liquidity pool');
-  return await response.json();
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Pool creation error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
 };
 
 /**
@@ -264,7 +296,7 @@ export const updatePoolRate = async (data: {
 };
 
 /**
- * Perform a currency swap
+ * Perform a currency swap using simple pool with frontend wallet signing
  * @param data Swap data
  * @returns Promise with swap result
  */
@@ -276,7 +308,7 @@ export const performSwap = async (data: {
   userDestinationAccount: string;
   poolSourceAccount: string;
   poolDestinationAccount: string;
-}): Promise<{
+}, signTransaction?: (transaction: any) => Promise<any>): Promise<{
   success: boolean;
   message?: string;
   swapRecord?: string;
@@ -287,13 +319,107 @@ export const performSwap = async (data: {
   transaction?: string;
   error?: string;
 }> => {
-  const response = await fetch(`${BRIDGE_URL}/api/pools/swap`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  if (!response.ok) throw new Error('Failed to perform swap');
-  return await response.json();
+  try {
+    // Extract currencies from pool address or use defaults
+    const fromCurrency = data.poolSourceAccount.includes('EUR') ? 'EUR' : 
+                        data.poolSourceAccount.includes('USD') ? 'USD' : 
+                        data.poolSourceAccount.includes('INR') ? 'INR' : 'EUR';
+    const toCurrency = data.poolDestinationAccount.includes('USD') ? 'USD' : 
+                       data.poolDestinationAccount.includes('EUR') ? 'EUR' : 
+                       data.poolDestinationAccount.includes('INR') ? 'INR' : 'USD';
+    
+    // Step 1: Create unsigned transaction
+    const createResponse = await fetch(`${BRIDGE_URL}/api/simple-pool/create-swap-transaction`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userAddress: data.userSourceAccount,
+        fromCurrency: fromCurrency,
+        toCurrency: toCurrency,
+        amount: data.amountIn.toString()
+      })
+    });
+    
+    if (!createResponse.ok) {
+      throw new Error('Failed to create swap transaction');
+    }
+    
+    const createResult = await createResponse.json();
+    
+    if (!createResult.success) {
+      throw new Error(createResult.error || 'Failed to create transaction');
+    }
+    
+    // Step 2: Sign transaction with wallet if signTransaction function is provided
+    if (signTransaction && createResult.transaction) {
+      try {
+        // Import Transaction from @solana/web3.js
+        const { Transaction } = await import('@solana/web3.js');
+        
+        // Deserialize the unsigned transaction
+        const unsignedTx = Transaction.from(Buffer.from(createResult.transaction, 'base64'));
+        
+        // Sign with wallet
+        const signedTx = await signTransaction(unsignedTx);
+        
+        // Serialize the signed transaction
+        const signedTxBase64 = signedTx.serialize({ requireAllSignatures: false }).toString('base64');
+        
+        // Step 3: Submit signed transaction to backend
+        const submitResponse = await fetch(`${BRIDGE_URL}/api/simple-pool/submit-swap-transaction`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            signedTransaction: signedTxBase64
+          })
+        });
+        
+        if (!submitResponse.ok) {
+          throw new Error('Failed to submit signed transaction');
+        }
+        
+        const submitResult = await submitResponse.json();
+        
+        if (submitResult.success) {
+          return {
+            success: true,
+            message: 'Swap completed successfully',
+            amountIn: data.amountIn,
+            minimumAmountOut: data.minimumAmountOut,
+            amountOut: createResult.toAmount ? createResult.toAmount / Math.pow(10, 6) : 0,
+            poolFee: createResult.feeAmount ? createResult.feeAmount / Math.pow(10, 6) : 0,
+            transaction: submitResult.signature
+          };
+        } else {
+          throw new Error(submitResult.error || 'Failed to submit transaction');
+        }
+      } catch (signError) {
+        console.error('Wallet signing error:', signError);
+        throw new Error(`Wallet signing failed: ${signError instanceof Error ? signError.message : 'Unknown error'}`);
+      }
+    }
+    
+    // If no signTransaction function provided, return transaction for manual signing
+    return {
+      success: true,
+      message: 'Transaction created - requires wallet signing',
+      amountIn: data.amountIn,
+      minimumAmountOut: data.minimumAmountOut,
+      amountOut: createResult.toAmount ? createResult.toAmount / Math.pow(10, 6) : 0,
+      poolFee: createResult.feeAmount ? createResult.feeAmount / Math.pow(10, 6) : 0,
+      transaction: createResult.transaction, // Base64 encoded unsigned transaction
+      error: 'Transaction requires wallet signing - use frontend wallet integration'
+    };
+    
+  } catch (error) {
+    console.error('Pool swap error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      amountIn: data.amountIn,
+      minimumAmountOut: data.minimumAmountOut
+    };
+  }
 };
 
 /**

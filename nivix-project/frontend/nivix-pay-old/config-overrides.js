@@ -13,19 +13,52 @@ module.exports = function override(config) {
     "process": require.resolve("process/browser.js")
   });
   config.resolve.fallback = fallback;
-  
+
   config.plugins = (config.plugins || []).concat([
     new webpack.ProvidePlugin({
       process: 'process/browser.js',
       Buffer: ['buffer', 'Buffer']
     })
   ]);
-  
+
   // Resolve process/browser issue for ESM modules
   config.resolve.alias = {
     ...config.resolve.alias,
     'process/browser': require.resolve('process/browser.js')
   };
-  
+
+  // Add PostCSS loader for Tailwind CSS
+  const oneOf = config.module.rules.find(rule => rule.oneOf);
+  if (oneOf) {
+    const cssRule = oneOf.oneOf.find(
+      rule => rule.test && rule.test.toString().includes('css')
+    );
+    if (cssRule) {
+      cssRule.use = cssRule.use || [];
+      // Ensure postcss-loader is included
+      if (!cssRule.use.some(loader =>
+        typeof loader === 'object' && loader.loader && loader.loader.includes('postcss-loader')
+      )) {
+        const styleLoaderIndex = cssRule.use.findIndex(loader =>
+          typeof loader === 'string' && loader.includes('style-loader') ||
+          typeof loader === 'object' && loader.loader && loader.loader.includes('style-loader')
+        );
+        if (styleLoaderIndex !== -1) {
+          cssRule.use.splice(styleLoaderIndex + 2, 0, {
+            loader: require.resolve('postcss-loader'),
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('tailwindcss'),
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          });
+        }
+      }
+    }
+  }
+
   return config;
 }; 

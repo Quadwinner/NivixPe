@@ -32,23 +32,63 @@ class RealTreasuryFetcher {
      */
     async initialize() {
         try {
-            // Load bridge wallet (which has mint authority)
-            const walletPath = path.join(__dirname, '../../wallet/bridge-wallet.json');
-            const walletData = await fs.readFile(walletPath, 'utf8');
-            const secretKey = JSON.parse(walletData);
-            this.treasuryWallet = Keypair.fromSecretKey(new Uint8Array(secretKey));
-            
-            // Load mint accounts
-            const mintAccountsPath = path.join(__dirname, '../../data/mint-accounts.json');
-            const mintData = await fs.readFile(mintAccountsPath, 'utf8');
-            this.mintAccounts = JSON.parse(mintData);
-            
-            console.log(`💰 Treasury wallet loaded: ${this.treasuryWallet.publicKey.toString()}`);
-            console.log(`🪙 Loaded ${Object.keys(this.mintAccounts).filter(key => key.endsWith('Mint')).length} token mints`);
-            
+            // Load actual treasury wallet (not bridge wallet)
+            const treasuryKeyPath = path.join(__dirname, '../../../data/treasury-keypair.json');
+
+            if (await this.fileExists(treasuryKeyPath)) {
+                const walletData = await fs.readFile(treasuryKeyPath, 'utf8');
+                const secretKey = JSON.parse(walletData);
+                this.treasuryWallet = Keypair.fromSecretKey(new Uint8Array(secretKey));
+                console.log(`💰 Treasury wallet loaded: ${this.treasuryWallet.publicKey.toString()}`);
+            } else {
+                console.warn('⚠️ Treasury keypair not found, falling back to bridge wallet');
+                const walletPath = path.join(__dirname, '../../wallet/bridge-wallet.json');
+                const walletData = await fs.readFile(walletPath, 'utf8');
+                const secretKey = JSON.parse(walletData);
+                this.treasuryWallet = Keypair.fromSecretKey(new Uint8Array(secretKey));
+            }
+
+            // Try to load new treasury token mints first
+            const treasuryTokenDataPath = path.join(__dirname, '../../../data/treasury-token-mints.json');
+
+            if (await this.fileExists(treasuryTokenDataPath)) {
+                console.log('📊 Loading new treasury token mints...');
+                const treasuryTokenData = await fs.readFile(treasuryTokenDataPath, 'utf8');
+                const treasuryData = JSON.parse(treasuryTokenData);
+
+                // Convert treasury mint data to expected format
+                this.mintAccounts = {};
+                for (const [currency, mintInfo] of Object.entries(treasuryData.treasuryMints)) {
+                    if (mintInfo && mintInfo.mint) {
+                        this.mintAccounts[`${currency.toLowerCase()}Mint`] = mintInfo.mint;
+                    }
+                }
+
+                console.log(`🏦 Loaded ${Object.keys(this.mintAccounts).length} treasury token mints`);
+            } else {
+                console.log('📊 Loading legacy mint accounts...');
+                // Fall back to old mint accounts
+                const mintAccountsPath = path.join(__dirname, '../../data/mint-accounts.json');
+                const mintData = await fs.readFile(mintAccountsPath, 'utf8');
+                this.mintAccounts = JSON.parse(mintData);
+                console.log(`🪙 Loaded ${Object.keys(this.mintAccounts).filter(key => key.endsWith('Mint')).length} legacy token mints`);
+            }
+
             return true;
         } catch (error) {
             console.error('❌ Failed to initialize treasury fetcher:', error.message);
+            return false;
+        }
+    }
+
+    /**
+     * Check if file exists
+     */
+    async fileExists(filePath) {
+        try {
+            await fs.access(filePath);
+            return true;
+        } catch {
             return false;
         }
     }
@@ -69,8 +109,7 @@ class RealTreasuryFetcher {
             
             for (const currency of currencies) {
                 const mintKey = `${currency.toLowerCase()}Mint`;
-                const tokenAccountKey = `${currency.toLowerCase()}TokenAccount`;
-                
+
                 if (this.mintAccounts[mintKey]) {
                     try {
                         console.log(`📊 Fetching ${currency} balance...`);

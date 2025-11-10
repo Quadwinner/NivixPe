@@ -11,8 +11,9 @@ const { storeKYC, getKYC } = require('./file-storage');
 
 // Import the Solana client (working version)
 const solanaClient = require('./solana/solana-client');
+
+// Import the Anchor liquidity client
 const anchorLiquidityClient = require('./solana/anchor-liquidity-client');
-const simplePoolClient = require('./solana/simple-pool-client');
 
 // Import off-ramp components
 const OfframpEngine = require('./offramp/offramp-engine');
@@ -25,6 +26,8 @@ const OnrampEngine = require('./onramp/onramp-engine');
 const SanctionsScreeningService = require('./compliance/sanctions-screening');
 const TravelRuleService = require('./compliance/travel-rule');
 const OperationsDashboard = require('./admin/operations-dashboard');
+
+// Import cross-border payment service
 
 // Global variables for off-ramp services
 let offrampEngine = null;
@@ -1236,6 +1239,101 @@ app.get('/api/pools', async (req, res) => {
 // Test endpoint
 app.get('/api/simple-pool/test', (req, res) => {
   res.json({ success: true, message: 'Simple pool test endpoint working' });
+});
+
+// Create unsigned swap transaction for frontend signing
+app.post('/api/simple-pool/create-swap-transaction', async (req, res) => {
+  try {
+    const { userAddress, fromCurrency, toCurrency, amount } = req.body;
+    
+    if (!userAddress || !fromCurrency || !toCurrency || !amount) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing required parameters: userAddress, fromCurrency, toCurrency, amount' 
+      });
+    }
+
+    console.log('🔄 Creating unsigned swap transaction:', { userAddress, fromCurrency, toCurrency, amount });
+
+    // Get exchange rate
+    const exchangeRate = simplePoolClient.getExchangeRate(fromCurrency, toCurrency);
+    console.log(`📊 Backend exchange rate calculation: ${fromCurrency} → ${toCurrency} = ${exchangeRate}`);
+
+    const result = await simplePoolClient.createUnsignedSwapTransaction(
+      userAddress, 
+      fromCurrency, 
+      toCurrency, 
+      amount,
+      exchangeRate
+    );
+
+    if (result.success) {
+      res.json({
+        success: true,
+        transaction: result.transaction,
+        fromAmount: result.fromAmount,
+        toAmount: result.toAmount,
+        feeAmount: result.feeAmount,
+        exchangeRate: result.exchangeRate,
+        fromCurrency: result.fromCurrency,
+        toCurrency: result.toCurrency,
+        userFromAccount: result.userFromAccount,
+        userToAccount: result.userToAccount,
+        treasuryFromAccount: result.treasuryFromAccount,
+        treasuryToAccount: result.treasuryToAccount
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: result.error
+      });
+    }
+
+  } catch (error) {
+    console.error('❌ Error creating swap transaction:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Submit signed swap transaction
+app.post('/api/simple-pool/submit-swap-transaction', async (req, res) => {
+  try {
+    const { signedTransaction } = req.body;
+    
+    if (!signedTransaction) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing required parameter: signedTransaction' 
+      });
+    }
+
+    console.log('🔄 Submitting signed swap transaction...');
+
+    const result = await simplePoolClient.submitSignedSwapTransaction(signedTransaction);
+
+    if (result.success) {
+      res.json({
+        success: true,
+        signature: result.signature,
+        message: 'Swap transaction submitted successfully'
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: result.error
+      });
+    }
+
+  } catch (error) {
+    console.error('❌ Error submitting swap transaction:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
 });
 
 // Perform a simple token swap

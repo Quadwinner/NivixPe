@@ -1,4 +1,4 @@
-const { Connection, PublicKey, Transaction, TransactionInstruction } = require('@solana/web3.js');
+const { Connection, PublicKey, Keypair, Transaction, TransactionInstruction } = require('@solana/web3.js');
 const { 
     createTransferInstruction, 
     getAssociatedTokenAddress,
@@ -23,8 +23,8 @@ class SimplePoolClient {
             // Load treasury keypair
             const keypairPath = path.join(__dirname, '../../wallet/bridge-wallet.json');
             const keypairData = await fs.readFile(keypairPath, 'utf8');
-            this.treasuryKeypair = JSON.parse(keypairData);
-            this.treasuryKeypair.publicKey = new PublicKey(this.treasuryKeypair.publicKey);
+            const keypairArray = JSON.parse(keypairData);
+            this.treasuryKeypair = Keypair.fromSecretKey(Uint8Array.from(keypairArray));
             
             // Load mint accounts
             const mintAccountsPath = path.join(__dirname, '../../data/mint-accounts.json');
@@ -61,13 +61,27 @@ class SimplePoolClient {
      * Get treasury token account for currency
      */
     async getTreasuryTokenAccount(currency) {
-        const mintAddress = this.getMintAddress(currency);
-        if (!mintAddress) {
-            throw new Error(`No mint address found for currency: ${currency}`);
+        try {
+            const mintAddress = this.getMintAddress(currency);
+            if (!mintAddress) {
+                throw new Error(`No mint address found for currency: ${currency}`);
+            }
+            
+            const mintPubkey = new PublicKey(mintAddress);
+            const treasuryTokenAccount = await getAssociatedTokenAddress(mintPubkey, this.treasuryKeypair.publicKey);
+            
+            // Check if the account exists
+            const accountInfo = await this.connection.getAccountInfo(treasuryTokenAccount);
+            if (!accountInfo) {
+                console.log(`⚠️ Treasury token account for ${currency} doesn't exist yet`);
+                return null; // Return null instead of throwing error
+            }
+            
+            return treasuryTokenAccount;
+        } catch (error) {
+            console.error(`❌ Error getting treasury token account for ${currency}:`, error);
+            return null;
         }
-        
-        const mintPubkey = new PublicKey(mintAddress);
-        return await getAssociatedTokenAddress(mintPubkey, this.treasuryKeypair.publicKey);
     }
 
     /**
@@ -179,6 +193,148 @@ class SimplePoolClient {
     }
 
     /**
+     * Create unsigned swap transaction for frontend signing
+     */
+    async createUnsignedSwapTransaction(userAddress, fromCurrency, toCurrency, amount, exchangeRate = null, feeRate = 0.003) {
+        try {
+            if (!this.initialized) {
+                await this.initialize();
+            }
+
+            console.log(`🔄 Creating unsigned swap transaction: ${amount} ${fromCurrency} → ${toCurrency}`);
+
+            const userPubkey = new PublicKey(userAddress);
+            
+            // Get mint addresses
+            const fromMint = this.getMintAddress(fromCurrency);
+            const toMint = this.getMintAddress(toCurrency);
+            
+            if (!fromMint || !toMint) {
+                throw new Error(`Invalid currency pair: ${fromCurrency} → ${toCurrency}`);
+            }
+
+            // Calculate exchange rate if not provided
+            if (exchangeRate === null) {
+                exchangeRate = this.getExchangeRate(fromCurrency, toCurrency);
+            }
+
+            console.log(`📊 Exchange rate: ${exchangeRate}, Fee rate: ${feeRate}`);
+            console.log(`🔍 Exchange rate type: ${typeof exchangeRate}, value: ${exchangeRate}`);
+
+            // Get token accounts
+            const userFromAccount = await this.getUserTokenAccount(userAddress, fromCurrency);
+            const userToAccount = await this.getUserTokenAccount(userAddress, toCurrency);
+            const treasuryFromAccount = await this.getTreasuryTokenAccount(fromCurrency);
+            const treasuryToAccount = await this.getTreasuryTokenAccount(toCurrency);
+
+            // Calculate amounts
+            const fromAmount = Math.floor(parseFloat(amount) * Math.pow(10, 6)); // 6 decimals
+            const feeAmount = Math.floor(fromAmount * feeRate);
+            const netFromAmount = fromAmount - feeAmount;
+            const toAmount = Math.floor(netFromAmount * exchangeRate);
+
+            console.log(`💰 Swap details:`);
+            console.log(`   From: ${fromAmount} units (${amount} ${fromCurrency})`);
+            console.log(`   Fee: ${feeAmount} units`);
+            console.log(`   Net: ${netFromAmount} units`);
+            console.log(`   To: ${toAmount} units (${toAmount / Math.pow(10, 6)} ${toCurrency})`);
+
+            // Create transaction
+            const transaction = new Transaction();
+
+            // Step 1: Transfer tokens from user to treasury (user pays) - REQUIRES USER SIGNATURE
+            transaction.add(
+                createTransferInstruction(
+                    userFromAccount, // source
+                    treasuryFromAccount, // destination
+                    userPubkey, // owner
+                    fromAmount // amount
+                )
+            );
+
+            // Step 2: Transfer tokens from treasury to user (user receives) - TREASURY SIGNS
+            transaction.add(
+                createTransferInstruction(
+                    treasuryToAccount, // source
+                    userToAccount, // destination
+                    this.treasuryKeypair.publicKey, // owner (treasury)
+                    toAmount // amount
+                )
+            );
+
+            // Get recent blockhash
+            const { blockhash, lastValidBlockHeight } = await this.connection.getLatestBlockhash();
+            transaction.recentBlockhash = blockhash;
+            transaction.feePayer = userPubkey; // User pays fees
+
+            // Return unsigned transaction for frontend signing
+            const serializedTransaction = transaction.serialize({
+                requireAllSignatures: false,
+                verifySignatures: false
+            });
+
+            return {
+                success: true,
+                transaction: serializedTransaction.toString('base64'),
+                fromAmount: fromAmount,
+                toAmount: toAmount,
+                feeAmount: feeAmount,
+                exchangeRate: exchangeRate,
+                fromCurrency: fromCurrency,
+                toCurrency: toCurrency,
+                userFromAccount: userFromAccount.toString(),
+                userToAccount: userToAccount.toString(),
+                treasuryFromAccount: treasuryFromAccount.toString(),
+                treasuryToAccount: treasuryToAccount.toString()
+            };
+
+        } catch (error) {
+            console.error('❌ Failed to create unsigned swap transaction:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    /**
+     * Submit signed swap transaction
+     */
+    async submitSignedSwapTransaction(signedTransactionBase64) {
+        try {
+            if (!this.initialized) {
+                await this.initialize();
+            }
+
+            console.log('🔄 Submitting signed swap transaction...');
+
+            // Deserialize the signed transaction
+            const transactionBuffer = Buffer.from(signedTransactionBase64, 'base64');
+            const transaction = Transaction.from(transactionBuffer);
+
+            // Sign with treasury keypair for the treasury transfer
+            transaction.sign(this.treasuryKeypair);
+
+            // Send transaction
+            const signature = await this.connection.sendTransaction(transaction, [this.treasuryKeypair]);
+
+            console.log(`✅ Swap transaction submitted: ${signature}`);
+
+            return {
+                success: true,
+                signature: signature
+            };
+
+        } catch (error) {
+            console.error('❌ Failed to submit signed swap transaction:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    /**
      * Get pool balance for a currency
      */
     async getPoolBalance(currency) {
@@ -188,6 +344,16 @@ class SimplePoolClient {
             }
 
             const treasuryAccount = await this.getTreasuryTokenAccount(currency);
+            if (!treasuryAccount) {
+                return {
+                    currency: currency,
+                    balance: 0,
+                    rawBalance: '0',
+                    decimals: 6,
+                    error: 'Treasury token account does not exist'
+                };
+            }
+            
             const accountInfo = await this.connection.getTokenAccountBalance(treasuryAccount);
             
             return {

@@ -14,6 +14,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 
 // Import pages
+import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Send from './pages/Send';
 import Receive from './pages/Receive';
@@ -38,23 +39,27 @@ import { ProcessingProvider } from './contexts/ProcessingContext';
 // Import wallet adapter styles
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-// Create theme
+// Create theme - Modern minimal white/grey theme
 const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
-      main: '#5D5FEF',
+      main: '#2563EB',
     },
     secondary: {
-      main: '#45B26B',
+      main: '#14B8A6',
     },
     background: {
-      default: '#17171A',
-      paper: '#1E1E22',
+      default: '#F7F8FA',
+      paper: '#FFFFFF',
+    },
+    text: {
+      primary: '#111827',
+      secondary: '#374151',
     },
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", "Outfit", "Roboto", "Helvetica", "Arial", sans-serif',
   },
 });
 
@@ -83,11 +88,12 @@ function App() {
           <WalletModalProvider>
             <ProcessingProvider>
               <Router>
-                <div className="app">
+                <div className="app min-h-screen flex flex-col bg-background">
                   <Header />
-                  <main className="main-content">
+                  <main className="flex-1 w-full">
                     <Routes>
-                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/" element={<Home />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/send" element={<Send />} />
                       <Route path="/receive" element={<Receive />} />
                       <Route path="/liquidity-pools" element={<LiquidityPools />} />

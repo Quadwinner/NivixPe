@@ -1,0 +1,42 @@
+{
+  "treasuryMints": {
+    "usd": {
+      "mint": "7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T",
+      "decimals": 6,
+      "symbol": "USD"
+    },
+    "eur": {
+      "mint": "5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE",
+      "decimals": 6,
+      "symbol": "EUR"
+    },
+    "inr": {
+      "mint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+      "decimals": 6,
+      "symbol": "INR"
+    },
+    "gbp": {
+      "mint": "5gBytEK8J6p8ffqqB5jh82hme5udwvjd4gr4bFwwTgCJ",
+      "decimals": 6,
+      "symbol": "GBP"
+    },
+    "jpy": {
+      "mint": "8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh",
+      "decimals": 6,
+      "symbol": "JPY"
+    },
+    "cad": {
+      "mint": "5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q",
+      "decimals": 6,
+      "symbol": "CAD"
+    },
+    "aud": {
+      "mint": "B9ASRwRngPPv6BpvVxXHawX4XEXfYHS1a4xJ5rEqHNjx",
+      "decimals": 6,
+      "symbol": "AUD"
+    }
+  },
+  "createdAt": "2025-10-07T20:15:00.000Z",
+  "source": "WALLETS_REGISTRY.json",
+  "network": "Solana Devnet"
+}

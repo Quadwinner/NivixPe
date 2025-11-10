@@ -367,7 +367,11 @@ class CryptoDeliveryService {
     async loadTreasuryKeypair() {
         try {
             // Load bridge wallet from WALLETS_REGISTRY.json (has mint authority)
-            const registryPath = '/media/shubham/OS/for linux work/blockchain solana/nivix-project/WALLETS_REGISTRY.json';
+            const fallbackRegistry = '/media/OS/for linux work/blockchain solana/nivix-project/WALLETS_REGISTRY.json';
+            const envRegistry = process.env.WALLETS_REGISTRY_PATH;
+            const registryPath = (envRegistry && fs.existsSync(envRegistry))
+                ? envRegistry
+                : (fs.existsSync(fallbackRegistry) ? fallbackRegistry : envRegistry || fallbackRegistry);
             
             if (fs.existsSync(registryPath)) {
                 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));

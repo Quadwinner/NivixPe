@@ -1,111 +1,87 @@
 import React from 'react';
-import { Box, Container, Typography, Link, IconButton } from '@mui/material';
+import { Link } from 'react-router-dom';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
 const Footer: React.FC = () => {
   return (
-    <Box
-      component="footer"
-      sx={{
-        py: 3,
-        px: 2,
-        mt: 'auto',
-        backgroundColor: (theme) => theme.palette.background.paper,
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-      }}
-    >
-      <Container maxWidth="lg">
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'center', md: 'flex-start' },
-          }}
-        >
-          <Box sx={{ mb: { xs: 2, md: 0 } }}>
-            <Typography variant="h6" color="text.primary" gutterBottom>
-              NIVIX Protocol
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+    <footer className="mt-auto bg-surface border-t border-border">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand Section */}
+          <div>
+            <h3 className="text-lg font-bold text-text mb-3">NIVIX Protocol</h3>
+            <p className="text-sm text-text-muted mb-2">
               A Hybrid Blockchain Payment Solution
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            </p>
+            <p className="text-sm text-text-muted">
               © {new Date().getFullYear()} Nivix Protocol
-            </Typography>
-          </Box>
+            </p>
+          </div>
           
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: { xs: 'center', md: 'flex-start' },
-            }}
-          >
-            <Typography variant="subtitle1" color="text.primary" gutterBottom>
-              Quick Links
-            </Typography>
-            <Link href="#" color="text.secondary" sx={{ mb: 0.5 }}>
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-sm font-semibold text-text mb-3">Quick Links</h4>
+            <div className="space-y-2">
+              <a href="#" className="block text-sm text-text-muted hover:text-accent transition-colors">
               Documentation
-            </Link>
-            <Link href="#" color="text.secondary" sx={{ mb: 0.5 }}>
+              </a>
+              <a href="#" className="block text-sm text-text-muted hover:text-accent transition-colors">
               API Reference
-            </Link>
-            <Link href="#" color="text.secondary" sx={{ mb: 0.5 }}>
+              </a>
+              <a href="#" className="block text-sm text-text-muted hover:text-accent transition-colors">
               Support
-            </Link>
-          </Box>
+              </a>
+            </div>
+          </div>
           
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: { xs: 'center', md: 'flex-start' },
-              mt: { xs: 2, md: 0 },
-            }}
-          >
-            <Typography variant="subtitle1" color="text.primary" gutterBottom>
-              Legal
-            </Typography>
-            <Link href="#" color="text.secondary" sx={{ mb: 0.5 }}>
+          {/* Legal */}
+          <div>
+            <h4 className="text-sm font-semibold text-text mb-3">Legal</h4>
+            <div className="space-y-2">
+              <a href="#" className="block text-sm text-text-muted hover:text-accent transition-colors">
               Privacy Policy
-            </Link>
-            <Link href="#" color="text.secondary" sx={{ mb: 0.5 }}>
+              </a>
+              <a href="#" className="block text-sm text-text-muted hover:text-accent transition-colors">
               Terms of Service
-            </Link>
-            <Link href="#" color="text.secondary" sx={{ mb: 0.5 }}>
+              </a>
+              <a href="#" className="block text-sm text-text-muted hover:text-accent transition-colors">
               Compliance
-            </Link>
-          </Box>
+              </a>
+            </div>
+          </div>
           
-          <Box
-            sx={{
-              mt: { xs: 2, md: 0 },
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: { xs: 'center', md: 'flex-start' },
-            }}
-          >
-            <Typography variant="subtitle1" color="text.primary" gutterBottom>
-              Connect With Us
-            </Typography>
-            <Box>
-              <IconButton color="primary" aria-label="GitHub" component="a" href="#">
-                <GitHubIcon />
-              </IconButton>
-              <IconButton color="primary" aria-label="LinkedIn" component="a" href="#">
-                <LinkedInIcon />
-              </IconButton>
-              <IconButton color="primary" aria-label="Twitter" component="a" href="#">
-                <TwitterIcon />
-              </IconButton>
-            </Box>
-          </Box>
-        </Box>
-      </Container>
-    </Box>
+          {/* Social Links */}
+          <div>
+            <h4 className="text-sm font-semibold text-text mb-3">Connect With Us</h4>
+            <div className="flex space-x-3">
+              <a
+                href="#"
+                className="p-2 rounded-xl text-text-muted hover:text-accent hover:bg-gray-50 transition-all duration-200"
+                aria-label="GitHub"
+              >
+                <GitHubIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="p-2 rounded-xl text-text-muted hover:text-accent hover:bg-gray-50 transition-all duration-200"
+                aria-label="LinkedIn"
+              >
+                <LinkedInIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="p-2 rounded-xl text-text-muted hover:text-accent hover:bg-gray-50 transition-all duration-200"
+                aria-label="Twitter"
+              >
+                <TwitterIcon className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 };
 

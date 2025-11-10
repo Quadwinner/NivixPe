@@ -12,14 +12,19 @@ import {
   Chip,
   InputAdornment,
   CircularProgress,
-  LinearProgress
+  LinearProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import {
   CurrencyRupee,
   Security,
   Speed,
   ArrowBack,
-  Payment
+  Payment,
+  SwapHoriz
 } from '@mui/icons-material';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -68,16 +73,114 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
 
   // State management
   const [amount, setAmount] = useState<number>(1000);
-  const [inrToUsdRate, setInrToUsdRate] = useState<number>(0.012); // INR to USD rate (1 INR = 0.012 USD)
+  const [fromCurrency, setFromCurrency] = useState<string>('INR');
+  const [toCurrency, setToCurrency] = useState<string>('USD');
+  const [exchangeRate, setExchangeRate] = useState<number>(0.012); // Default INR to USD rate
   const [fees] = useState<number>(0.015); // 1.5%
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Calculated values - using multiplication for INR to USD conversion
-  const usdcEquivalent = amount * inrToUsdRate; // ₹1000 * 0.012 = $12 USD
-  const feeAmount = usdcEquivalent * fees;
-  const netAmount = usdcEquivalent - feeAmount;
+  // Available currencies
+  const availableCurrencies = [
+    { code: 'INR', name: 'Indian Rupee', symbol: '₹', icon: '🇮🇳' },
+    { code: 'USD', name: 'US Dollar', symbol: '$', icon: '🇺🇸' },
+    { code: 'EUR', name: 'Euro', symbol: '€', icon: '🇪🇺' },
+    { code: 'GBP', name: 'British Pound', symbol: '£', icon: '🇬🇧' },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', icon: '🇯🇵' },
+    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', icon: '🇨🇦' },
+    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', icon: '🇦🇺' },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', icon: '🇨🇭' },
+    { code: 'CNY', name: 'Chinese Yuan', symbol: '¥', icon: '🇨🇳' },
+    { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$', icon: '🇸🇬' },
+    { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$', icon: '🇭🇰' },
+    { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', icon: '🇳🇿' },
+    { code: 'SEK', name: 'Swedish Krona', symbol: 'kr', icon: '🇸🇪' },
+    { code: 'NOK', name: 'Norwegian Krone', symbol: 'kr', icon: '🇳🇴' },
+    { code: 'DKK', name: 'Danish Krone', symbol: 'kr', icon: '🇩🇰' },
+    { code: 'PLN', name: 'Polish Zloty', symbol: 'zł', icon: '🇵🇱' },
+    { code: 'CZK', name: 'Czech Koruna', symbol: 'Kč', icon: '🇨🇿' },
+    { code: 'HUF', name: 'Hungarian Forint', symbol: 'Ft', icon: '🇭🇺' },
+    { code: 'RON', name: 'Romanian Leu', symbol: 'lei', icon: '🇷🇴' },
+    { code: 'BGN', name: 'Bulgarian Lev', symbol: 'лв', icon: '🇧🇬' },
+    { code: 'MXN', name: 'Mexican Peso', symbol: '$', icon: '🇲🇽' },
+    { code: 'BRL', name: 'Brazilian Real', symbol: 'R$', icon: '🇧🇷' },
+    { code: 'ARS', name: 'Argentine Peso', symbol: '$', icon: '🇦🇷' },
+    { code: 'CLP', name: 'Chilean Peso', symbol: '$', icon: '🇨🇱' },
+    { code: 'COP', name: 'Colombian Peso', symbol: '$', icon: '🇨🇴' },
+    { code: 'PEN', name: 'Peruvian Sol', symbol: 'S/', icon: '🇵🇪' },
+    { code: 'UYU', name: 'Uruguayan Peso', symbol: '$', icon: '🇺🇾' },
+    { code: 'VES', name: 'Venezuelan Bolivar', symbol: 'Bs', icon: '🇻🇪' },
+    { code: 'ZAR', name: 'South African Rand', symbol: 'R', icon: '🇿🇦' },
+    { code: 'EGP', name: 'Egyptian Pound', symbol: '£', icon: '🇪🇬' },
+    { code: 'NGN', name: 'Nigerian Naira', symbol: '₦', icon: '🇳🇬' },
+    { code: 'KES', name: 'Kenyan Shilling', symbol: 'KSh', icon: '🇰🇪' },
+    { code: 'GHS', name: 'Ghanaian Cedi', symbol: '₵', icon: '🇬🇭' },
+    { code: 'MAD', name: 'Moroccan Dirham', symbol: 'د.م.', icon: '🇲🇦' },
+    { code: 'TND', name: 'Tunisian Dinar', symbol: 'د.ت', icon: '🇹🇳' },
+    { code: 'DZD', name: 'Algerian Dinar', symbol: 'د.ج', icon: '🇩🇿' },
+    { code: 'LYD', name: 'Libyan Dinar', symbol: 'ل.د', icon: '🇱🇾' },
+    { code: 'ETB', name: 'Ethiopian Birr', symbol: 'Br', icon: '🇪🇹' },
+    { code: 'UGX', name: 'Ugandan Shilling', symbol: 'USh', icon: '🇺🇬' },
+    { code: 'TZS', name: 'Tanzanian Shilling', symbol: 'TSh', icon: '🇹🇿' },
+    { code: 'RWF', name: 'Rwandan Franc', symbol: 'RF', icon: '🇷🇼' },
+    { code: 'BWP', name: 'Botswana Pula', symbol: 'P', icon: '🇧🇼' },
+    { code: 'NAD', name: 'Namibian Dollar', symbol: 'N$', icon: '🇳🇦' },
+    { code: 'ZWL', name: 'Zimbabwean Dollar', symbol: 'Z$', icon: '🇿🇼' },
+    { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ', icon: '🇦🇪' },
+    { code: 'SAR', name: 'Saudi Riyal', symbol: 'ر.س', icon: '🇸🇦' },
+    { code: 'QAR', name: 'Qatari Riyal', symbol: 'ر.ق', icon: '🇶🇦' },
+    { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'د.ك', icon: '🇰🇼' },
+    { code: 'BHD', name: 'Bahraini Dinar', symbol: 'د.ب', icon: '🇧🇭' },
+    { code: 'OMR', name: 'Omani Rial', symbol: 'ر.ع.', icon: '🇴🇲' },
+    { code: 'JOD', name: 'Jordanian Dinar', symbol: 'د.ا', icon: '🇯🇴' },
+    { code: 'LBP', name: 'Lebanese Pound', symbol: 'ل.ل', icon: '🇱🇧' },
+    { code: 'ILS', name: 'Israeli Shekel', symbol: '₪', icon: '🇮🇱' },
+    { code: 'TRY', name: 'Turkish Lira', symbol: '₺', icon: '🇹🇷' },
+    { code: 'RUB', name: 'Russian Ruble', symbol: '₽', icon: '🇷🇺' },
+    { code: 'UAH', name: 'Ukrainian Hryvnia', symbol: '₴', icon: '🇺🇦' },
+    { code: 'BYN', name: 'Belarusian Ruble', symbol: 'Br', icon: '🇧🇾' },
+    { code: 'KZT', name: 'Kazakhstani Tenge', symbol: '₸', icon: '🇰🇿' },
+    { code: 'UZS', name: 'Uzbekistani Som', symbol: 'лв', icon: '🇺🇿' },
+    { code: 'KGS', name: 'Kyrgyzstani Som', symbol: 'лв', icon: '🇰🇬' },
+    { code: 'TJS', name: 'Tajikistani Somoni', symbol: 'SM', icon: '🇹🇯' },
+    { code: 'TMT', name: 'Turkmenistani Manat', symbol: 'T', icon: '🇹🇲' },
+    { code: 'AZN', name: 'Azerbaijani Manat', symbol: '₼', icon: '🇦🇿' },
+    { code: 'GEL', name: 'Georgian Lari', symbol: '₾', icon: '🇬🇪' },
+    { code: 'AMD', name: 'Armenian Dram', symbol: '֏', icon: '🇦🇲' },
+    { code: 'AFN', name: 'Afghan Afghani', symbol: '؋', icon: '🇦🇫' },
+    { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨', icon: '🇵🇰' },
+    { code: 'LKR', name: 'Sri Lankan Rupee', symbol: '₨', icon: '🇱🇰' },
+    { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳', icon: '🇧🇩' },
+    { code: 'NPR', name: 'Nepalese Rupee', symbol: '₨', icon: '🇳🇵' },
+    { code: 'BTN', name: 'Bhutanese Ngultrum', symbol: 'Nu.', icon: '🇧🇹' },
+    { code: 'MVR', name: 'Maldivian Rufiyaa', symbol: 'Rf', icon: '🇲🇻' },
+    { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp', icon: '🇮🇩' },
+    { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM', icon: '🇲🇾' },
+    { code: 'THB', name: 'Thai Baht', symbol: '฿', icon: '🇹🇭' },
+    { code: 'VND', name: 'Vietnamese Dong', symbol: '₫', icon: '🇻🇳' },
+    { code: 'PHP', name: 'Philippine Peso', symbol: '₱', icon: '🇵🇭' },
+    { code: 'MMK', name: 'Myanmar Kyat', symbol: 'K', icon: '🇲🇲' },
+    { code: 'LAK', name: 'Lao Kip', symbol: '₭', icon: '🇱🇦' },
+    { code: 'KHR', name: 'Cambodian Riel', symbol: '៛', icon: '🇰🇭' },
+    { code: 'BND', name: 'Brunei Dollar', symbol: 'B$', icon: '🇧🇳' },
+    { code: 'FJD', name: 'Fijian Dollar', symbol: 'FJ$', icon: '🇫🇯' },
+    { code: 'PGK', name: 'Papua New Guinea Kina', symbol: 'K', icon: '🇵🇬' },
+    { code: 'SBD', name: 'Solomon Islands Dollar', symbol: 'SI$', icon: '🇸🇧' },
+    { code: 'VUV', name: 'Vanuatu Vatu', symbol: 'Vt', icon: '🇻🇺' },
+    { code: 'WST', name: 'Samoan Tala', symbol: 'WS$', icon: '🇼🇸' },
+    { code: 'TOP', name: 'Tongan Paʻanga', symbol: 'T$', icon: '🇹🇴' },
+    { code: 'KRW', name: 'South Korean Won', symbol: '₩', icon: '🇰🇷' },
+    { code: 'TWD', name: 'Taiwan Dollar', symbol: 'NT$', icon: '🇹🇼' },
+    { code: 'MOP', name: 'Macanese Pataca', symbol: 'MOP$', icon: '🇲🇴' },
+    { code: 'MNT', name: 'Mongolian Tugrik', symbol: '₮', icon: '🇲🇳' },
+    { code: 'KPW', name: 'North Korean Won', symbol: '₩', icon: '🇰🇵' }
+  ];
+
+  // Calculated values - dynamic currency conversion
+  const cryptoEquivalent = amount * exchangeRate; // Convert from fiat to crypto
+  const feeAmount = cryptoEquivalent * fees;
+  const netAmount = cryptoEquivalent - feeAmount;
 
   // Quick amount presets
   const quickAmounts = [500, 1000, 2000, 5000, 10000];
@@ -97,24 +200,42 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
   // Fetch live exchange rates
   useEffect(() => {
     fetchExchangeRates();
-  }, []);
+  }, [fromCurrency, toCurrency]);
 
   const fetchExchangeRates = async () => {
     setIsLoadingRates(true);
     try {
-      // Fetch live exchange rate from your API (INR to USD rate)
-      const response = await fetch(`${BRIDGE_URL}/api/rates/INR/USD`);
+      // Fetch live exchange rate from your API
+      const response = await fetch(`${BRIDGE_URL}/api/rates/${fromCurrency}/${toCurrency}`);
       if (response.ok) {
         const data = await response.json();
-        // API returns INR to USD rate (e.g., 0.012 means 1 INR = 0.012 USD)
-        setInrToUsdRate(data.rate || 0.012);
+        setExchangeRate(data.rate || getFallbackRate(fromCurrency, toCurrency));
       }
     } catch (error) {
       console.error('Failed to fetch exchange rates:', error);
-      // Use fallback rate - 0.012 means 1 INR = 0.012 USD (or ₹83.5 per USD)
+      // Use fallback rate
+      setExchangeRate(getFallbackRate(fromCurrency, toCurrency));
     } finally {
       setIsLoadingRates(false);
     }
+  };
+
+  const getFallbackRate = (from: string, to: string): number => {
+    const rates: Record<string, Record<string, number>> = {
+      'INR': { 'USD': 0.012, 'EUR': 0.011, 'GBP': 0.0095, 'JPY': 1.8, 'CAD': 0.016, 'AUD': 0.018 },
+      'USD': { 'INR': 83.5, 'EUR': 0.91, 'GBP': 0.79, 'JPY': 150, 'CAD': 1.35, 'AUD': 1.52 },
+      'EUR': { 'USD': 1.10, 'INR': 91.8, 'GBP': 0.87, 'JPY': 165, 'CAD': 1.48, 'AUD': 1.67 },
+      'GBP': { 'USD': 1.27, 'EUR': 1.15, 'INR': 105.4, 'JPY': 190, 'CAD': 1.71, 'AUD': 1.92 },
+      'JPY': { 'USD': 0.0067, 'EUR': 0.0061, 'INR': 0.56, 'GBP': 0.0053, 'CAD': 0.009, 'AUD': 0.010 },
+      'CAD': { 'USD': 0.74, 'EUR': 0.68, 'INR': 61.8, 'GBP': 0.58, 'JPY': 111, 'AUD': 1.13 },
+      'AUD': { 'USD': 0.66, 'EUR': 0.60, 'INR': 55.3, 'GBP': 0.52, 'JPY': 99, 'CAD': 0.89 }
+    };
+    return rates[from]?.[to] || 1.0;
+  };
+
+  const getCurrencySymbol = (currency: string): string => {
+    const currencyData = availableCurrencies.find(c => c.code === currency);
+    return currencyData?.symbol || currency;
   };
 
   const handleAmountChange = (value: number) => {
@@ -143,8 +264,8 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
         body: JSON.stringify({
           userAddress: publicKey?.toString(),
           fiatAmount: amount,
-          fiatCurrency: 'INR',
-          cryptoCurrency: 'USD',
+          fiatCurrency: fromCurrency,
+          cryptoCurrency: toCurrency,
           // Mark this as automated transfer so backend processes it correctly
           automatedTransfer: true,
           recipientDetails: recipientDetails,
@@ -358,6 +479,50 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
           Enter the amount you want to send to {recipientDetails.name}
         </Typography>
 
+        {/* Currency Selection */}
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel>From Currency</InputLabel>
+              <Select
+                value={fromCurrency}
+                onChange={(e) => setFromCurrency(e.target.value)}
+                label="From Currency"
+              >
+                {availableCurrencies.map((currency) => (
+                  <MenuItem key={currency.code} value={currency.code}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Box sx={{ mr: 1, fontSize: '20px' }}>{currency.icon}</Box>
+                      <Typography>{currency.code} - {currency.name}</Typography>
+                    </Box>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel>To Currency</InputLabel>
+              <Select
+                value={toCurrency}
+                onChange={(e) => setToCurrency(e.target.value)}
+                label="To Currency"
+              >
+                {availableCurrencies
+                  .filter(c => c.code !== fromCurrency)
+                  .map((currency) => (
+                    <MenuItem key={currency.code} value={currency.code}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ mr: 1, fontSize: '20px' }}>{currency.icon}</Box>
+                        <Typography>{currency.code} - {currency.name}</Typography>
+                      </Box>
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+
         {/* Quick Amount Selection */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" gutterBottom>
@@ -367,7 +532,7 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
             {quickAmounts.map((quickAmount) => (
               <Chip
                 key={quickAmount}
-                label={`₹${quickAmount.toLocaleString()}`}
+                label={`${getCurrencySymbol(fromCurrency)}${quickAmount.toLocaleString()}`}
                 onClick={() => handleAmountChange(quickAmount)}
                 variant={amount === quickAmount ? 'filled' : 'outlined'}
                 color={amount === quickAmount ? 'primary' : 'default'}
@@ -380,7 +545,7 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
-              label="Amount (INR)"
+              label={`Amount (${fromCurrency})`}
               type="number"
               value={amount}
               onChange={(e) => handleAmountChange(Number(e.target.value))}
@@ -388,13 +553,15 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <CurrencyRupee />
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      {getCurrencySymbol(fromCurrency)}
+                    </Typography>
                   </InputAdornment>
                 )
               }}
               inputProps={{ min: 100, max: 200000 }}
               error={!!error && error.includes('amount')}
-              helperText={error && error.includes('amount') ? error : 'Min: ₹100, Max: ₹2,00,000'}
+              helperText={error && error.includes('amount') ? error : `Min: ${getCurrencySymbol(fromCurrency)}100, Max: ${getCurrencySymbol(fromCurrency)}2,00,000`}
             />
           </Grid>
         </Grid>
@@ -421,10 +588,10 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">
-                    Amount (INR)
+                    Amount ({fromCurrency})
                   </Typography>
                   <Typography variant="body1" color="text.primary" fontWeight="bold">
-                    ₹{amount.toLocaleString()}
+                    {getCurrencySymbol(fromCurrency)}{amount.toLocaleString()}
                   </Typography>
                 </Grid>
 
@@ -433,16 +600,16 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
                     Exchange Rate
                   </Typography>
                   <Typography variant="body1" color="text.primary">
-                    ₹{(1 / inrToUsdRate).toFixed(2)} per USD
+                    1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
                   </Typography>
                 </Grid>
 
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">
-                    USD Equivalent
+                    {toCurrency} Equivalent
                   </Typography>
                   <Typography variant="body1" color="text.primary">
-                    ${usdcEquivalent.toFixed(2)} USD
+                    {getCurrencySymbol(toCurrency)}{cryptoEquivalent.toFixed(2)} {toCurrency}
                   </Typography>
                 </Grid>
 
@@ -451,7 +618,7 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
                     Platform Fee ({(fees * 100).toFixed(1)}%)
                   </Typography>
                   <Typography variant="body1" color="warning.main">
-                    -${feeAmount.toFixed(2)} USD
+                    -{getCurrencySymbol(toCurrency)}{feeAmount.toFixed(2)} {toCurrency}
                   </Typography>
                 </Grid>
               </Grid>
@@ -463,7 +630,7 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
                   Recipient Receives:
                 </Typography>
                 <Typography variant="h6" color="primary">
-                  ${netAmount.toFixed(2)} USD
+                  {getCurrencySymbol(toCurrency)}{netAmount.toFixed(2)} {toCurrency}
                 </Typography>
               </Box>
 

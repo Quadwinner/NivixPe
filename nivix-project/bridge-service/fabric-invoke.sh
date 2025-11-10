@@ -8,7 +8,7 @@ ARGS="$2"
 OPERATION="$3"
 
 # Use absolute paths to avoid issues
-PROJECT_ROOT="/media/shubham/OS/for linux work/blockchain solana/nivix-project"
+PROJECT_ROOT="/media/OS/for linux work/blockchain solana/nivix-project"
 NETWORK_DIR="$PROJECT_ROOT/fabric-samples/test-network"
 PEER_BIN="$PROJECT_ROOT/fabric-samples/bin/peer"
 

@@ -47,8 +47,24 @@
       "lastUpdated": "1757284774071",
       "isActive": true,
       "createdAt": "1757284774071"
+    },
+    "6X6PD3CXZRD5VGEWqdDgLosj8Lvhgrnhaom3cark5XxG": {
+      "address": "6X6PD3CXZRD5VGEWqdDgLosj8Lvhgrnhaom3cark5XxG",
+      "name": "Test Pool",
+      "admin": "9EGgMSNmvGaCmTcpMBayyNSCC7dGWMEVE6aGiAvei2em",
+      "sourceCurrency": "USD",
+      "destinationCurrency": "INR",
+      "sourceMint": "7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T",
+      "destinationMint": "4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg",
+      "exchangeRate": "83.5",
+      "poolFeeRate": "30",
+      "totalSwapped": "0",
+      "totalVolume": "0",
+      "lastUpdated": "1758225748155",
+      "isActive": true,
+      "createdAt": "1758225748155"
     }
   },
-  "lastUpdated": "2025-09-07T22:39:34.071Z",
-  "totalPools": 3
+  "lastUpdated": "2025-09-18T20:02:28.156Z",
+  "totalPools": 4
 }

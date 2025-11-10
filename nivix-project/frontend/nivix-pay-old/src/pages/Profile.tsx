@@ -1,58 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  Paper, 
-  Typography, 
-  Box, 
-  Button,
-  Avatar,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Switch,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  SelectChangeEvent
-} from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import styled from 'styled-components';
 import PersonIcon from '@mui/icons-material/Person';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SecurityIcon from '@mui/icons-material/Security';
 import LanguageIcon from '@mui/icons-material/Language';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-
-const StyledWalletButton = styled.div`
-  .wallet-adapter-button {
-    background-color: #5D5FEF;
-    color: white;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 600;
-    width: 100%;
-  }
-`;
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Badge } from '../components/ui/Badge';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { connected, publicKey, disconnect } = useWallet();
   const [copySuccess, setCopySuccess] = useState(false);
   
-  // Mock user data
   const [userData, setUserData] = useState({
     username: 'Nivix User',
     email: 'user@nivixpay.com',
@@ -63,7 +28,6 @@ const Profile: React.FC = () => {
     homeCurrency: 'USD'
   });
 
-  // Handle copy to clipboard
   const handleCopyAddress = () => {
     if (publicKey) {
       navigator.clipboard.writeText(publicKey.toString());
@@ -72,332 +36,218 @@ const Profile: React.FC = () => {
     }
   };
 
-  // Handle settings change
-  const handleSettingsChange = (
-    event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
-  ) => {
-    const { name, value } = event.target;
-    if (name) {
-      setUserData({
-        ...userData,
-        [name]: value,
-      });
-    }
+  const handleSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
   };
 
-  // Handle select change
-  const handleSelectChange = (
-    event: SelectChangeEvent<string>
-  ) => {
-    const { name, value } = event.target;
-    if (name) {
-      setUserData({
-        ...userData,
-        [name]: value,
-      });
-    }
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
   };
 
-  // Handle toggle changes
-  const handleToggleChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, checked } = event.target;
-    setUserData({
-      ...userData,
-      [name]: checked,
-    });
+  const handleToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setUserData({ ...userData, [name]: checked });
   };
 
   if (!connected) {
     return (
-      <Container maxWidth="sm">
-        <Box
-          sx={{
-            mt: 8,
-            mb: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="h4" component="h1" gutterBottom>
-            User Profile
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph sx={{ mb: 4 }}>
+      <div className="max-w-2xl mx-auto py-12">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-text mb-4">User Profile</h1>
+          <p className="text-lg text-text-muted mb-8">
             Connect your wallet to view and manage your profile
-          </Typography>
+          </p>
           
-          <Card sx={{ 
-            width: '100%', 
-            maxWidth: 500, 
-            backgroundColor: 'rgba(93, 95, 239, 0.05)',
-            border: '1px solid rgba(93, 95, 239, 0.2)',
-            borderRadius: 2,
-            p: 2,
-            mb: 4
-          }}>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h6" gutterBottom>
-                Connect Wallet
-              </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
+          <Card className="max-w-md mx-auto bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-text mb-2">Connect Wallet</h2>
+              <p className="text-sm text-text-muted mb-6">
                 Connect your Solana wallet to access your profile
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <StyledWalletButton>
+              </p>
                   <WalletMultiButton />
-                </StyledWalletButton>
-              </Box>
-            </CardContent>
+            </div>
           </Card>
-        </Box>
-      </Container>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={4} sx={{ mt: 2, mb: 8 }}>
-        <Grid xs={12} md={4}>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: 3, 
-              borderRadius: 2,
-              height: '100%',
-            }}
-          >
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center',
-                mb: 3
-              }}
-            >
-              <Avatar 
-                sx={{ 
-                  width: 100, 
-                  height: 100, 
-                  mb: 2,
-                  bgcolor: 'primary.main'
-                }}
-              >
+    <div className="max-w-7xl mx-auto py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Profile Card */}
+        <div className="md:col-span-1">
+          <Card>
+            <div className="flex flex-col items-center mb-6">
+              <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center text-white text-3xl font-bold mb-4">
                 {userData.username.charAt(0).toUpperCase()}
-              </Avatar>
+              </div>
               
-              <Typography variant="h6">{userData.username}</Typography>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                {userData.email}
-              </Typography>
+              <h2 className="text-xl font-semibold text-text mb-1">{userData.username}</h2>
+              <p className="text-sm text-text-muted mb-4">{userData.email}</p>
               
               {userData.kycVerified ? (
-                <Chip 
-                  icon={<VerifiedUserIcon />} 
-                  label="KYC Verified" 
-                  color="success" 
-                  size="small"
-                  sx={{ mt: 1 }}
-                />
+                <Badge variant="success" className="flex items-center gap-1">
+                  <VerifiedUserIcon className="w-4 h-4" />
+                  KYC Verified
+                </Badge>
               ) : (
-                <Button 
-                  size="small" 
-                  variant="outlined" 
-                  color="warning" 
-                  onClick={() => navigate('/kyc')}
-                  sx={{ mt: 1 }}
-                >
+                <Button size="sm" variant="outline" onClick={() => navigate('/kyc')}>
                   Complete KYC
                 </Button>
               )}
-            </Box>
+            </div>
             
-            <Divider sx={{ mb: 2 }} />
+            <div className="border-t border-border pt-6 mb-6">
+              <h4 className="text-sm font-semibold text-text mb-3">Wallet Address</h4>
             
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              Wallet Address
-            </Typography>
-            
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                p: 2,
-                bgcolor: 'rgba(255,255,255,0.05)',
-                borderRadius: 1,
-                mb: 3
-              }}
-            >
-              <Typography 
-                variant="body2" 
-                sx={{ 
-                  maxWidth: '80%', 
-                  overflow: 'hidden', 
-                  textOverflow: 'ellipsis' 
-                }}
-              >
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl mb-4">
+                <p className="text-xs text-text-muted truncate flex-1 mr-2">
                 {publicKey?.toString()}
-              </Typography>
-              <Button 
-                size="small" 
-                variant="text" 
-                color={copySuccess ? 'success' : 'primary'}
-                startIcon={<ContentCopyIcon fontSize="small" />}
+                </p>
+                <button
                 onClick={handleCopyAddress}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    copySuccess
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-accent text-white hover:bg-accent-700'
+                  }`}
               >
+                  <ContentCopyIcon className="w-3 h-3" />
                 {copySuccess ? 'Copied' : 'Copy'}
-              </Button>
-            </Box>
+                </button>
+              </div>
             
             <Button 
-              variant="outlined" 
-              color="error" 
-              fullWidth
+                variant="outline" 
+                className="w-full"
               onClick={() => disconnect()}
             >
               Disconnect Wallet
             </Button>
-          </Paper>
-        </Grid>
+            </div>
+          </Card>
+        </div>
         
-        <Grid xs={12} md={8}>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: 3, 
-              borderRadius: 2
-            }}
-          >
-            <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-              Account Settings
-            </Typography>
+        {/* Settings */}
+        <div className="md:col-span-2">
+          <Card>
+            <h2 className="text-2xl font-semibold text-text mb-6">Account Settings</h2>
             
-            <Grid container spacing={3}>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <Input
                   label="Username"
                   name="username"
                   value={userData.username}
                   onChange={handleSettingsChange}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              <Input
                   label="Email Address"
                   name="email"
                   type="email"
                   value={userData.email}
                   onChange={handleSettingsChange}
                 />
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Home Currency</InputLabel>
-                  <Select
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">Home Currency</label>
+                <select
                     name="homeCurrency"
                     value={userData.homeCurrency}
-                    label="Home Currency"
                     onChange={handleSelectChange}
-                  >
-                    <MenuItem value="USD">USD - US Dollar</MenuItem>
-                    <MenuItem value="EUR">EUR - Euro</MenuItem>
-                    <MenuItem value="GBP">GBP - British Pound</MenuItem>
-                    <MenuItem value="INR">INR - Indian Rupee</MenuItem>
-                    <MenuItem value="JPY">JPY - Japanese Yen</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Language</InputLabel>
-                  <Select
+                  className="input"
+                >
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="INR">INR - Indian Rupee</option>
+                  <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">Language</label>
+                <select
                     name="language"
                     value={userData.language}
-                    label="Language"
                     onChange={handleSelectChange}
-                  >
-                    <MenuItem value="en">English</MenuItem>
-                    <MenuItem value="es">Spanish</MenuItem>
-                    <MenuItem value="fr">French</MenuItem>
-                    <MenuItem value="de">German</MenuItem>
-                    <MenuItem value="hi">Hindi</MenuItem>
-                    <MenuItem value="ja">Japanese</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
+                  className="input"
+                >
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="hi">Hindi</option>
+                  <option value="ja">Japanese</option>
+                </select>
+              </div>
+            </div>
             
-            <Divider sx={{ my: 4 }} />
+            <div className="border-t border-border pt-6 mb-6">
+              <h3 className="text-lg font-semibold text-text mb-4">Preferences</h3>
             
-            <Typography variant="h6" gutterBottom>
-              Preferences
-            </Typography>
-            
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <NotificationsIcon />
-                </ListItemIcon>
-                <ListItemText 
-                  primary="Notifications" 
-                  secondary="Receive alerts for transactions and updates"
-                />
-                <Switch
-                  edge="end"
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <NotificationsIcon className="w-5 h-5 text-text-muted" />
+                  <div>
+                    <p className="text-sm font-medium text-text">Notifications</p>
+                    <p className="text-xs text-text-muted">Receive alerts for transactions and updates</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
                   name="notificationsEnabled"
                   checked={userData.notificationsEnabled}
                   onChange={handleToggleChange}
+                    className="sr-only peer"
                 />
-              </ListItem>
-            </List>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+                </label>
+              </div>
+            </div>
             
-            <Divider sx={{ my: 2 }} />
+            <div className="border-t border-border pt-6">
+              <h3 className="text-lg font-semibold text-text mb-4">Security</h3>
             
-            <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-              Security
-            </Typography>
-            
-            <List>
-              <ListItem onClick={() => navigate('/kyc')}>
-                <ListItemIcon>
-                  <VerifiedUserIcon />
-                </ListItemIcon>
-                <ListItemText 
-                  primary="KYC Verification" 
-                  secondary={userData.kycVerified ? "Verified" : "Not verified"}
-                />
-                <Chip 
-                  label={userData.kycVerified ? "Complete" : "Incomplete"} 
-                  color={userData.kycVerified ? "success" : "warning"} 
-                  size="small"
-                />
-              </ListItem>
+              <div className="space-y-3">
+                <div 
+                  onClick={() => navigate('/kyc')}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <VerifiedUserIcon className="w-5 h-5 text-text-muted" />
+                    <div>
+                      <p className="text-sm font-medium text-text">KYC Verification</p>
+                      <p className="text-xs text-text-muted">
+                        {userData.kycVerified ? 'Verified' : 'Not verified'}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant={userData.kycVerified ? 'success' : 'warning'}>
+                    {userData.kycVerified ? 'Complete' : 'Incomplete'}
+                  </Badge>
+                </div>
               
-              <ListItem>
-                <ListItemIcon>
-                  <SecurityIcon />
-                </ListItemIcon>
-                <ListItemText 
-                  primary="Security Settings" 
-                  secondary="Configure 2FA and other security options"
-                />
-              </ListItem>
-            </List>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <SecurityIcon className="w-5 h-5 text-text-muted" />
+                    <div>
+                      <p className="text-sm font-medium text-text">Security Settings</p>
+                      <p className="text-xs text-text-muted">Configure 2FA and other security options</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             
-            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button variant="contained" color="primary">
-                Save Changes
-              </Button>
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Container>
+            <div className="mt-6 flex justify-end">
+              <Button variant="primary">Save Changes</Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 
