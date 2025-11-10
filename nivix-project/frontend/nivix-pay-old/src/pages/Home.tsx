@@ -84,7 +84,7 @@ const Home: React.FC = () => {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10">
           {/* Two Column Layout */}
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-center">
             {/* Left Column - Text Content (60%) */}
