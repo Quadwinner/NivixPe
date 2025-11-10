@@ -10,44 +10,44 @@ const Home: React.FC = () => {
   return (
     <div className="bg-background">
       {/* Hero Section - More Natural */}
-      <section className="py-12 md:py-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="mb-8">
-            <h1 className="text-4xl md:text-6xl font-bold text-text mb-6 leading-tight">
+      <section className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
+          <div className="max-w-4xl">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-text mb-6 leading-tight">
               Send Money Anywhere,
               <br />
               <span className="text-accent">Pay Almost Nothing</span>
             </h1>
-            <p className="text-xl text-text-muted max-w-2xl leading-relaxed mb-8">
+            <p className="text-xl md:text-2xl text-text-muted max-w-3xl leading-relaxed mb-10">
               Nivix Pay combines the speed of blockchain with the familiarity of bank transfers.
               Send SOL, USDC, or convert to local currencies like INR, USD, EUR - all in one place.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-12">
-              <WalletMultiButton className="!bg-accent hover:!bg-accent-700 !rounded-lg !px-6 !py-3 !font-semibold" />
+            <div className="flex flex-wrap items-center gap-4 mb-12">
+              <WalletMultiButton className="!bg-accent hover:!bg-accent-700 !rounded-lg !px-8 !py-4 !font-semibold !text-base" />
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => navigate('/automated-transfer')}
-                className="!border-2"
+                className="!border-2 !px-8 !py-4 !text-base"
               >
                 See How It Works →
               </Button>
             </div>
 
             {/* Real Stats */}
-            <div className="flex flex-wrap gap-8 text-sm text-text-muted">
+            <div className="flex flex-wrap gap-12">
               <div>
-                <div className="text-2xl font-bold text-text">$0.00001</div>
-                <div>avg. transaction fee</div>
+                <div className="text-3xl md:text-4xl font-bold text-text mb-1">$0.00001</div>
+                <div className="text-sm text-text-muted">avg. transaction fee</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-text">&lt;1 sec</div>
-                <div>transaction time</div>
+                <div className="text-3xl md:text-4xl font-bold text-text mb-1">&lt;1 sec</div>
+                <div className="text-sm text-text-muted">transaction time</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-text">24/7</div>
-                <div>always online</div>
+                <div className="text-3xl md:text-4xl font-bold text-text mb-1">24/7</div>
+                <div className="text-sm text-text-muted">always online</div>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@ const Home: React.FC = () => {
 
       {/* Problem Statement - Human Touch */}
       <section className="py-12 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="w-full px-4 md:px-6">
           <h2 className="text-3xl font-bold text-text mb-6">Why We Built This</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="bg-white">
@@ -91,7 +91,7 @@ const Home: React.FC = () => {
 
       {/* Real Use Cases */}
       <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="w-full px-4 md:px-6">
           <h2 className="text-3xl font-bold text-text mb-4">Who Uses Nivix Pay?</h2>
           <p className="text-text-muted mb-10 text-lg">Real people, real needs</p>
 
@@ -149,7 +149,7 @@ const Home: React.FC = () => {
 
       {/* How It Actually Works */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="w-full px-4 md:px-6">
           <h2 className="text-3xl font-bold text-text mb-4">How Does It Work?</h2>
           <p className="text-text-muted mb-10 text-lg">
             We're not reinventing the wheel - we're combining two things that work really well
@@ -214,7 +214,7 @@ const Home: React.FC = () => {
 
       {/* Real Comparison Table */}
       <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="w-full px-4 md:px-6">
           <h2 className="text-3xl font-bold text-text mb-4">Let's Be Honest About Fees</h2>
           <p className="text-text-muted mb-8 text-lg">Sending $1,000 internationally</p>
 
@@ -271,7 +271,7 @@ const Home: React.FC = () => {
 
       {/* Testimonials - Real Feel */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="w-full px-4 md:px-6">
           <h2 className="text-3xl font-bold text-text mb-10 text-center">What People Say</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -323,7 +323,7 @@ const Home: React.FC = () => {
 
       {/* FAQ - Real Questions */}
       <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="w-full px-4 md:px-6">
           <h2 className="text-3xl font-bold text-text mb-10">Questions People Actually Ask</h2>
 
           <div className="space-y-6">
@@ -373,7 +373,7 @@ const Home: React.FC = () => {
 
       {/* Final CTA - Honest */}
       <section className="py-16 bg-accent text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="w-full px-4 md:px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Stop Overpaying?</h2>
           <p className="text-xl text-white/90 mb-10 leading-relaxed">
             Connect your wallet and try your first transaction. If it doesn't work as advertised,
@@ -388,7 +388,7 @@ const Home: React.FC = () => {
 
       {/* Footer Info */}
       <section className="py-8 bg-gray-900 text-gray-300">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm">
+        <div className="w-full px-4 md:px-6 text-center text-sm">
           <p className="mb-2">
             Built on <span className="text-white font-medium">Solana</span> blockchain ·
             KYC powered by <span className="text-white font-medium">Hyperledger Fabric</span>

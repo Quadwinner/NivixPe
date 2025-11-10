@@ -11,6 +11,7 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const navItems = [
   { label: 'Home', path: '/', icon: HomeIcon },
@@ -18,6 +19,8 @@ const navItems = [
   { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHorizIcon },
   { label: 'Profile', path: '/profile', icon: PersonIcon },
   { label: 'KYC Verification', path: '/kyc', icon: VerifiedUserIcon },
+  { label: 'KYC Admin', path: '/kyc-admin', icon: AdminPanelSettingsIcon },
+  { label: 'Admin Dashboard', path: '/admin-dashboard', icon: DashboardIcon },
 ];
 
 const Header: React.FC = () => {
@@ -30,60 +33,61 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 md:px-8">
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+      <nav className="w-full px-4 md:px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo - Far Left */}
           <Link
             to="/"
-            className="flex items-center space-x-2 text-text hover:text-accent transition-colors"
+            className="flex items-center gap-2 text-text hover:text-accent transition-colors flex-shrink-0"
           >
-            <AccountBalanceWalletIcon className="w-6 h-6" />
+            <AccountBalanceWalletIcon className="w-7 h-7 text-accent" />
             <span className="text-xl font-bold tracking-tight">NIVIX PAY</span>
           </Link>
 
-          {/* Desktop Navigation - Only visible on large screens */}
-          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center mx-4">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.label}
-                  to={item.path}
-                  className={`flex items-center space-x-1.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
-                    isActive
-                      ? 'bg-accent text-white'
-                      : 'text-text-muted hover:text-text hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+          {/* Desktop Navigation + Wallet - Far Right */}
+          <div className="hidden lg:flex items-center gap-2 ml-auto">
+            {/* Navigation Links */}
+            <div className="flex items-center gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.path}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-accent text-white'
+                        : 'text-text-muted hover:text-text hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Wallet Button */}
+            <div className="ml-2">
+              <WalletMultiButton className="!bg-accent hover:!bg-accent-700 !text-white !rounded-lg" />
+            </div>
           </div>
 
-          {/* Right side: Wallet Button (desktop) and Menu Toggle (mobile) */}
-          <div className="flex items-center space-x-2">
-            {/* Desktop Wallet Button */}
-            <div className="hidden lg:block">
-              <WalletMultiButton />
-            </div>
-            {/* Mobile Menu Toggle Button */}
-            <button
-              onClick={handleDrawerToggle}
-              className="lg:hidden p-2 rounded-xl text-text hover:bg-gray-100 transition-colors focus-ring"
-              aria-label="Toggle menu"
-              type="button"
-            >
-              {mobileOpen ? (
-                <CloseIcon className="w-6 h-6" />
-              ) : (
-                <MenuIcon className="w-6 h-6" />
-              )}
-            </button>
-          </div>
+          {/* Mobile Menu Toggle - Right Side */}
+          <button
+            onClick={handleDrawerToggle}
+            className="lg:hidden p-2 rounded-lg text-text hover:bg-gray-100 transition-colors"
+            aria-label="Toggle menu"
+            type="button"
+          >
+            {mobileOpen ? (
+              <CloseIcon className="w-6 h-6" />
+            ) : (
+              <MenuIcon className="w-6 h-6" />
+            )}
+          </button>
         </div>
       </nav>
 
