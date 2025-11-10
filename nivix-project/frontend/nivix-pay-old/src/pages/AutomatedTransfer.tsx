@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { motion } from 'framer-motion';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SendIcon from '@mui/icons-material/Send';
@@ -185,18 +186,58 @@ const AutomatedTransfer: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-accent-50/20 to-background">
       <div className="max-w-5xl mx-auto py-8 px-4">
         {/* Header Section */}
-        <div className="text-center mb-8 animate-fade-in">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
           <div className="mb-6 relative inline-block">
-            <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-purple-400/20 to-accent/20 blur-2xl rounded-full" />
-            <SendIcon className="w-16 h-16 text-accent mx-auto relative z-10 drop-shadow-lg" style={{ fontSize: '4rem' }} />
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute inset-0 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-accent/30 blur-3xl rounded-full"
+            />
+            <motion.div
+              animate={{
+                y: [0, -10, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <SendIcon className="w-16 h-16 text-accent mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '4rem' }} />
+            </motion.div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-accent-700 via-accent to-accent-600 bg-clip-text text-transparent">
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 bg-gradient-to-r from-blue-700 via-blue-600 to-accent-600 bg-clip-text text-transparent tracking-tight"
+            style={{ letterSpacing: '-0.02em' }}
+          >
             Automated Money Transfer
-          </h1>
-          <p className="text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
+          >
             Send money directly to bank accounts with real-time blockchain processing
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Main Card */}
         <Card className="bg-white/90 backdrop-blur-sm shadow-2xl border-accent/20 mb-8">
