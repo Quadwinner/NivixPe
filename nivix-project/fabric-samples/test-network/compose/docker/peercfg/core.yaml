@@ -499,10 +499,12 @@ vm:
     # https://localhost:2376
     # If you utilize external chaincode builders and don't need the default Docker chaincode builder,
     # the endpoint should be unconfigured so that the peer's Docker health checker doesn't get registered.
-   endpoint: unix:///var/run/docker.sock
+   endpoint: tcp://172.17.0.1:2375
 
     # settings for docker vms
    docker:
+       # Docker API version to use
+       apiVersion: "1.44"
        tls:
            enabled: false
            ca:

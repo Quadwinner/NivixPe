@@ -40,7 +40,7 @@ if [ "$CC_SRC_LANGUAGE" = "go" ]; then
   CC_RUNTIME_LANGUAGE=golang
 
   infoln "Vendoring Go dependencies at $CC_SRC_PATH"
-  pushd $CC_SRC_PATH
+  pushd "$CC_SRC_PATH"
   GO111MODULE=on go mod vendor
   popd
   successln "Finished vendoring Go dependencies"
@@ -49,7 +49,7 @@ elif [ "$CC_SRC_LANGUAGE" = "java" ]; then
   CC_RUNTIME_LANGUAGE=java
 
   infoln "Compiling Java code..."
-  pushd $CC_SRC_PATH
+  pushd "$CC_SRC_PATH"
   ./gradlew installDist
   popd
   successln "Finished compiling Java code"
@@ -62,7 +62,7 @@ elif [ "$CC_SRC_LANGUAGE" = "typescript" ]; then
   CC_RUNTIME_LANGUAGE=node
 
   infoln "Compiling TypeScript code into JavaScript..."
-  pushd $CC_SRC_PATH
+  pushd "$CC_SRC_PATH"
   npm install
   npm run build
   popd

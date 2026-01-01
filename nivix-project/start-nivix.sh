@@ -56,13 +56,37 @@ fi
 # 2. Start Hyperledger Fabric network
 echo "🏗️ Starting Hyperledger Fabric..."
 cd fabric-samples/test-network
+
+# Ensure Docker is running properly before starting Fabric
+echo "🐳 Checking Docker daemon..."
+if ! docker info > /dev/null 2>&1; then
+    echo "⚠️  Docker daemon not responding, attempting restart..."
+    sudo systemctl restart docker
+    sleep 5
+fi
+
+# Clean up any stale containers and networks
+echo "🧹 Cleaning up stale Docker resources..."
+docker container prune -f 2>/dev/null || true
+docker network prune -f 2>/dev/null || true
+
 ./network.sh down 2>/dev/null || true
+sleep 2
 ./network.sh up createChannel -ca -c mychannel
 
 # 3. Deploy chaincode with better error handling
 echo "📦 Deploying chaincode..."
 export PATH=$HOME/go-install/go/bin:$PATH
 export GOPATH=$HOME/go
+
+# Verify Docker socket is accessible from peer containers
+echo "🔌 Verifying Docker socket connectivity..."
+if ! docker exec peer0.org1.example.com ls /var/run/docker.sock > /dev/null 2>&1; then
+    echo "⚠️  Docker socket not accessible in peer container"
+    echo "🔄 Restarting containers to refresh Docker socket mount..."
+    docker-compose -f compose/compose-test-net.yaml -f compose/docker/docker-compose-test-net.yaml restart 2>/dev/null || true
+    sleep 10
+fi
 
 # Clean up old chaincode packages
 rm -f nivix-kyc.tar.gz 2>/dev/null || true

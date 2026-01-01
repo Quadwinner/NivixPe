@@ -1,12 +1,12 @@
 const axios = require('axios');
 const crypto = require('crypto');
 const fs = require('fs');
+const RazorpayXPayouts = require('./razorpayx-payouts');
 
 /**
  * Fiat Payout Service
  * Handles real money transfers to recipients via payout APIs
- * Supports multiple payout providers: Cashfree, PayU, Instamojo
- * Note: Razorpay is only for payment gateway (receiving payments), not payouts
+ * Supports multiple payout providers: Cashfree, PayU, Instamojo, RazorpayX
  */
 class FiatPayoutService {
     constructor() {
@@ -18,10 +18,20 @@ class FiatPayoutService {
         
         const cashfreeApiVersion = 'v1'; // Use v1 API - this is working!
         this.providers = {
+            razorpayx: {
+                name: 'RazorpayX Payouts',
+                baseUrl: 'https://api.razorpay.com/v1',
+                enabled: !!(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET),
+                credentials: {
+                    keyId: process.env.RAZORPAY_KEY_ID,
+                    keySecret: process.env.RAZORPAY_KEY_SECRET,
+                    accountNumber: process.env.RAZORPAY_ACCOUNT_NUMBER
+                }
+            },
             razorpay: {
                 name: 'Razorpay (Payment Gateway Only)',
                 baseUrl: 'https://api.razorpay.com/v1',
-                enabled: false, // Razorpay doesn't provide payout services
+                enabled: false, // Legacy - use RazorpayX for payouts
                 credentials: {
                     keyId: process.env.RAZORPAY_KEY_ID,
                     keySecret: process.env.RAZORPAY_KEY_SECRET
@@ -36,7 +46,7 @@ class FiatPayoutService {
                 ),
                 apiVersion: cashfreeApiVersion,
                 sandboxUrl: 'https://payout-gamma.cashfree.com',
-                enabled: true, // Cashfree is now the primary provider
+                enabled: false, // DISABLED - Using RazorpayX for payouts
                 credentials: {
                     clientId: process.env.CASHFREE_CLIENT_ID,
                     clientSecret: process.env.CASHFREE_CLIENT_SECRET
@@ -81,6 +91,12 @@ class FiatPayoutService {
             } else {
                 console.log('ℹ️ No Cashfree public key provided - proceeding without X-Cf-Signature');
             }
+        }
+        
+        // Initialize RazorpayX Payouts if enabled
+        if (this.providers.razorpayx.enabled) {
+            this.razorpayxPayouts = new RazorpayXPayouts();
+            console.log('🔧 RazorpayX Payouts configured');
         }
         
         console.log('💸 Fiat Payout Service initialized');
@@ -319,8 +335,19 @@ class FiatPayoutService {
             // Process payout via selected provider
             let payoutResult;
             switch (provider) {
+                case 'razorpayx':
+                    console.log('🚀 Using RazorpayX for payout (NOT Cashfree)');
+                    payoutResult = await this.processRazorpayXPayout(payoutRequest, payoutId);
+                    break;
                 case 'cashfree':
-                    payoutResult = await this.processCashfreePayout(payoutRequest, payoutId);
+                    console.error('❌ ERROR: Cashfree should be disabled! Forcing RazorpayX instead...');
+                    // Force RazorpayX even if Cashfree was selected
+                    if (this.providers.razorpayx.enabled && this.providers.razorpayx.credentials.keyId) {
+                        console.log('🔄 Switching to RazorpayX...');
+                        payoutResult = await this.processRazorpayXPayout(payoutRequest, payoutId);
+                    } else {
+                        throw new Error('RazorpayX not available. Please configure RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, and RAZORPAY_ACCOUNT_NUMBER');
+                    }
                     break;
                 case 'payu':
                     payoutResult = await this.processPayUPayout(payoutRequest, payoutId);
@@ -370,6 +397,78 @@ class FiatPayoutService {
                 payout_id: null,
                 status: 'failed'
             };
+        }
+    }
+
+    /**
+     * Process payout via RazorpayX Payouts API
+     */
+    async processRazorpayXPayout(payoutRequest, payoutId) {
+        try {
+            console.log('💳 Processing RazorpayX payout...');
+            
+            if (!this.razorpayxPayouts) {
+                throw new Error('RazorpayX Payouts not initialized');
+            }
+
+            // Prepare beneficiary data for RazorpayX
+            const beneficiaryData = {
+                name: payoutRequest.recipient.name,
+                email: payoutRequest.recipient.email,
+                phone: payoutRequest.recipient.phone,
+                bank_account: payoutRequest.recipient.bank_account,
+                upiId: payoutRequest.recipient.upiId
+            };
+
+            // Process complete payout flow (Contact → Fund Account → Payout)
+            const result = await this.razorpayxPayouts.processCompletePayout(
+                beneficiaryData,
+                payoutRequest.amount,
+                'payout', // payout purpose
+                payoutId
+            );
+
+            if (!result.success) {
+                throw new Error(result.error || 'RazorpayX payout failed');
+            }
+
+            return {
+                success: true,
+                transaction_id: result.payoutId,
+                status: result.status,
+                message: `Payout initiated via RazorpayX (${result.mode})`,
+                provider_response: result.razorpayResponse,
+                estimated_arrival: this.formatEstimatedArrival(result.estimatedCompletion),
+                fees: 0, // RazorpayX fees are deducted from account balance
+                mode: result.mode
+            };
+
+        } catch (error) {
+            console.error('❌ RazorpayX payout failed:', error.message);
+            return {
+                success: false,
+                error: error.message,
+                status: 'failed'
+            };
+        }
+    }
+
+    /**
+     * Format estimated arrival time
+     */
+    formatEstimatedArrival(date) {
+        if (!date) return 'Within 24 hours';
+        const now = new Date();
+        const diff = date - now;
+        const minutes = Math.round(diff / (1000 * 60));
+        
+        if (minutes < 60) {
+            return `Within ${minutes} minutes`;
+        } else if (minutes < 1440) {
+            const hours = Math.round(minutes / 60);
+            return `Within ${hours} hour${hours > 1 ? 's' : ''}`;
+        } else {
+            return 'Within 24 hours';
         }
     }
 
@@ -908,22 +1007,40 @@ class FiatPayoutService {
      */
     selectOptimalProvider(payoutRequest) {
         console.log('🔍 Selecting payout provider...');
+        console.log('🔍 RazorpayX enabled:', this.providers.razorpayx.enabled);
+        console.log('🔍 RazorpayX has keyId:', !!this.providers.razorpayx.credentials.keyId);
+        console.log('🔍 RazorpayX has accountNumber:', !!this.providers.razorpayx.credentials.accountNumber);
         console.log('🔍 Instamojo enabled:', this.providers.instamojo.enabled);
-        console.log('🔍 Cashfree enabled:', this.providers.cashfree.enabled);
+        console.log('🔍 Cashfree enabled:', this.providers.cashfree.enabled, '(DISABLED - Using RazorpayX)');
         console.log('🔍 PayU enabled:', this.providers.payu.enabled);
         
-        // Priority order: Cashfree only (as requested by user)
-        if (this.providers.cashfree.enabled && this.providers.cashfree.credentials.clientId) {
-            console.log('✅ Selected Cashfree as payout provider (only provider)');
+        // Priority order: RazorpayX > Cashfree > Instamojo > PayU
+        // FORCE RazorpayX if credentials are available
+        if (this.providers.razorpayx.enabled && 
+            this.providers.razorpayx.credentials.keyId &&
+            this.providers.razorpayx.credentials.accountNumber) {
+            console.log('✅ Selected RazorpayX as payout provider (PRIMARY)');
+            return 'razorpayx';
+        }
+        
+        // Cashfree is disabled - skip it
+        if (false && this.providers.cashfree.enabled && this.providers.cashfree.credentials.clientId) {
+            console.log('✅ Selected Cashfree as payout provider');
             return 'cashfree';
         }
+        
+        if (this.providers.instamojo.enabled && this.providers.instamojo.credentials.clientId) {
+            console.log('✅ Selected Instamojo as payout provider');
+            return 'instamojo';
+        }
+        
         if (this.providers.payu.enabled && this.providers.payu.credentials.merchantId) {
             console.log('✅ Selected PayU as payout provider');
             return 'payu';
         }
         
         console.log('❌ No payout provider available');
-        throw new Error('No payout provider available. Please configure Cashfree, PayU, or Instamojo payout credentials.');
+        throw new Error('No payout provider available. Please configure RazorpayX, Cashfree, PayU, or Instamojo payout credentials.');
     }
 
     /**
