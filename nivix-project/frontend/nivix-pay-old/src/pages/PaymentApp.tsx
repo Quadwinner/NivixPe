@@ -1,50 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  Alert,
-  Chip,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  CircularProgress,
-  Container,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Divider
-} from '@mui/material';
-import {
   Payment as PaymentIcon,
   AccountBalanceWallet as WalletIcon,
   CheckCircle as SuccessIcon,
   Error as ErrorIcon,
   Info as InfoIcon,
   CurrencyExchange as ExchangeIcon,
-  Security as SecurityIcon,
   TrendingUp as OnRampIcon,
   TrendingDown as OffRampIcon,
   SwapHoriz as SwapIcon
 } from '@mui/icons-material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { 
-  getAssociatedTokenAddress, 
-  createBurnInstruction,
-  TOKEN_PROGRAM_ID 
+import {
+  getAssociatedTokenAddress,
+  createBurnInstruction
 } from '@solana/spl-token';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
 
 const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
 
@@ -65,19 +40,22 @@ interface PaymentOrder {
   keyId?: string;
 }
 
+const Spinner = () => (
+  <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </svg>
+);
+
 const PaymentApp: React.FC = () => {
   const { publicKey, connected, signTransaction } = useWallet();
+
   // Primary RPC endpoint with fallback
   const connection = new Connection('https://api.devnet.solana.com', {
     commitment: 'confirmed',
     confirmTransactionInitialTimeout: 60000,
   });
 
-  // Fallback connection for resilience
-  const fallbackConnection = new Connection('https://devnet.helius-rpc.com/?api-key=demo', {
-    commitment: 'confirmed',
-    confirmTransactionInitialTimeout: 60000,
-  });
   const [mode, setMode] = useState<'onramp' | 'offramp'>('onramp');
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -101,7 +79,7 @@ const PaymentApp: React.FC = () => {
   const [paymentStatus, setPaymentStatus] = useState<any>(null);
   const [transactionHistory, setTransactionHistory] = useState<any[]>([]);
   const [userTokenBalance, setUserTokenBalance] = useState<number>(0);
-  
+
   // Off-ramp State
   const [currentQuote, setCurrentQuote] = useState<any>(null);
   const [burnTransactionHash, setBurnTransactionHash] = useState<string | null>(null);
@@ -196,7 +174,7 @@ const PaymentApp: React.FC = () => {
             currency: paymentForm.fiatCurrency,
             status: 'created',
             paymentUrl: paymentResult.paymentUrl,
-            keyId: paymentResult.paymentOrder.keyId // Store the real key ID
+            keyId: paymentResult.paymentOrder.keyId
           });
           setSuccess(`Order created successfully! Order ID: ${result.order.id}`);
           handleNext();
@@ -221,8 +199,8 @@ const PaymentApp: React.FC = () => {
     }
 
     const options = {
-      key: currentOrder.keyId || 'rzp_test_RGU9V52S7OjDo2', // Use dynamic key from backend
-      amount: currentOrder.amount * 100, // Amount in paise
+      key: currentOrder.keyId || 'rzp_test_RGU9V52S7OjDo2',
+      amount: currentOrder.amount * 100,
       currency: currentOrder.currency,
       name: 'Nivix Exchange',
       description: `Buy ${paymentForm.cryptoCurrency} tokens`,
@@ -241,10 +219,10 @@ const PaymentApp: React.FC = () => {
         user_address: publicKey?.toBase58()
       },
       theme: {
-        color: '#5D5FEF',
+        color: '#2563EB',
       },
       modal: {
-        ondismiss: function() {
+        ondismiss: function () {
           setError('Payment cancelled by user');
         }
       }
@@ -258,7 +236,6 @@ const PaymentApp: React.FC = () => {
   const handlePaymentSuccess = async (response: any) => {
     setLoading(true);
     try {
-      // Verify payment with backend
       const verifyResponse = await fetch(`${BRIDGE_URL}/api/onramp/verify-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -282,8 +259,6 @@ const PaymentApp: React.FC = () => {
         });
         setSuccess('Payment successful! Tokens will be minted to your wallet.');
         handleNext();
-        
-        // Check order status periodically
         checkOrderStatus();
       } else {
         throw new Error('Payment verification failed');
@@ -361,114 +336,77 @@ const PaymentApp: React.FC = () => {
   }, [connected, mode]);
 
   // Off-ramp Functions
-  // Get crypto token mint address for currency
   const getCryptoTokenMint = (currency: string): string => {
     const tokenMints: { [key: string]: string } = {
-      'USD': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg', // Our custom USD token
-      'INR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE', // Our custom INR token
-      'EUR': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T', // Our custom EUR token
-      'GBP': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh', // Our custom GBP token
-      'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh', // Our custom JPY token
-      'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q', // Our custom CAD token
-      'AUD': 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'  // Mock AUD token
+      'USD': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg',
+      'INR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE',
+      'EUR': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T',
+      'GBP': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh',
+      'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh',
+      'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q',
+      'AUD': 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
     };
     return tokenMints[currency.toUpperCase()] || '';
   };
 
-  // Burn user's crypto tokens (Step 1 of off-ramp)
   const burnUserTokens = async (currency: string, amount: number): Promise<string | null> => {
-    let currentConnection = connection;
-
     try {
       if (!publicKey || !signTransaction) {
         throw new Error('Wallet not connected or cannot sign transactions');
       }
 
-      console.log(`🔥 Starting token burn: ${amount} ${currency} from ${publicKey.toBase58()}`);
-
-      // Get token mint address for the currency
       const tokenMint = getCryptoTokenMint(currency);
       if (!tokenMint) {
         throw new Error(`No token mint found for currency: ${currency}`);
       }
 
       const mintPubkey = new PublicKey(tokenMint);
-
-      // Get user's token account
-      const userTokenAccount = await getAssociatedTokenAddress(
-        mintPubkey,
-        publicKey
-      );
-
-      // Convert amount to token units (6 decimals)
+      const userTokenAccount = await getAssociatedTokenAddress(mintPubkey, publicKey);
       const tokenAmount = Math.floor(amount * Math.pow(10, 6));
-      console.log(`🔥 Burning ${tokenAmount} token units (${amount} tokens)`);
 
-      // Create burn instruction
       const burnInstruction = createBurnInstruction(
-        userTokenAccount, // token account to burn from
-        mintPubkey, // token mint
-        publicKey, // owner of token account
-        tokenAmount // amount to burn
+        userTokenAccount,
+        mintPubkey,
+        publicKey,
+        tokenAmount
       );
 
-      // Function to build, sign and send a fresh transaction (avoids reusing processed tx)
       const sendFresh = async (): Promise<string> => {
-        // Create transaction
         const tx = new Transaction().add(burnInstruction);
-        // Fresh recent blockhash
         const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
         tx.recentBlockhash = blockhash;
         tx.lastValidBlockHeight = lastValidBlockHeight;
         tx.feePayer = publicKey;
-        // Sign
         const signed = await signTransaction(tx);
-        // Send without simulation (real send only)
-        return await connection.sendRawTransaction(signed.serialize(), {
-          skipPreflight: true
-        });
+        return await connection.sendRawTransaction(signed.serialize(), { skipPreflight: true });
       };
 
-      // Send with robust retry that rebuilds the tx each attempt
-      console.log('📡 Sending token burn transaction...');
       let signature: string | undefined = undefined;
       let attempts = 0;
       const maxAttempts = 3;
       while (attempts < maxAttempts) {
         try {
           signature = await sendFresh();
-          console.log(`✅ Transaction sent: ${signature}`);
           break;
         } catch (e: any) {
           attempts++;
           const msg = e?.message || String(e);
-          console.warn(`⚠️ Send attempt ${attempts} failed: ${msg}`);
-          // If already processed, proceed to confirmation (treat as sent)
           if (msg.includes('already been processed')) {
-            // We don't have the signature in this branch; requery recent confirmed signatures for the fee payer as a fallback
             try {
               const sigs = await connection.getSignaturesForAddress(publicKey, { limit: 1 }, 'confirmed');
               if (sigs && sigs.length > 0) {
                 signature = sigs[0].signature;
                 break;
               }
-            } catch (_) {}
-            // If we cannot determine, retry fresh
+            } catch (_) { }
           }
-          if (attempts >= maxAttempts) {
-            throw new Error(msg);
-          }
+          if (attempts >= maxAttempts) throw new Error(msg);
           await new Promise(r => setTimeout(r, 1500));
         }
       }
 
-      // Ensure signature is defined
-      if (!signature) {
-        throw new Error('Transaction signature is undefined');
-      }
+      if (!signature) throw new Error('Transaction signature is undefined');
 
-      // Confirm transaction with proper options
-      console.log(`⏳ Confirming transaction: ${signature}`);
       const latest = await connection.getLatestBlockhash('confirmed');
       const confirmation = await connection.confirmTransaction({
         signature,
@@ -480,13 +418,9 @@ const PaymentApp: React.FC = () => {
         throw new Error(`Transaction failed: ${confirmation.value.err}`);
       }
 
-      console.log('✅ Transaction confirmed successfully');
-
-      console.log(`✅ Token burn successful! Transaction: ${signature}`);
       return signature;
-      
     } catch (error) {
-      console.error('❌ Token burning failed:', error);
+      console.error('Token burning failed:', error);
       throw error;
     }
   };
@@ -522,7 +456,6 @@ const PaymentApp: React.FC = () => {
       }
     } catch (error) {
       setError('Failed to get off-ramp quote');
-      console.error('Off-ramp quote error:', error);
     } finally {
       setLoading(false);
     }
@@ -543,17 +476,12 @@ const PaymentApp: React.FC = () => {
     setError(null);
 
     try {
-      // 🔥 STEP 1: BURN USER'S CRYPTO TOKENS
       setSuccess('🔥 Step 1: Burning your crypto tokens...');
-      
       const burnTxHash = await burnUserTokens(paymentForm.cryptoCurrency, paymentForm.amount);
       setBurnTransactionHash(burnTxHash);
-      
       setSuccess(`✅ Tokens burned successfully! Transaction: ${burnTxHash?.substring(0, 8)}...`);
-      
-      // 🏦 STEP 2: INITIATE FIAT PAYOUT VIA AUTOMATED ROUTING
+
       setSuccess('🏦 Step 2: Processing fiat payout via automated treasury routing...');
-      
       const response = await fetch(`${BRIDGE_URL}/api/offramp/initiate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -572,7 +500,7 @@ const PaymentApp: React.FC = () => {
             address: 'India',
             accountType: 'bank_transfer'
           },
-          burnTransactionHash: burnTxHash // Include burn transaction hash
+          burnTransactionHash: burnTxHash
         })
       });
 
@@ -580,9 +508,8 @@ const PaymentApp: React.FC = () => {
       if (data.success) {
         setSuccess(`✅ Off-ramp complete! Tokens burned: ${burnTxHash?.substring(0, 8)}... | Route: ${data.routeUsed}`);
         setActiveStep(2);
-        getTransactionHistory(); // Refresh transaction history
+        getTransactionHistory();
       } else {
-        // If backend fails, we still burned tokens - this is important for user to know
         setError(`⚠️ Tokens burned (${burnTxHash?.substring(0, 8)}...) but fiat payout failed: ${data.message || 'Unknown error'}`);
       }
     } catch (error: any) {
@@ -591,7 +518,6 @@ const PaymentApp: React.FC = () => {
       } else {
         setError(`Failed to burn tokens: ${error.message}`);
       }
-      console.error('Off-ramp initiation error:', error);
     } finally {
       setLoading(false);
     }
@@ -619,468 +545,385 @@ const PaymentApp: React.FC = () => {
 
   const renderStepContent = (step: number) => {
     if (mode === 'offramp') {
-      // Off-ramp step content
       switch (step) {
         case 0:
           return (
-            <Box>
-              <Typography variant="h6" gutterBottom>
-                Enter Withdrawal Details
-              </Typography>
-              <Alert severity="info" sx={{ mb: 3 }}>
-                <InfoIcon sx={{ mr: 1 }} />
-                You have {userTokenBalance} {paymentForm.cryptoCurrency} tokens available for withdrawal
-              </Alert>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Crypto Amount to Sell"
-                    type="number"
-                    value={paymentForm.amount}
-                    onChange={(e) => setPaymentForm({...paymentForm, amount: Number(e.target.value)})}
-                    InputProps={{
-                      endAdornment: paymentForm.cryptoCurrency
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Crypto Currency</InputLabel>
-                    <Select
-                      value={paymentForm.cryptoCurrency}
-                      onChange={(e) => setPaymentForm({...paymentForm, cryptoCurrency: e.target.value})}
-                    >
-                      <MenuItem value="USD">USD Tokens</MenuItem>
-                      <MenuItem value="INR">INR Tokens</MenuItem>
-                      <MenuItem value="EUR">EUR Tokens</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Receive Fiat Currency</InputLabel>
-                    <Select
-                      value={paymentForm.fiatCurrency}
-                      onChange={(e) => setPaymentForm({...paymentForm, fiatCurrency: e.target.value})}
-                    >
-                      <MenuItem value="INR">Indian Rupee (INR)</MenuItem>
-                      <MenuItem value="USD">US Dollar (USD)</MenuItem>
-                      <MenuItem value="EUR">Euro (EUR)</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Account Holder Name"
-                    value={paymentForm.name}
-                    onChange={(e) => setPaymentForm({...paymentForm, name: e.target.value})}
-                    placeholder="Full name as per bank account"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Bank Account Number"
-                    value={paymentForm.accountNumber || ''}
-                    onChange={(e) => setPaymentForm({...paymentForm, accountNumber: e.target.value})}
-                    placeholder="1234567890"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="IFSC Code"
-                    value={paymentForm.ifscCode || ''}
-                    onChange={(e) => setPaymentForm({...paymentForm, ifscCode: e.target.value})}
-                    placeholder="SBIN0000001"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Email Address"
-                    value={paymentForm.email}
-                    onChange={(e) => setPaymentForm({...paymentForm, email: e.target.value})}
-                    placeholder="your@email.com"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Phone Number"
-                    value={paymentForm.phone || ''}
-                    onChange={(e) => setPaymentForm({...paymentForm, phone: e.target.value})}
-                    placeholder="9876543210"
-                  />
-                </Grid>
-              </Grid>
-              <Box sx={{ mt: 3 }}>
-                <Button
-                  variant="contained"
-                  onClick={getOfframpQuote}
-                  disabled={loading || !connected}
-                  startIcon={loading ? <CircularProgress size={20} /> : <ExchangeIcon />}
-                  fullWidth
-                >
+            <div className="space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start">
+                <InfoIcon className="text-blue-500 mr-3 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-blue-900">Available Balance</h4>
+                  <p className="text-blue-700 text-sm">
+                    You have {userTokenBalance} {paymentForm.cryptoCurrency} tokens available for withdrawal
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input
+                  label="Crypto Amount to Sell"
+                  type="number"
+                  value={paymentForm.amount}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, amount: Number(e.target.value) })}
+                />
+                <Select
+                  label="Crypto Currency"
+                  value={paymentForm.cryptoCurrency}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, cryptoCurrency: e.target.value })}
+                  options={[
+                    { value: 'USD', label: 'USD Tokens' },
+                    { value: 'INR', label: 'INR Tokens' },
+                    { value: 'EUR', label: 'EUR Tokens' }
+                  ]}
+                />
+                <Select
+                  label="Receive Fiat Currency"
+                  value={paymentForm.fiatCurrency}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, fiatCurrency: e.target.value })}
+                  options={[
+                    { value: 'INR', label: 'Indian Rupee (INR)' },
+                    { value: 'USD', label: 'US Dollar (USD)' },
+                    { value: 'EUR', label: 'Euro (EUR)' }
+                  ]}
+                />
+                <Input
+                  label="Account Holder Name"
+                  value={paymentForm.name}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, name: e.target.value })}
+                  placeholder="Full name as per bank account"
+                />
+                <Input
+                  label="Bank Account Number"
+                  value={paymentForm.accountNumber || ''}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, accountNumber: e.target.value })}
+                  placeholder="1234567890"
+                />
+                <Input
+                  label="IFSC Code"
+                  value={paymentForm.ifscCode || ''}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, ifscCode: e.target.value })}
+                  placeholder="SBIN0000001"
+                />
+                <Input
+                  label="Email Address"
+                  value={paymentForm.email}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, email: e.target.value })}
+                  placeholder="your@email.com"
+                />
+                <Input
+                  label="Phone Number"
+                  value={paymentForm.phone || ''}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, phone: e.target.value })}
+                  placeholder="9876543210"
+                />
+              </div>
+
+              <Button
+                onClick={getOfframpQuote}
+                disabled={loading || !connected}
+                className="w-full"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  {loading ? <Spinner /> : <ExchangeIcon />}
                   {loading ? 'Getting Quote...' : 'Get Withdrawal Quote'}
-                </Button>
-              </Box>
-            </Box>
+                </div>
+              </Button>
+            </div>
           );
         case 1:
           return (
-            <Box>
-              <Typography variant="h6" gutterBottom>
-                Review Quote & Burn Tokens
-              </Typography>
-              <Alert severity="success" sx={{ mb: 2 }}>
-                Quote generated successfully! Review the details below.
-              </Alert>
-              
+            <div className="space-y-6">
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-green-800">
+                <p className="font-medium">Quote generated successfully! Review the details below.</p>
+              </div>
+
               {currentQuote && (
-                <Card sx={{ mb: 3 }}>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      💰 Off-ramp Quote Details
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Typography variant="body2" color="text.secondary">You're Selling:</Typography>
-                        <Typography variant="h6">{currentQuote.inputAmount} {currentQuote.fromCurrency}</Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography variant="body2" color="text.secondary">You'll Receive:</Typography>
-                        <Typography variant="h6" color="primary">{currentQuote.netAmount} {currentQuote.toCurrency}</Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography variant="body2" color="text.secondary">Exchange Rate:</Typography>
-                        <Typography>1 {currentQuote.fromCurrency} = {currentQuote.exchangeRate} {currentQuote.toCurrency}</Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography variant="body2" color="text.secondary">Total Fees:</Typography>
-                        <Typography>{currentQuote.totalFees} {currentQuote.toCurrency}</Typography>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
+                <Card className="bg-gray-50">
+                  <h3 className="text-lg font-semibold mb-4">💰 Off-ramp Quote Details</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">You're Selling:</p>
+                      <p className="text-lg font-medium">{currentQuote.inputAmount} {currentQuote.fromCurrency}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">You'll Receive:</p>
+                      <p className="text-lg font-bold text-green-600">{currentQuote.netAmount} {currentQuote.toCurrency}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Exchange Rate:</p>
+                      <p>1 {currentQuote.fromCurrency} = {currentQuote.exchangeRate} {currentQuote.toCurrency}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Total Fees:</p>
+                      <p>{currentQuote.totalFees} {currentQuote.toCurrency}</p>
+                    </div>
+                  </div>
                 </Card>
               )}
 
-              <Alert severity="warning" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  🔥 <strong>Token Burning:</strong> Your {paymentForm.amount} {paymentForm.cryptoCurrency} tokens will be permanently burned from your wallet.
-                  <br />
-                  🏦 <strong>Automated Routing:</strong> System will automatically select the best payout route (treasury or stablecoin pool).
-                </Typography>
-              </Alert>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-yellow-800 text-sm">
+                <p className="mb-2">🔥 <strong>Token Burning:</strong> Your {paymentForm.amount} {paymentForm.cryptoCurrency} tokens will be permanently burned from your wallet.</p>
+                <p>🏦 <strong>Automated Routing:</strong> System will automatically select the best payout route (treasury or stablecoin pool).</p>
+              </div>
 
-              <Box sx={{ mt: 3 }}>
-                <Button
-                  variant="contained"
-                  onClick={initiateOfframp}
-                  disabled={loading}
-                  startIcon={loading ? <CircularProgress size={20} /> : <OffRampIcon />}
-                  fullWidth
-                  color="secondary"
-                >
+              <Button
+                onClick={initiateOfframp}
+                disabled={loading}
+                variant="secondary"
+                className="w-full"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  {loading ? <Spinner /> : <OffRampIcon />}
                   {loading ? 'Burning Tokens & Processing...' : '🔥 Burn Tokens & Withdraw Fiat'}
-                </Button>
-              </Box>
-            </Box>
+                </div>
+              </Button>
+            </div>
           );
         case 2:
           return (
-            <Box textAlign="center">
-              <SuccessIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
-              <Typography variant="h5" gutterBottom>
-                🔥 Off-ramp Complete!
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            <div className="text-center py-8">
+              <SuccessIcon className="text-green-500 text-6xl mb-4" style={{ fontSize: 64 }} />
+              <h3 className="text-2xl font-bold mb-2">🔥 Off-ramp Complete!</h3>
+              <p className="text-gray-500 mb-6">
                 Your crypto tokens have been burned and fiat payment is being processed via automated routing.
-              </Typography>
-              
+              </p>
+
               {burnTransactionHash && (
-                <Card sx={{ mb: 3 }}>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      🔥 Token Burn Transaction
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      Transaction Hash:
-                    </Typography>
-                    <Typography 
-                      variant="body1" 
-                      sx={{ 
-                        wordBreak: 'break-all', 
-                        fontFamily: 'monospace',
-                        backgroundColor: 'grey.100',
-                        p: 1,
-                        borderRadius: 1
-                      }}
-                    >
-                      {burnTransactionHash}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => window.open(`https://explorer.solana.com/tx/${burnTransactionHash}?cluster=devnet`, '_blank')}
-                      sx={{ mt: 2 }}
-                    >
-                      View on Solana Explorer
-                    </Button>
-                  </CardContent>
+                <Card className="mb-6 text-left bg-gray-50">
+                  <h4 className="font-semibold mb-2">🔥 Token Burn Transaction</h4>
+                  <p className="text-sm text-gray-500 mb-1">Transaction Hash:</p>
+                  <div className="bg-white p-2 rounded border border-gray-200 font-mono text-xs break-all mb-3">
+                    {burnTransactionHash}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(`https://explorer.solana.com/tx/${burnTransactionHash}?cluster=devnet`, '_blank')}
+                  >
+                    View on Solana Explorer
+                  </Button>
                 </Card>
               )}
-              
-              <Button
-                variant="contained"
-                onClick={resetForm}
-                startIcon={<SwapIcon />}
-              >
-                Make Another Transaction
+
+              <Button onClick={resetForm}>
+                <div className="flex items-center gap-2">
+                  <SwapIcon /> Make Another Transaction
+                </div>
               </Button>
-            </Box>
+            </div>
           );
         default:
           return <div>Unknown step</div>;
       }
     }
 
-    // On-ramp step content (existing)
+    // On-ramp step content
     switch (step) {
       case 0:
         return (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Enter Payment Details
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Amount"
-                  type="number"
-                  value={paymentForm.amount}
-                  onChange={(e) => setPaymentForm({...paymentForm, amount: Number(e.target.value)})}
-                  InputProps={{
-                    startAdornment: paymentForm.fiatCurrency === 'INR' ? '₹' : '$'
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Fiat Currency</InputLabel>
-                  <Select
-                    value={paymentForm.fiatCurrency}
-                    onChange={(e) => setPaymentForm({...paymentForm, fiatCurrency: e.target.value})}
-                  >
-                    <MenuItem value="INR">INR (₹)</MenuItem>
-                    <MenuItem value="USD">USD ($)</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Crypto Token</InputLabel>
-                  <Select
-                    value={paymentForm.cryptoCurrency}
-                    onChange={(e) => setPaymentForm({...paymentForm, cryptoCurrency: e.target.value})}
-                  >
-                    <MenuItem value="USD">USD Token</MenuItem>
-                    <MenuItem value="EUR">EUR Token</MenuItem>
-                    <MenuItem value="INR">INR Token</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Your Name"
-                  value={paymentForm.name}
-                  onChange={(e) => setPaymentForm({...paymentForm, name: e.target.value})}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Email"
-                  type="email"
-                  value={paymentForm.email}
-                  onChange={(e) => setPaymentForm({...paymentForm, email: e.target.value})}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Phone Number"
-                  value={paymentForm.phone}
-                  onChange={(e) => setPaymentForm({...paymentForm, phone: e.target.value})}
-                />
-              </Grid>
-            </Grid>
-            
-            <Box sx={{ mt: 3 }}>
-              <Paper sx={{ p: 2, bgcolor: 'background.paper' }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  <ExchangeIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-                  Transaction Summary
-                </Typography>
-                <Typography variant="body2">
-                  You will pay: <strong>{paymentForm.amount} {paymentForm.fiatCurrency}</strong>
-                </Typography>
-                <Typography variant="body2">
-                  You will receive: <strong>~{paymentForm.amount} {paymentForm.cryptoCurrency} tokens</strong>
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Tokens will be minted to: {connected ? publicKey?.toBase58().slice(0, 8) + '...' : 'Connect wallet'}
-                </Typography>
-              </Paper>
-            </Box>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label="Amount"
+                type="number"
+                value={paymentForm.amount}
+                onChange={(e) => setPaymentForm({ ...paymentForm, amount: Number(e.target.value) })}
+              />
+              <Select
+                label="Fiat Currency"
+                value={paymentForm.fiatCurrency}
+                onChange={(e) => setPaymentForm({ ...paymentForm, fiatCurrency: e.target.value })}
+                options={[
+                  { value: 'INR', label: 'INR (₹)' },
+                  { value: 'USD', label: 'USD ($)' }
+                ]}
+              />
+              <Select
+                label="Crypto Token"
+                value={paymentForm.cryptoCurrency}
+                onChange={(e) => setPaymentForm({ ...paymentForm, cryptoCurrency: e.target.value })}
+                options={[
+                  { value: 'USD', label: 'USD Token' },
+                  { value: 'EUR', label: 'EUR Token' },
+                  { value: 'INR', label: 'INR Token' }
+                ]}
+              />
+              <Input
+                label="Your Name"
+                value={paymentForm.name}
+                onChange={(e) => setPaymentForm({ ...paymentForm, name: e.target.value })}
+              />
+              <Input
+                label="Email"
+                type="email"
+                value={paymentForm.email}
+                onChange={(e) => setPaymentForm({ ...paymentForm, email: e.target.value })}
+              />
+              <Input
+                label="Phone Number"
+                value={paymentForm.phone}
+                onChange={(e) => setPaymentForm({ ...paymentForm, phone: e.target.value })}
+              />
+            </div>
 
-            <Box sx={{ mt: 3 }}>
-              <Button
-                variant="contained"
-                onClick={createPaymentOrder}
-                disabled={loading || !connected}
-                startIcon={loading ? <CircularProgress size={20} /> : <PaymentIcon />}
-                fullWidth
-                size="large"
-              >
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <ExchangeIcon className="text-gray-500" /> Transaction Summary
+              </h4>
+              <div className="space-y-1 text-sm">
+                <p>You will pay: <strong>{paymentForm.amount} {paymentForm.fiatCurrency}</strong></p>
+                <p>You will receive: <strong>~{paymentForm.amount} {paymentForm.cryptoCurrency} tokens</strong></p>
+                <p className="text-gray-500 mt-2">
+                  Tokens will be minted to: {connected ? publicKey?.toBase58().slice(0, 8) + '...' : 'Connect wallet'}
+                </p>
+              </div>
+            </div>
+
+            <Button
+              onClick={createPaymentOrder}
+              disabled={loading || !connected}
+              className="w-full"
+              size="lg"
+            >
+              <div className="flex items-center justify-center gap-2">
+                {loading ? <Spinner /> : <PaymentIcon />}
                 {loading ? 'Creating Order...' : 'Create Payment Order'}
-              </Button>
-            </Box>
-          </Box>
+              </div>
+            </Button>
+          </div>
         );
 
       case 1:
         return (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Order Created Successfully
-            </Typography>
-            {currentOrder && (
-              <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="subtitle2" gutterBottom>Order Details:</Typography>
-                <Typography variant="body2">Order ID: {currentOrder.orderId}</Typography>
-                <Typography variant="body2">Razorpay Order ID: {currentOrder.razorpayOrderId}</Typography>
-                <Typography variant="body2">Amount: {currentOrder.amount} {currentOrder.currency}</Typography>
-                <Typography variant="body2">Status: {currentOrder.status}</Typography>
-              </Paper>
-            )}
-            
-            <Alert severity="info" sx={{ mb: 3 }}>
-              <Typography variant="body2">
-                Your order has been created. Click "Open Payment Gateway" to complete the payment using Razorpay.
-                You can pay using UPI, Cards, Net Banking, or Wallets.
-              </Typography>
-            </Alert>
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-xl font-bold mb-2">Order Created Successfully</h3>
+            </div>
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            {currentOrder && (
+              <Card className="bg-gray-50">
+                <h4 className="font-semibold mb-2">Order Details:</h4>
+                <div className="space-y-1 text-sm">
+                  <p><span className="text-gray-500">Order ID:</span> {currentOrder.orderId}</p>
+                  <p><span className="text-gray-500">Razorpay ID:</span> {currentOrder.razorpayOrderId}</p>
+                  <p><span className="text-gray-500">Amount:</span> {currentOrder.amount} {currentOrder.currency}</p>
+                  <p><span className="text-gray-500">Status:</span> {currentOrder.status}</p>
+                </div>
+              </Card>
+            )}
+
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm">
+              <p>Your order has been created. Click "Open Payment Gateway" to complete the payment using Razorpay. You can pay using UPI, Cards, Net Banking, or Wallets.</p>
+            </div>
+
+            <div className="flex gap-4">
               <Button
-                variant="contained"
                 onClick={openRazorpayCheckout}
-                startIcon={<PaymentIcon />}
-                size="large"
-                fullWidth
+                className="flex-1"
+                size="lg"
               >
-                Open Payment Gateway
+                <div className="flex items-center justify-center gap-2">
+                  <PaymentIcon /> Open Payment Gateway
+                </div>
               </Button>
-              <Button variant="outlined" onClick={handleBack}>
+              <Button variant="outline" onClick={handleBack}>
                 Back
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         );
 
       case 2:
         return (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Payment Processing
-            </Typography>
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold mb-4">Payment Processing</h3>
+
             {paymentStatus ? (
-              <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  <SuccessIcon sx={{ mr: 1, color: 'success.main' }} />
-                  Payment Successful!
-                </Typography>
-                <Typography variant="body2">Payment ID: {paymentStatus.paymentId}</Typography>
-                <Typography variant="body2">Amount: {paymentStatus.amount} {paymentStatus.currency}</Typography>
-                <Typography variant="body2">Status: {paymentStatus.status}</Typography>
-                <Typography variant="body2">Time: {new Date(paymentStatus.timestamp).toLocaleString()}</Typography>
-                
-                {paymentStatus.orderStatus && (
-                  <>
-                    <Divider sx={{ my: 1 }} />
-                    <Typography variant="body2">Order Status: {paymentStatus.orderStatus}</Typography>
-                    {paymentStatus.cryptoDelivered && (
-                      <Typography variant="body2" color="success.main">
-                        ✓ Crypto tokens delivered to your wallet
-                      </Typography>
-                    )}
-                    {paymentStatus.transactionHash && (
-                      <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-                        Transaction: {paymentStatus.transactionHash}
-                      </Typography>
-                    )}
-                  </>
-                )}
-              </Paper>
+              <Card className="bg-green-50 border-green-100">
+                <div className="flex items-center gap-2 mb-4 text-green-700">
+                  <SuccessIcon />
+                  <h4 className="font-bold">Payment Successful!</h4>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <p><span className="text-gray-500">Payment ID:</span> {paymentStatus.paymentId}</p>
+                  <p><span className="text-gray-500">Amount:</span> {paymentStatus.amount} {paymentStatus.currency}</p>
+                  <p><span className="text-gray-500">Status:</span> {paymentStatus.status}</p>
+                  <p><span className="text-gray-500">Time:</span> {new Date(paymentStatus.timestamp).toLocaleString()}</p>
+
+                  {paymentStatus.orderStatus && (
+                    <>
+                      <hr className="my-2 border-green-200" />
+                      <p><span className="text-gray-500">Order Status:</span> {paymentStatus.orderStatus}</p>
+                      {paymentStatus.cryptoDelivered && (
+                        <p className="text-green-600 font-medium">✓ Crypto tokens delivered to your wallet</p>
+                      )}
+                      {paymentStatus.transactionHash && (
+                        <p className="text-xs font-mono bg-white p-1 rounded mt-1">
+                          Tx: {paymentStatus.transactionHash}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+              </Card>
             ) : (
-              <Alert severity="info">
-                Complete the payment in the Razorpay window to proceed.
-              </Alert>
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800">
+                <p>Complete the payment in the Razorpay window to proceed.</p>
+              </div>
             )}
 
             {paymentStatus && (
               <Button
-                variant="contained"
                 onClick={checkOrderStatus}
                 disabled={loading}
-                startIcon={loading ? <CircularProgress size={20} /> : <InfoIcon />}
-                fullWidth
+                className="w-full"
               >
-                {loading ? 'Checking Status...' : 'Check Order Status'}
+                <div className="flex items-center justify-center gap-2">
+                  {loading ? <Spinner /> : <InfoIcon />}
+                  {loading ? 'Checking Status...' : 'Check Order Status'}
+                </div>
               </Button>
             )}
-          </Box>
+          </div>
         );
 
       case 3:
         return (
-          <Box textAlign="center">
-            <SuccessIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              Transaction Completed!
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+          <div className="text-center py-8">
+            <SuccessIcon className="text-green-500 text-6xl mb-4" style={{ fontSize: 64 }} />
+            <h3 className="text-2xl font-bold mb-2">Transaction Completed!</h3>
+            <p className="text-gray-500 mb-6">
               Your crypto tokens have been successfully minted to your wallet.
-            </Typography>
-            
+            </p>
+
             {paymentStatus && (
-              <Paper sx={{ p: 2, mb: 3, textAlign: 'left' }}>
-                <Typography variant="subtitle2" gutterBottom>Final Transaction Details:</Typography>
-                <Typography variant="body2">Amount Paid: {paymentStatus.amount} {paymentStatus.currency}</Typography>
-                <Typography variant="body2">Tokens Received: {paymentForm.cryptoCurrency} tokens</Typography>
-                <Typography variant="body2">Wallet: {publicKey?.toBase58()}</Typography>
-                {paymentStatus.transactionHash && (
-                  <Typography variant="body2" sx={{ fontSize: '0.75rem', mt: 1 }}>
-                    Blockchain Transaction: {paymentStatus.transactionHash}
-                  </Typography>
-                )}
-              </Paper>
+              <Card className="mb-6 text-left bg-gray-50">
+                <h4 className="font-semibold mb-2">Final Transaction Details:</h4>
+                <div className="space-y-1 text-sm">
+                  <p><span className="text-gray-500">Amount Paid:</span> {paymentStatus.amount} {paymentStatus.currency}</p>
+                  <p><span className="text-gray-500">Tokens Received:</span> {paymentForm.cryptoCurrency} tokens</p>
+                  <p><span className="text-gray-500">Wallet:</span> {publicKey?.toBase58()}</p>
+                  {paymentStatus.transactionHash && (
+                    <div className="mt-2">
+                      <p className="text-gray-500 mb-1">Blockchain Transaction:</p>
+                      <p className="font-mono text-xs bg-white p-1 rounded border border-gray-200 break-all">
+                        {paymentStatus.transactionHash}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </Card>
             )}
 
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-              <Button variant="contained" onClick={handleReset}>
+            <div className="flex justify-center gap-4">
+              <Button onClick={handleReset}>
                 Make Another Payment
               </Button>
-              <Button variant="outlined" onClick={getTransactionHistory}>
+              <Button variant="outline" onClick={getTransactionHistory}>
                 View History
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         );
 
       default:
@@ -1089,101 +932,123 @@ const PaymentApp: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ height: '100vh', overflowY: 'auto', py: 2 }}>
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          💳 Nivix Payment App
-        </Typography>
-        <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 2 }}>
-          {mode === 'onramp' ? 'Buy crypto tokens with fiat currency' : 'Sell crypto tokens for fiat currency'}
-        </Typography>
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">💳 Nivix Payment App</h1>
+          <p className="text-gray-500">
+            {mode === 'onramp' ? 'Buy crypto tokens with fiat currency' : 'Sell crypto tokens for fiat currency'}
+          </p>
+        </div>
 
-        {/* Mode Toggle */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-          <Paper sx={{ p: 1, display: 'flex', borderRadius: 2 }}>
-            <Button
-              variant={mode === 'onramp' ? 'contained' : 'outlined'}
+        {/* Mode Toggle - Tabs */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-white p-1 rounded-xl shadow-sm border border-gray-200 inline-flex">
+            <button
               onClick={() => { setMode('onramp'); resetForm(); }}
-              startIcon={<OnRampIcon />}
-              sx={{ mr: 1 }}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${mode === 'onramp'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-gray-600 hover:bg-gray-50'
+                }`}
             >
+              <OnRampIcon fontSize="small" />
               On-Ramp (Buy Crypto)
-            </Button>
-            <Button
-              variant={mode === 'offramp' ? 'contained' : 'outlined'}
+            </button>
+            <button
               onClick={() => { setMode('offramp'); resetForm(); }}
-              startIcon={<OffRampIcon />}
-              color="secondary"
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${mode === 'offramp'
+                  ? 'bg-gray-800 text-white shadow-md'
+                  : 'text-gray-600 hover:bg-gray-50'
+                }`}
             >
+              <OffRampIcon fontSize="small" />
               Off-Ramp (Sell Crypto)
-            </Button>
-          </Paper>
-        </Box>
+            </button>
+          </div>
+        </div>
 
         {!connected && (
-          <Alert severity="warning" sx={{ mb: 3 }}>
-            <WalletIcon sx={{ mr: 1 }} />
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 flex items-center text-yellow-800">
+            <WalletIcon className="mr-2" />
             Please connect your Solana wallet to continue with payments
-          </Alert>
+          </div>
         )}
 
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start text-red-800">
+            <ErrorIcon className="mr-2 mt-0.5" />
+            <div className="flex-1">{error}</div>
+            <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700">×</button>
+          </div>
         )}
 
         {success && (
-          <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccess(null)}>
-            {success}
-          </Alert>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-start text-green-800">
+            <SuccessIcon className="mr-2 mt-0.5" />
+            <div className="flex-1">{success}</div>
+            <button onClick={() => setSuccess(null)} className="text-green-500 hover:text-green-700">×</button>
+          </div>
         )}
 
-        <Card>
-          <CardContent>
-            <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((label, index) => (
-                <Step key={label}>
-                  <StepLabel>
-                    <Typography variant="h6">{label}</Typography>
-                  </StepLabel>
-                  <StepContent>
-                    {renderStepContent(index)}
-                  </StepContent>
-                </Step>
-              ))}
-            </Stepper>
-          </CardContent>
+        <Card className="mb-8">
+          {/* Custom Stepper */}
+          <div className="flex mb-8 relative">
+            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 -z-10 -translate-y-1/2"></div>
+            {steps.map((label, index) => {
+              const isActive = index === activeStep;
+              const isCompleted = index < activeStep;
+
+              return (
+                <div key={label} className="flex-1 flex flex-col items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mb-2 transition-colors ${isActive ? 'bg-blue-600 text-white ring-4 ring-blue-100' :
+                        isCompleted ? 'bg-green-500 text-white' :
+                          'bg-gray-200 text-gray-500'
+                      }`}
+                  >
+                    {isCompleted ? '✓' : index + 1}
+                  </div>
+                  <span className={`text-xs font-medium text-center hidden sm:block ${isActive ? 'text-blue-600' :
+                      isCompleted ? 'text-green-600' :
+                        'text-gray-400'
+                    }`}>
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Step Content */}
+          <div className="mt-6">
+            {renderStepContent(activeStep)}
+          </div>
         </Card>
 
         {transactionHistory.length > 0 && (
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Recent Transactions
-              </Typography>
-              <List>
-                {transactionHistory.slice(0, 5).map((tx, index) => (
-                  <ListItem key={index} divider>
-                    <ListItemIcon>
-                      <Chip 
-                        label={tx.status} 
-                        size="small" 
-                        color={tx.status === 'completed' ? 'success' : 'default'} 
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={`${tx.fiatAmount} ${tx.fiatCurrency} → ${tx.cryptoCurrency} tokens`}
-                      secondary={`${new Date(tx.createdAt).toLocaleString()} | Order: ${tx.orderId}`}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
+          <Card>
+            <h3 className="text-lg font-bold mb-4">Recent Transactions</h3>
+            <div className="space-y-4">
+              {transactionHistory.slice(0, 5).map((tx, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full ${tx.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <div>
+                      <p className="font-medium text-sm">{tx.fiatAmount} {tx.fiatCurrency} → {tx.cryptoCurrency}</p>
+                      <p className="text-xs text-gray-500">{new Date(tx.createdAt).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full ${tx.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'
+                    }`}>
+                    {tx.status}
+                  </span>
+                </div>
+              ))}
+            </div>
           </Card>
         )}
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 };
 
