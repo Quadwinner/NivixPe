@@ -4,8 +4,18 @@
 echo "🚀 Starting Nivix Project"
 echo "========================="
 
-PROJECT_ROOT="/media/OS/for linux work/blockchain solana/nivix-project"
+PROJECT_ROOT="/media/shubham/OS/for linux work/blockchain solana/nivix-project"
 cd "$PROJECT_ROOT"
+
+# Activate docker group if user is in it but current session doesn't have it
+if id -nG | grep -qw docker; then
+    # User is already in docker group in this session
+    true
+elif id -nG "$USER" | grep -qw docker; then
+    # User is in docker group but current session doesn't have it - activate it
+    echo "🔄 Activating docker group for this session..."
+    exec sg docker -c "bash $0 $*"
+fi
 
 # 1. Clean up any existing processes
 echo "🧹 Cleaning up processes..."
@@ -44,6 +54,7 @@ fi
 # Add Go envs (idempotent)
 export PATH=$HOME/go-install/go/bin:$PATH
 export GOPATH=$HOME/go
+export PATH=/usr/lib/go-1.22/bin:/usr/local/go/bin:$PATH
 
 # Verify Go installation
 if command -v go &> /dev/null; then
@@ -60,10 +71,31 @@ cd fabric-samples/test-network
 # Ensure Docker is running properly before starting Fabric
 echo "🐳 Checking Docker daemon..."
 if ! docker info > /dev/null 2>&1; then
-    echo "⚠️  Docker daemon not responding, attempting restart..."
-    sudo systemctl restart docker
-    sleep 5
+    echo "⚠️  Docker daemon not accessible, checking service status..."
+    if sudo systemctl is-active --quiet docker; then
+        echo "⚠️  Docker service is running but not accessible to current user"
+        echo "📝 Checking docker group membership..."
+        # Check if user is in docker group (even if not active in this session)
+        if id -nG "$USER" | grep -qw docker; then
+            echo "✅ User is in docker group. Activating group..."
+            exec sg docker -c "bash $0 $*"
+        else
+            echo "❌ User not in docker group. Please run:"
+            echo "   sudo usermod -aG docker $USER"
+            echo "   Then log out and back in, or run: newgrp docker"
+            exit 1
+        fi
+    else
+        echo "⚠️  Docker service not running, attempting to start..."
+        sudo systemctl restart docker
+        sleep 5
+        if ! docker info > /dev/null 2>&1; then
+            echo "❌ Docker still not accessible after restart"
+            exit 1
+        fi
+    fi
 fi
+echo "✅ Docker is accessible"
 
 # Clean up any stale containers and networks
 echo "🧹 Cleaning up stale Docker resources..."
@@ -74,19 +106,36 @@ docker network prune -f 2>/dev/null || true
 sleep 2
 ./network.sh up createChannel -ca -c mychannel
 
+# Ensure the peers can build chaincode by using the Docker socket (default compose file expects it)
+if ! docker inspect peer0.org1.example.com >/dev/null 2>&1; then
+    echo "❌ Fabric peer containers not found after network start"
+    exit 1
+fi
+
+# Wait for Fabric network to be fully ready
+echo "⏳ Waiting for Fabric network to be ready..."
+MAX_WAIT=60
+WAIT_COUNT=0
+while [ $WAIT_COUNT -lt $MAX_WAIT ]; do
+    if docker ps | grep -q "peer0.org1.example.com" && docker ps | grep -q "orderer.example.com"; then
+        # Check if peer is responding
+        if timeout 3 bash -c "echo > /dev/tcp/localhost/7051" 2>/dev/null; then
+            echo "✅ Fabric network is ready!"
+            break
+        fi
+    fi
+    WAIT_COUNT=$((WAIT_COUNT + 1))
+    sleep 2
+done
+
+if [ $WAIT_COUNT -ge $MAX_WAIT ]; then
+    echo "⚠️  Fabric network may not be fully ready, but continuing..."
+fi
+
 # 3. Deploy chaincode with better error handling
 echo "📦 Deploying chaincode..."
 export PATH=$HOME/go-install/go/bin:$PATH
 export GOPATH=$HOME/go
-
-# Verify Docker socket is accessible from peer containers
-echo "🔌 Verifying Docker socket connectivity..."
-if ! docker exec peer0.org1.example.com ls /var/run/docker.sock > /dev/null 2>&1; then
-    echo "⚠️  Docker socket not accessible in peer container"
-    echo "🔄 Restarting containers to refresh Docker socket mount..."
-    docker-compose -f compose/compose-test-net.yaml -f compose/docker/docker-compose-test-net.yaml restart 2>/dev/null || true
-    sleep 10
-fi
 
 # Clean up old chaincode packages
 rm -f nivix-kyc.tar.gz 2>/dev/null || true

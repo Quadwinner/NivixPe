@@ -7,16 +7,53 @@ FUNCTION_NAME="$1"
 ARGS="$2"
 OPERATION="$3"
 
-# Use absolute paths to avoid issues
-PROJECT_ROOT="/media/OS/for linux work/blockchain solana/nivix-project"
-NETWORK_DIR="$PROJECT_ROOT/fabric-samples/test-network"
-PEER_BIN="$PROJECT_ROOT/fabric-samples/bin/peer"
+# Resolve paths dynamically (no hardcoded machine-specific paths)
+# Priority:
+# 1) FABRIC_NETWORK_DIR / FABRIC_PROJECT_ROOT / NIVIX_PROJECT_ROOT envs (set by bridge-service)
+# 2) Infer from current working directory (bridge-service runs from repo root)
+# 3) Walk up from script dir to find fabric-samples/test-network (for non-/tmp usage)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+find_project_root() {
+  local start="$1"
+  local cur="$start"
+  local i=0
+  while [ $i -lt 6 ]; do
+    if [ -d "${cur}/fabric-samples/test-network" ]; then
+      echo "$cur"
+      return 0
+    fi
+    cur="$(cd "${cur}/.." && pwd)"
+    i=$((i+1))
+  done
+  return 1
+}
+
+PROJECT_ROOT=""
+if [ -n "${FABRIC_PROJECT_ROOT:-}" ]; then
+  PROJECT_ROOT="${FABRIC_PROJECT_ROOT}"
+elif [ -n "${NIVIX_PROJECT_ROOT:-}" ]; then
+  PROJECT_ROOT="${NIVIX_PROJECT_ROOT}"
+else
+  PROJECT_ROOT="$(find_project_root "$(pwd)" || true)"
+  if [ -z "$PROJECT_ROOT" ]; then
+    PROJECT_ROOT="$(find_project_root "${SCRIPT_DIR}/.." || true)"
+  fi
+fi
+
+if [ -z "$PROJECT_ROOT" ]; then
+  echo "❌ Unable to locate project root (fabric-samples/test-network not found). Set NIVIX_PROJECT_ROOT or FABRIC_PROJECT_ROOT." >&2
+  exit 1
+fi
+
+NETWORK_DIR="${FABRIC_NETWORK_DIR:-${PROJECT_ROOT}/fabric-samples/test-network}"
+PEER_BIN="${PROJECT_ROOT}/fabric-samples/bin/peer"
 
 # Change to network directory
 cd "$NETWORK_DIR"
 
 # Set Fabric config path
-export FABRIC_CFG_PATH="$PROJECT_ROOT/fabric-samples/config"
+export FABRIC_CFG_PATH="${PROJECT_ROOT}/fabric-samples/config"
 
 # Set environment variables for Org1
 export CORE_PEER_TLS_ENABLED=true

@@ -29,10 +29,17 @@ trap "popd > /dev/null" EXIT
 . scripts/utils.sh
 
 : ${CONTAINER_CLI:="docker"}
-if command -v ${CONTAINER_CLI}-compose > /dev/null 2>&1; then
+#
+# Compose selection (root-cause fix):
+# - Ubuntu 24.04 ships legacy `docker-compose` v1 as a Python package which can break on Python 3.12 (missing distutils).
+# - Prefer Compose v2 plugin: `docker compose`.
+# - Fall back to `${CONTAINER_CLI}-compose` only when it is actually runnable.
+if ${CONTAINER_CLI} compose version > /dev/null 2>&1; then
+    : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI} compose"}
+elif command -v ${CONTAINER_CLI}-compose > /dev/null 2>&1 && ${CONTAINER_CLI}-compose version > /dev/null 2>&1; then
     : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI}-compose"}
 else
-    : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI} compose"}
+    fatalln "Docker Compose not available. Install Compose v2 (recommended): sudo apt-get install -y docker-compose-v2"
 fi
 infoln "Using ${CONTAINER_CLI} and ${CONTAINER_CLI_COMPOSE}"
 

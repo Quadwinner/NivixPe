@@ -9,6 +9,11 @@ const { execPromise } = require('./exec-promise');
 const { storeKYCDirectly, getKYCStatusDirectly } = require('./direct-kyc');
 const { storeKYC, getKYC } = require('./file-storage');
 
+// Resolve repo root (bridge-service/src -> repo root is ../..)
+const PROJECT_ROOT = process.env.NIVIX_PROJECT_ROOT
+  || process.env.FABRIC_PROJECT_ROOT
+  || path.resolve(__dirname, '..', '..');
+
 // Import the Solana client (working version)
 const solanaClient = require('./solana/solana-client');
 
@@ -127,7 +132,7 @@ async function connectToFabric() {
     try {
       const args = ['user123_solana_address'];
       const argsJson = JSON.stringify(args);
-      const command = `${helperScriptPath} "GetKYCStatus" '${argsJson}' "query"`;
+      const command = `NIVIX_PROJECT_ROOT="${PROJECT_ROOT}" ${helperScriptPath} "GetKYCStatus" '${argsJson}' "query"`;
       
       const { stdout, stderr } = await execPromise(command);
       
@@ -659,6 +664,12 @@ app.post('/api/fabric/query', async (req, res) => {
     
     console.log(`Executing Fabric query: ${fcn} with args:`, args);
     
+    // Helper to normalize "not found" into a non-500 response (frontend expects this case)
+    const isNotFoundKyc = (msg) => {
+      const m = (msg || '').toLowerCase();
+      return m.includes('no kyc record found');
+    };
+
     // First try to execute via direct invocation
     try {
       const result = await directInvokeChaincode(fcn, args, true); // true = query mode
@@ -667,6 +678,14 @@ app.post('/api/fabric/query', async (req, res) => {
         data: result 
       });
     } catch (directError) {
+      if (isNotFoundKyc(directError?.message)) {
+        return res.status(200).json({
+          success: false,
+          notFound: true,
+          data: null,
+          error: directError.message
+        });
+      }
       console.error('Direct query failed, trying helper script:', directError);
       
       // Fall back to helper script if direct invocation fails
@@ -674,10 +693,19 @@ app.post('/api/fabric/query', async (req, res) => {
       if (fs.existsSync(helperScriptPath)) {
         try {
           const argsJson = JSON.stringify(args);
-          const command = `${helperScriptPath} "${fcn}" '${argsJson}' "query"`;
+          const command = `NIVIX_PROJECT_ROOT="${PROJECT_ROOT}" ${helperScriptPath} "${fcn}" '${argsJson}' "query"`;
           
           const { stdout, stderr } = await execPromise(command);
           
+          if (stderr && isNotFoundKyc(stderr)) {
+            return res.status(200).json({
+              success: false,
+              notFound: true,
+              data: null,
+              error: stderr.trim()
+            });
+          }
+
           if (stderr && stderr.includes('Error')) {
             throw new Error(stderr);
           }
@@ -688,6 +716,15 @@ app.post('/api/fabric/query', async (req, res) => {
             data: (stdout || '').trim()
           });
         } catch (scriptError) {
+          const scriptMsg = `${scriptError?.message || ''}\n${scriptError?.stderr || ''}`;
+          if (isNotFoundKyc(scriptMsg)) {
+            return res.status(200).json({
+              success: false,
+              notFound: true,
+              data: null,
+              error: (scriptError?.stderr || scriptError?.message || '').trim()
+            });
+          }
           console.error('Helper script query failed:', scriptError);
           throw scriptError;
         }

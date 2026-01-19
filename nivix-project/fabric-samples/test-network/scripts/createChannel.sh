@@ -15,10 +15,12 @@ BFT="$5"
 : ${BFT:=0}
 
 : ${CONTAINER_CLI:="docker"}
-if command -v ${CONTAINER_CLI}-compose > /dev/null 2>&1; then
+if ${CONTAINER_CLI} compose version > /dev/null 2>&1; then
+    : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI} compose"}
+elif command -v ${CONTAINER_CLI}-compose > /dev/null 2>&1 && ${CONTAINER_CLI}-compose version > /dev/null 2>&1; then
     : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI}-compose"}
 else
-    : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI} compose"}
+    fatalln "Docker Compose not available. Install Compose v2: sudo apt-get install -y docker-compose-v2"
 fi
 infoln "Using ${CONTAINER_CLI} and ${CONTAINER_CLI_COMPOSE}"
 
