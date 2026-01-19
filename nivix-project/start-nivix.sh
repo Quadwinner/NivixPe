@@ -87,8 +87,8 @@ if ! docker info > /dev/null 2>&1; then
         fi
     else
         echo "⚠️  Docker service not running, attempting to start..."
-        sudo systemctl restart docker
-        sleep 5
+    sudo systemctl restart docker
+    sleep 5
         if ! docker info > /dev/null 2>&1; then
             echo "❌ Docker still not accessible after restart"
             exit 1

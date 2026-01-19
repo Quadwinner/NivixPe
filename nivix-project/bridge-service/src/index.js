@@ -669,7 +669,7 @@ app.post('/api/fabric/query', async (req, res) => {
       const m = (msg || '').toLowerCase();
       return m.includes('no kyc record found');
     };
-
+    
     // First try to execute via direct invocation
     try {
       const result = await directInvokeChaincode(fcn, args, true); // true = query mode
@@ -705,7 +705,7 @@ app.post('/api/fabric/query', async (req, res) => {
               error: stderr.trim()
             });
           }
-
+          
           if (stderr && stderr.includes('Error')) {
             throw new Error(stderr);
           }
