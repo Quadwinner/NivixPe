@@ -92,7 +92,7 @@ app.get('/health', (req, res) => {
       hyperledger: true,
       liquidityPools: true,
       offramp: offrampEngine !== null,
-      onramp: onrampEngine !== null,
+      onramp: onrampEngine !== null && onrampEngine.initialized,
       usdcBridge: usdcBridge !== null,
       treasury: offrampEngine !== null
     }
@@ -1917,15 +1917,16 @@ app.get('/api/rates/:fromCurrency/:toCurrency', async (req, res) => {
 async function initializeOnrampServices() {
   try {
     console.log('🚀 Initializing on-ramp services...');
-    
-    // Initialize On-ramp Engine
-    onrampEngine = new OnrampEngine();
-    await onrampEngine.initialize();
-    
+
+    const engine = new OnrampEngine();
+    await engine.initialize();
+    onrampEngine = engine;
+
     console.log('✅ On-ramp services initialized successfully');
     return true;
   } catch (error) {
     console.error('❌ On-ramp services initialization failed:', error);
+    onrampEngine = null;
     return false;
   }
 }
@@ -1935,10 +1936,10 @@ app.post('/api/onramp/create-order', async (req, res) => {
   try {
     const { userAddress, cryptoAmount, fiatAmount, cryptoCurrency, fiatCurrency, userEmail, userPhone, automatedTransfer, recipientDetails, transferType } = req.body;
     
-    if (!onrampEngine) {
-      return res.status(503).json({ 
-        success: false, 
-        error: 'On-ramp service not initialized' 
+    if (!onrampEngine || !onrampEngine.initialized) {
+      return res.status(503).json({
+        success: false,
+        error: 'On-ramp service not initialized'
       });
     }
 
@@ -1978,7 +1979,7 @@ app.post('/api/onramp/create-payment', async (req, res) => {
   try {
     const { orderId } = req.body;
     
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 
@@ -2008,7 +2009,7 @@ app.post('/api/onramp/razorpay-webhook', async (req, res) => {
   try {
     console.log('🔔 On-ramp Razorpay webhook received:', req.body);
     
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 
@@ -2050,7 +2051,7 @@ app.post('/api/onramp/verify-payment', async (req, res) => {
       });
     }
 
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 
@@ -2083,7 +2084,7 @@ app.get('/api/onramp/order-status/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
     
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 
@@ -2113,7 +2114,7 @@ app.get('/api/onramp/search-by-offramp/:offrampOrderId', async (req, res) => {
   try {
     const { offrampOrderId } = req.params;
 
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({
         success: false,
         error: 'On-ramp service not initialized'
@@ -2196,7 +2197,7 @@ app.get('/api/onramp/user-orders/:userAddress', async (req, res) => {
   try {
     const { userAddress } = req.params;
     
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 
@@ -2224,7 +2225,7 @@ app.get('/api/onramp/user-orders/:userAddress', async (req, res) => {
 // Get on-ramp system statistics (admin endpoint)
 app.get('/api/onramp/stats', async (req, res) => {
   try {
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 
@@ -2254,7 +2255,7 @@ app.get('/api/debug/exchange-rate/:from/:to', async (req, res) => {
   try {
     const { from, to } = req.params;
     
-    if (!onrampEngine) {
+    if (!onrampEngine || !onrampEngine.initialized) {
       return res.status(503).json({ 
         success: false, 
         error: 'On-ramp service not initialized' 

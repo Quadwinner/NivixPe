@@ -1,6 +1,7 @@
 const { Connection, PublicKey, Transaction, sendAndConfirmTransaction } = require('@solana/web3.js');
 const { Token, TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMintToInstruction } = require('@solana/spl-token');
 const fs = require('fs');
+const path = require('path');
 
 /**
  * Crypto Delivery Service for On-ramp
@@ -366,30 +367,40 @@ class CryptoDeliveryService {
      */
     async loadTreasuryKeypair() {
         try {
-            // Load bridge wallet from WALLETS_REGISTRY.json (has mint authority)
-            const fallbackRegistry = '/media/OS/for linux work/blockchain solana/nivix-project/WALLETS_REGISTRY.json';
-            const envRegistry = process.env.WALLETS_REGISTRY_PATH;
-            const registryPath = (envRegistry && fs.existsSync(envRegistry))
-                ? envRegistry
-                : (fs.existsSync(fallbackRegistry) ? fallbackRegistry : envRegistry || fallbackRegistry);
-            
-            if (fs.existsSync(registryPath)) {
+            // Resolve the registry relative to the project instead of relying on a machine-specific absolute path.
+            const candidateRegistryPaths = [
+                process.env.WALLETS_REGISTRY_PATH,
+                path.resolve(__dirname, '../../../WALLETS_REGISTRY.json'),
+                path.resolve(__dirname, '../../WALLETS_REGISTRY.json'),
+                path.resolve(process.cwd(), '../WALLETS_REGISTRY.json'),
+                path.resolve(process.cwd(), 'WALLETS_REGISTRY.json')
+            ].filter(Boolean);
+
+            const checkedPaths = [];
+
+            for (const registryPath of [...new Set(candidateRegistryPaths)]) {
+                checkedPaths.push(registryPath);
+
+                if (!fs.existsSync(registryPath)) {
+                    continue;
+                }
+
                 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
                 const bridgeWallet = registry.coreWallets?.bridgeWallet;
-                
-                if (bridgeWallet && bridgeWallet.privateKey) {
-                    // Convert private key array to Uint8Array
+
+                if (bridgeWallet && Array.isArray(bridgeWallet.privateKey) && bridgeWallet.privateKey.length > 0) {
                     const secretKey = new Uint8Array(bridgeWallet.privateKey);
-                    
                     const { Keypair } = require('@solana/web3.js');
+
                     this.treasuryKeypair = Keypair.fromSecretKey(secretKey);
-                    
+
                     console.log('🔑 Bridge wallet keypair loaded (mint authority):', this.treasuryKeypair.publicKey.toString());
+                    console.log('📂 Loaded bridge wallet registry from:', registryPath);
                     return;
                 }
             }
 
-            throw new Error('Bridge wallet keypair not found in WALLETS_REGISTRY.json');
+            throw new Error(`Bridge wallet keypair not found in WALLETS_REGISTRY.json. Checked: ${checkedPaths.join(', ')}`);
 
         } catch (error) {
             console.error('❌ Failed to load bridge wallet keypair:', error.message);

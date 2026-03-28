@@ -353,6 +353,35 @@ class ExchangeRateService {
         }
     }
 
+    getFallbackRate(normalizedFrom, normalizedTo) {
+        const key = `${normalizedFrom}_${normalizedTo}`;
+        if (this.fallbackRates[key]) {
+            return this.fallbackRates[key];
+        }
+        const reverseKey = `${normalizedTo}_${normalizedFrom}`;
+        if (this.fallbackRates[reverseKey]) {
+            return 1 / this.fallbackRates[reverseKey];
+        }
+        const fromToUsd = this.fallbackRates[`${normalizedFrom}_USD`];
+        const usdToTo = this.fallbackRates[`USD_${normalizedTo}`];
+        if (fromToUsd && usdToTo) {
+            return fromToUsd * usdToTo;
+        }
+        const usdToFrom = this.fallbackRates[`USD_${normalizedFrom}`];
+        const toToUsd = this.fallbackRates[`${normalizedTo}_USD`];
+        if (usdToFrom && toToUsd) {
+            return (1 / usdToFrom) * (1 / toToUsd);
+        }
+        if (fromToUsd && toToUsd) {
+            return fromToUsd / toToUsd;
+        }
+        if (usdToFrom && usdToTo) {
+            return usdToTo / usdToFrom;
+        }
+        console.warn(`⚠️ No rate found for ${normalizedFrom}/${normalizedTo}, using 1.0`);
+        return 1.0;
+    }
+
     /**
      * Get exchange rate with real-time data and fallback
      */
@@ -393,59 +422,6 @@ class ExchangeRateService {
 
             console.log(`✅ Final rate: ${fromCurrency}/${toCurrency} = ${rate}`);
             return rate;
-
-            // Try direct rate
-            const key = `${normalizedFrom}_${normalizedTo}`;
-            if (this.fallbackRates[key]) {
-                const rate = this.fallbackRates[key];
-                console.log(`✅ Found direct rate: ${fromCurrency}/${toCurrency} = ${rate}`);
-                return rate;
-            }
-
-            // Try reverse rate
-            const reverseKey = `${normalizedTo}_${normalizedFrom}`;
-            if (this.fallbackRates[reverseKey]) {
-                const rate = 1 / this.fallbackRates[reverseKey];
-                console.log(`✅ Found reverse rate: ${fromCurrency}/${toCurrency} = ${rate}`);
-                return rate;
-            }
-
-            // Try cross-currency calculation via USD
-            const fromToUsd = this.fallbackRates[`${normalizedFrom}_USD`];
-            const usdToTo = this.fallbackRates[`USD_${normalizedTo}`];
-            
-            if (fromToUsd && usdToTo) {
-                const rate = fromToUsd * usdToTo;
-                console.log(`✅ Found cross-currency rate via USD: ${fromCurrency}/${toCurrency} = ${rate}`);
-                return rate;
-            }
-
-            // Try reverse cross-currency calculation via USD
-            const usdToFrom = this.fallbackRates[`USD_${normalizedFrom}`];
-            const toToUsd = this.fallbackRates[`${normalizedTo}_USD`];
-            
-            if (usdToFrom && toToUsd) {
-                const rate = (1 / usdToFrom) * (1 / toToUsd);
-                console.log(`✅ Found reverse cross-currency rate via USD: ${fromCurrency}/${toCurrency} = ${rate}`);
-                return rate;
-            }
-
-            // Try mixed cross-currency calculation
-            if (fromToUsd && toToUsd) {
-                const rate = fromToUsd / toToUsd;
-                console.log(`✅ Found mixed cross-currency rate via USD: ${fromCurrency}/${toCurrency} = ${rate}`);
-                return rate;
-            }
-
-            if (usdToFrom && usdToTo) {
-                const rate = usdToTo / usdToFrom;
-                console.log(`✅ Found mixed cross-currency rate via USD: ${fromCurrency}/${toCurrency} = ${rate}`);
-                return rate;
-            }
-
-            // Default fallback
-            console.warn(`⚠️ No rate found for ${fromCurrency}/${toCurrency}, using 1.0`);
-            return 1.0;
 
         } catch (error) {
             console.error(`❌ Exchange rate error for ${fromCurrency}/${toCurrency}:`, error);

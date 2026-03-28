@@ -64,12 +64,16 @@ interface AmountPaymentFormProps {
 
 const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
 
+const TREASURY_SUPPORTED_TOKEN_CODES = new Set([
+  'USD', 'EUR', 'INR', 'GBP', 'JPY', 'CAD', 'AUD'
+]);
+
 const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
   recipientDetails,
   onPaymentSuccess,
   onBack
 }) => {
-  const { publicKey } = useWallet();
+  const { publicKey, connected } = useWallet();
 
   // State management
   const [amount, setAmount] = useState<number>(1000);
@@ -177,6 +181,10 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
     { code: 'KPW', name: 'North Korean Won', symbol: '₩', icon: '🇰🇵' }
   ];
 
+  const receiveTokenCurrencies = availableCurrencies.filter((c) =>
+    TREASURY_SUPPORTED_TOKEN_CODES.has(c.code)
+  );
+
   // Calculated values - dynamic currency conversion
   const cryptoEquivalent = amount * exchangeRate; // Convert from fiat to crypto
   const feeAmount = cryptoEquivalent * fees;
@@ -184,6 +192,12 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
 
   // Quick amount presets
   const quickAmounts = [500, 1000, 2000, 5000, 10000];
+
+  useEffect(() => {
+    if (!TREASURY_SUPPORTED_TOKEN_CODES.has(toCurrency)) {
+      setToCurrency('USD');
+    }
+  }, [toCurrency]);
 
   // Load Razorpay script
   useEffect(() => {
@@ -256,13 +270,17 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
   };
 
   const createRazorpayOrder = async () => {
+    if (!connected || !publicKey) {
+      throw new Error('Connect your Solana wallet before paying');
+    }
+
     try {
       // Step 1: Create automated transfer order (like PaymentApp but with transfer flag)
       const orderResponse = await fetch(`${BRIDGE_URL}/api/onramp/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userAddress: publicKey?.toString(),
+          userAddress: publicKey.toBase58(),
           fiatAmount: amount,
           fiatCurrency: fromCurrency,
           cryptoCurrency: toCurrency,
@@ -273,11 +291,20 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
         })
       });
 
+      const orderJson = await orderResponse.json().catch(() => ({}));
+
       if (!orderResponse.ok) {
-        throw new Error('Failed to create transfer order');
+        const msg =
+          (orderJson as { error?: string }).error ||
+          `Failed to create transfer order (${orderResponse.status})`;
+        throw new Error(msg);
       }
 
-      const orderResult = await orderResponse.json();
+      if (!(orderJson as { success?: boolean }).success) {
+        throw new Error((orderJson as { error?: string }).error || 'Failed to create transfer order');
+      }
+
+      const orderResult = orderJson;
 
       // Step 2: Create Razorpay payment
       const paymentResponse = await fetch(`${BRIDGE_URL}/api/onramp/create-payment`, {
@@ -290,11 +317,20 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
         })
       });
 
+      const paymentJson = await paymentResponse.json().catch(() => ({}));
+
       if (!paymentResponse.ok) {
-        throw new Error('Failed to create payment');
+        throw new Error(
+          (paymentJson as { error?: string }).error ||
+            `Failed to create payment (${paymentResponse.status})`
+        );
       }
 
-      const paymentResult = await paymentResponse.json();
+      if (!(paymentJson as { success?: boolean }).success) {
+        throw new Error((paymentJson as { error?: string }).error || 'Failed to create payment');
+      }
+
+      const paymentResult = paymentJson;
 
       return {
         orderId: orderResult.order.id,
@@ -313,6 +349,13 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
       setError('Payment gateway not loaded. Please refresh and try again.');
       return;
     }
+
+    if (!connected || !publicKey) {
+      setError('Connect your Solana wallet before paying');
+      return;
+    }
+
+    const walletAddress = publicKey.toBase58();
 
     setIsProcessing(true);
     setError(null);
@@ -340,7 +383,7 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
           nivix_order_id: orderId,
           recipient_account: recipientDetails.accountNumber,
           recipient_ifsc: recipientDetails.ifscCode,
-          user_address: publicKey?.toString()
+          user_address: walletAddress
         },
         theme: {
           color: '#5D5FEF',
@@ -502,22 +545,20 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel>To Currency</InputLabel>
+              <InputLabel>Token you receive</InputLabel>
               <Select
                 value={toCurrency}
                 onChange={(e) => setToCurrency(e.target.value)}
-                label="To Currency"
+                label="Token you receive"
               >
-                {availableCurrencies
-                  .filter(c => c.code !== fromCurrency)
-                  .map((currency) => (
-                    <MenuItem key={currency.code} value={currency.code}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box sx={{ mr: 1, fontSize: '20px' }}>{currency.icon}</Box>
-                        <Typography>{currency.code} - {currency.name}</Typography>
-                      </Box>
-                    </MenuItem>
-                  ))}
+                {receiveTokenCurrencies.map((currency) => (
+                  <MenuItem key={currency.code} value={currency.code}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Box sx={{ mr: 1, fontSize: '20px' }}>{currency.icon}</Box>
+                      <Typography>{currency.code} — on-chain token</Typography>
+                    </Box>
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -685,7 +726,9 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
           <Button
             variant="contained"
             onClick={openRazorpayCheckout}
-            disabled={amount <= 0 || isProcessing || !validateAmount()}
+            disabled={
+              amount <= 0 || isProcessing || !validateAmount() || !connected || !publicKey
+            }
             startIcon={<Payment />}
             sx={{ flex: 1 }}
             size="large"

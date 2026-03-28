@@ -154,7 +154,10 @@ class OnrampEngine {
             );
 
             if (!feasibilityCheck.success || !feasibilityCheck.sufficient) {
-                throw new Error('Insufficient treasury balance to fulfill this order');
+                throw new Error(
+                    feasibilityCheck.error ||
+                        'Cannot deliver this order (treasury mint check failed)'
+                );
             }
 
             // Create order record

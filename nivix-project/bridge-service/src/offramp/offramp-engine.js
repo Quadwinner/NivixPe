@@ -11,6 +11,7 @@ const {
     TOKEN_PROGRAM_ID 
 } = require('@solana/spl-token');
 const fs = require('fs');
+const path = require('path');
 
 /**
  * Off-Ramp Engine for Nivix
@@ -1093,28 +1094,37 @@ class OfframpEngine {
      */
     async loadTreasuryKeypair() {
         try {
-            // Load bridge wallet from WALLETS_REGISTRY.json (has burn authority)
-            const fallbackRegistry = '/media/OS/for linux work/blockchain solana/nivix-project/WALLETS_REGISTRY.json';
-            const envRegistry = process.env.WALLETS_REGISTRY_PATH;
-            const registryPath = (envRegistry && fs.existsSync(envRegistry))
-                ? envRegistry
-                : (fs.existsSync(fallbackRegistry) ? fallbackRegistry : envRegistry || fallbackRegistry);
-            
-            if (fs.existsSync(registryPath)) {
+            const candidateRegistryPaths = [
+                process.env.WALLETS_REGISTRY_PATH,
+                path.resolve(__dirname, '../../../WALLETS_REGISTRY.json'),
+                path.resolve(__dirname, '../../WALLETS_REGISTRY.json'),
+                path.resolve(process.cwd(), '../WALLETS_REGISTRY.json'),
+                path.resolve(process.cwd(), 'WALLETS_REGISTRY.json')
+            ].filter(Boolean);
+
+            const checkedPaths = [];
+
+            for (const registryPath of [...new Set(candidateRegistryPaths)]) {
+                checkedPaths.push(registryPath);
+
+                if (!fs.existsSync(registryPath)) {
+                    continue;
+                }
+
                 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
                 const bridgeWallet = registry.coreWallets?.bridgeWallet;
                 
-                if (bridgeWallet && bridgeWallet.privateKey) {
-                    // Convert private key array to Uint8Array
+                if (bridgeWallet && Array.isArray(bridgeWallet.privateKey) && bridgeWallet.privateKey.length > 0) {
                     const secretKey = new Uint8Array(bridgeWallet.privateKey);
                     this.treasuryKeypair = Keypair.fromSecretKey(secretKey);
                     
                     console.log('🔑 Bridge wallet keypair loaded for token burning:', this.treasuryKeypair.publicKey.toString());
+                    console.log('📂 Loaded bridge wallet registry from:', registryPath);
                     return;
                 }
             }
 
-            throw new Error('Bridge wallet keypair not found in WALLETS_REGISTRY.json');
+            throw new Error(`Bridge wallet keypair not found in WALLETS_REGISTRY.json. Checked: ${checkedPaths.join(', ')}`);
 
         } catch (error) {
             console.error('❌ Failed to load bridge wallet keypair:', error.message);
@@ -1320,7 +1330,6 @@ class OfframpEngine {
 }
 
 module.exports = OfframpEngine;
-
 
 
 
