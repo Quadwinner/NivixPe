@@ -455,6 +455,8 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
               burn: burnTxHash || ''
             },
             payoutId: result.payoutReference || '',
+            cashgramLink: result.cashgramLink || undefined,
+            payoutProvider: result.provider || undefined,
             sessionId: paymentData.sessionId
           });
         }, 2000);

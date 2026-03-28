@@ -10,11 +10,16 @@ const RazorpayXPayouts = require('./razorpayx-payouts');
  */
 class FiatPayoutService {
     constructor() {
+        this.preferredPayoutProvider = (process.env.PREFERRED_PAYOUT_PROVIDER || '').trim().toLowerCase();
+        this.cashfreePayoutMode = (process.env.CASHFREE_PAYOUT_MODE || 'cashgram').trim().toLowerCase();
+
         // Debug environment variables
         console.log('🔍 Fiat Payout Service - Environment Variables:');
         console.log('CASHFREE_CLIENT_ID:', process.env.CASHFREE_CLIENT_ID ? 'SET' : 'NOT SET');
         console.log('CASHFREE_CLIENT_SECRET:', process.env.CASHFREE_CLIENT_SECRET ? 'SET' : 'NOT SET');
         console.log('NODE_ENV:', process.env.NODE_ENV);
+        console.log('PREFERRED_PAYOUT_PROVIDER:', this.preferredPayoutProvider || 'auto');
+        console.log('CASHFREE_PAYOUT_MODE:', this.cashfreePayoutMode);
         
         const cashfreeApiVersion = 'v1'; // Use v1 API - this is working!
         this.providers = {
@@ -46,7 +51,7 @@ class FiatPayoutService {
                 ),
                 apiVersion: cashfreeApiVersion,
                 sandboxUrl: 'https://payout-gamma.cashfree.com',
-                enabled: false, // DISABLED - Using RazorpayX for payouts
+                enabled: !!(process.env.CASHFREE_CLIENT_ID && process.env.CASHFREE_CLIENT_SECRET),
                 credentials: {
                     clientId: process.env.CASHFREE_CLIENT_ID,
                     clientSecret: process.env.CASHFREE_CLIENT_SECRET
@@ -55,7 +60,7 @@ class FiatPayoutService {
             payu: {
                 name: 'PayU Payouts',
                 baseUrl: process.env.PAYU_BASE_URL || 'https://payouts.payu.in/api/v1',
-                enabled: false, // Disabled - using Cashfree only
+                enabled: !!(process.env.PAYU_MERCHANT_ID && process.env.PAYU_API_KEY),
                 credentials: {
                     merchantId: process.env.PAYU_MERCHANT_ID,
                     apiKey: process.env.PAYU_API_KEY
@@ -64,7 +69,7 @@ class FiatPayoutService {
             instamojo: {
                 name: 'Instamojo Payouts',
                 baseUrl: 'https://api.instamojo.com/v2',
-                enabled: true, // PRIMARY payout provider (Cashfree failing)
+                enabled: !!(process.env.INSTAMOJO_CLIENT_ID && process.env.INSTAMOJO_CLIENT_SECRET),
                 credentials: {
                     clientId: process.env.INSTAMOJO_CLIENT_ID,
                     clientSecret: process.env.INSTAMOJO_CLIENT_SECRET
@@ -336,18 +341,12 @@ class FiatPayoutService {
             let payoutResult;
             switch (provider) {
                 case 'razorpayx':
-                    console.log('🚀 Using RazorpayX for payout (NOT Cashfree)');
+                    console.log('🚀 Using RazorpayX for payout');
                     payoutResult = await this.processRazorpayXPayout(payoutRequest, payoutId);
                     break;
                 case 'cashfree':
-                    console.error('❌ ERROR: Cashfree should be disabled! Forcing RazorpayX instead...');
-                    // Force RazorpayX even if Cashfree was selected
-                    if (this.providers.razorpayx.enabled && this.providers.razorpayx.credentials.keyId) {
-                        console.log('🔄 Switching to RazorpayX...');
-                        payoutResult = await this.processRazorpayXPayout(payoutRequest, payoutId);
-                    } else {
-                        throw new Error('RazorpayX not available. Please configure RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, and RAZORPAY_ACCOUNT_NUMBER');
-                    }
+                    console.log(`🚀 Using Cashfree ${this.cashfreePayoutMode} for payout`);
+                    payoutResult = await this.processCashfreePayout(payoutRequest, payoutId);
                     break;
                 case 'payu':
                     payoutResult = await this.processPayUPayout(payoutRequest, payoutId);
@@ -365,7 +364,7 @@ class FiatPayoutService {
                 provider: provider,
                 request: payoutRequest,
                 result: payoutResult,
-                status: payoutResult.success ? 'completed' : 'failed',
+                status: payoutResult.status || (payoutResult.success ? 'completed' : 'failed'),
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
             };
@@ -386,7 +385,12 @@ class FiatPayoutService {
                 message: payoutResult.message,
                 error: payoutResult.success ? null : (payoutResult.error || payoutResult.message || 'Unknown payout error'),
                 estimated_arrival: payoutResult.estimated_arrival || 'Within 24 hours',
-                fees: payoutResult.fees || 0
+                fees: payoutResult.fees || 0,
+                provider_response: payoutResult.provider_response || null,
+                reference_id: payoutResult.reference_id || null,
+                cashgram_id: payoutResult.cashgram_id || null,
+                cashgram_link: payoutResult.cashgram_link || null,
+                mode: payoutResult.mode || null
             };
             
         } catch (error) {
@@ -729,6 +733,7 @@ class FiatPayoutService {
             console.log(`🚀 Creating Cashfree Cashgram using official API format...`);
 
             let transferResponse;
+            let cashgramId = null;
             try {
                 // Use exact URL format from official documentation
                 const cashgramUrl = `${this.providers.cashfree.baseUrl}/payout/v1/createCashgram`;
@@ -739,8 +744,9 @@ class FiatPayoutService {
                 const linkExpiry = `${expiryDate.getFullYear()}/${expiryDate.getMonth() + 1}/${expiryDate.getDate()}`;
 
                 const amountForCashgram = Number.parseFloat(payoutRequest.amount || 0).toFixed(2);
+                cashgramId = `cf${Date.now()}`;
                 const cashgramData = {
-                    cashgramId: `cf${Date.now()}`, // Use format from docs: cf6
+                    cashgramId: cashgramId, // Use format from docs: cf6
                     amount: amountForCashgram, // Ensure decimal format: "1.00"
                     name: beneDetails.name,
                     email: beneDetails.email,
@@ -802,11 +808,12 @@ class FiatPayoutService {
             return {
                 success: true,
                 transaction_id: cashgramInfo.referenceId ? `CG_${cashgramInfo.referenceId}` : payoutId,
-                status: 'SUCCESS',
+                status: cashgramInfo.cashgramStatus || 'ISSUED',
                 message: 'Cashgram created successfully via Cashfree',
                 fees: 0, // Cashgram typically has no fees for the sender
                 estimated_arrival: 'Instant (Cashgram link sent to customer)',
                 provider_response: responseData,
+                cashgram_id: cashgramId,
                 cashgram_link: cashgramInfo.cashgramLink,
                 reference_id: cashgramInfo.referenceId,
                 error: null
@@ -1007,15 +1014,48 @@ class FiatPayoutService {
      */
     selectOptimalProvider(payoutRequest) {
         console.log('🔍 Selecting payout provider...');
+        console.log('🔍 Preferred payout provider:', this.preferredPayoutProvider || 'auto');
         console.log('🔍 RazorpayX enabled:', this.providers.razorpayx.enabled);
         console.log('🔍 RazorpayX has keyId:', !!this.providers.razorpayx.credentials.keyId);
         console.log('🔍 RazorpayX has accountNumber:', !!this.providers.razorpayx.credentials.accountNumber);
         console.log('🔍 Instamojo enabled:', this.providers.instamojo.enabled);
-        console.log('🔍 Cashfree enabled:', this.providers.cashfree.enabled, '(DISABLED - Using RazorpayX)');
+        console.log('🔍 Cashfree enabled:', this.providers.cashfree.enabled, `(mode: ${this.cashfreePayoutMode})`);
         console.log('🔍 PayU enabled:', this.providers.payu.enabled);
+
+        const preferredProvider = this.preferredPayoutProvider === 'cashgram'
+            ? 'cashfree'
+            : this.preferredPayoutProvider;
+
+        if (preferredProvider) {
+            if (preferredProvider === 'cashfree' && this.providers.cashfree.enabled) {
+                console.log('✅ Selected Cashfree as payout provider (OVERRIDE)');
+                return 'cashfree';
+            }
+
+            if (
+                preferredProvider === 'razorpayx' &&
+                this.providers.razorpayx.enabled &&
+                this.providers.razorpayx.credentials.keyId &&
+                this.providers.razorpayx.credentials.accountNumber
+            ) {
+                console.log('✅ Selected RazorpayX as payout provider (OVERRIDE)');
+                return 'razorpayx';
+            }
+
+            if (preferredProvider === 'instamojo' && this.providers.instamojo.enabled && this.providers.instamojo.credentials.clientId) {
+                console.log('✅ Selected Instamojo as payout provider (OVERRIDE)');
+                return 'instamojo';
+            }
+
+            if (preferredProvider === 'payu' && this.providers.payu.enabled && this.providers.payu.credentials.merchantId) {
+                console.log('✅ Selected PayU as payout provider (OVERRIDE)');
+                return 'payu';
+            }
+
+            console.warn(`⚠️ Preferred payout provider "${this.preferredPayoutProvider}" is not available, falling back to auto selection`);
+        }
         
         // Priority order: RazorpayX > Cashfree > Instamojo > PayU
-        // FORCE RazorpayX if credentials are available
         if (this.providers.razorpayx.enabled && 
             this.providers.razorpayx.credentials.keyId &&
             this.providers.razorpayx.credentials.accountNumber) {
@@ -1023,8 +1063,7 @@ class FiatPayoutService {
             return 'razorpayx';
         }
         
-        // Cashfree is disabled - skip it
-        if (false && this.providers.cashfree.enabled && this.providers.cashfree.credentials.clientId) {
+        if (this.providers.cashfree.enabled && this.providers.cashfree.credentials.clientId) {
             console.log('✅ Selected Cashfree as payout provider');
             return 'cashfree';
         }
@@ -1143,14 +1182,15 @@ class FiatPayoutService {
         }
         
         // If it's a Cashgram, get real-time status
-        if (record.provider === 'cashfree' && record.result?.transaction_id?.startsWith('CG_')) {
-            const cashgramId = payoutId; // Use original payout ID as cashgram ID
+        if (record.provider === 'cashfree' && (record.result?.cashgram_id || record.result?.cashgram_link)) {
+            const cashgramId = record.result?.cashgram_id;
             const cashgramStatus = await this.getCashgramStatus(cashgramId);
             
             if (cashgramStatus.success) {
                 return {
                     found: true,
                     payout_id: payoutId,
+                    cashgram_id: cashgramId,
                     status: cashgramStatus.cashgram_status,
                     provider: record.provider,
                     amount: record.request.amount,
@@ -1173,6 +1213,9 @@ class FiatPayoutService {
             amount: record.request.amount,
             currency: record.request.currency,
             recipient: record.request.recipient.name,
+            cashgram_id: record.result?.cashgram_id || null,
+            cashgram_link: record.result?.cashgram_link || null,
+            reference_id: record.result?.reference_id || null,
             created_at: record.created_at,
             updated_at: record.updated_at
         };

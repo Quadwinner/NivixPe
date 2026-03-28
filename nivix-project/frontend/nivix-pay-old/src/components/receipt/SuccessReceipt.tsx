@@ -44,6 +44,8 @@ interface TransferReceipt {
     burn: string;
   };
   payoutId: string;
+  cashgramLink?: string;
+  payoutProvider?: string;
   sessionId: string;
 }
 
@@ -90,6 +92,8 @@ const SuccessReceipt: React.FC<SuccessReceiptProps> = ({
         mintTransaction: receipt.transactionHashes.mint,
         burnTransaction: receipt.transactionHashes.burn,
         payoutId: receipt.payoutId,
+        cashgramLink: receipt.cashgramLink || null,
+        payoutProvider: receipt.payoutProvider || null,
         sessionId: receipt.sessionId
       },
       meta: {
@@ -192,6 +196,12 @@ const SuccessReceipt: React.FC<SuccessReceiptProps> = ({
               <span class="label">Payout ID:</span>
               <span class="value">${receipt.payoutId}</span>
             </div>
+            ${receipt.cashgramLink ? `
+            <div class="detail-row">
+              <span class="label">Cashgram Link:</span>
+              <span class="value">${receipt.cashgramLink}</span>
+            </div>
+            ` : ''}
           </div>
 
           <div class="section" style="text-align: center; margin-top: 40px;">
@@ -421,6 +431,21 @@ const SuccessReceipt: React.FC<SuccessReceiptProps> = ({
             </Grid>
           </CardContent>
         </Card>
+
+        {receipt.cashgramLink ? (
+          <Alert severity="info" sx={{ mb: 3 }}>
+            Cashgram link issued via Cashfree. The recipient can complete payout using the link below.
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => window.open(receipt.cashgramLink, '_blank', 'noopener,noreferrer')}
+              >
+                Open Cashgram Link
+              </Button>
+            </Box>
+          </Alert>
+        ) : null}
 
         {/* Action Buttons */}
         <Box sx={{ mb: 3 }}>

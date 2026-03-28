@@ -410,9 +410,8 @@ class OfframpEngine {
             // 🏦 STEP 2: AUTOMATED INTELLIGENT ROUTING - NO USER INTERFACE
             console.log(`🧠 Processing automated fiat payout to recipient...`);
             
-            // Step 1: Process automated fiat payout via payment gateway
-            // Transform beneficiaryDetails to Cashfree-expected format
-            const cashfreeRecipient = {
+            // Step 1: Process automated fiat payout via the configured provider
+            const payoutRecipient = {
                 name: beneficiaryDetails.name,
                 email: beneficiaryDetails.email,
                 phone: beneficiaryDetails.phone,
@@ -423,16 +422,16 @@ class OfframpEngine {
                 }
             };
 
-            console.log('🔄 Transformed recipient for Cashfree:', {
-                name: cashfreeRecipient.name,
-                account_number: cashfreeRecipient.bank_account.account_number,
-                ifsc_code: cashfreeRecipient.bank_account.ifsc_code
+            console.log('🔄 Prepared recipient for payout provider:', {
+                name: payoutRecipient.name,
+                account_number: payoutRecipient.bank_account.account_number,
+                ifsc_code: payoutRecipient.bank_account.ifsc_code
             });
 
             const payoutResult = await this.fiatPayoutService.processPayoutToRecipient({
                 amount: quote.netAmount,
                 currency: quote.toCurrency,
-                recipient: cashfreeRecipient,
+                recipient: payoutRecipient,
                 burn_transaction_hash: burnResult.transactionHash, // Use the actual burn result
                 transaction_id: transactionId,
                 quote_id: quoteId
@@ -454,18 +453,27 @@ class OfframpEngine {
                 payoutResult.reference_id ||
                 transactionId
             );
+            const isCashgramPayout = payoutResult.provider === 'cashfree' && !!(payoutResult.cashgram_link || payoutResult.cashgram_id);
+            const routeUsed = isCashgramPayout
+                ? 'cashgram_direct'
+                : `${payoutResult.provider || 'payout'}_direct`;
+            const routeReason = isCashgramPayout
+                ? 'Payout completed via Cashfree Cashgram API'
+                : `Payout completed via ${payoutResult.provider || 'configured'} provider`;
 
             // Step 2: Update treasury records (for accounting)
-            // Skip treasury manager for now since payout already succeeded via Cashfree
-            console.log('💡 Skipping treasury manager - payout already completed via Cashfree');
+            console.log('💡 Skipping treasury manager - payout already completed via provider');
             const withdrawalResult = {
                 success: true,
-                routeUsed: 'cashfree_direct',
-                routeReason: 'Payout completed via Cashfree API',
+                routeUsed: routeUsed,
+                routeReason: routeReason,
                 amount: quote.netAmount,
                 currency: quote.toCurrency,
                 transactionId: transactionId,
-                payoutReference: payoutReference
+                payoutReference: payoutReference,
+                cashgramLink: payoutResult.cashgram_link || null,
+                cashgramId: payoutResult.cashgram_id || null,
+                referenceId: payoutResult.reference_id || null
             };
             
             console.log(`📊 Treasury bypassed: ${withdrawalResult.routeUsed} route used`);
@@ -484,6 +492,8 @@ class OfframpEngine {
                 burnedCurrency: burnResult.currency,
                 // Treasury payout information
                 payoutReference: payoutReference,
+                cashgramLink: payoutResult.cashgram_link || null,
+                cashgramId: payoutResult.cashgram_id || null,
                 routeUsed: withdrawalResult.routeUsed,
                 routeReason: withdrawalResult.routeReason,
                 method: withdrawalResult.method,
@@ -516,10 +526,12 @@ class OfframpEngine {
                 burnedCurrency: burnResult.currency,
                 // Treasury payout details
                 payoutReference: payoutReference,
-                routeUsed: withdrawalResult.routeUsed || payoutResult?.provider || 'cashfree_direct',
+                cashgramLink: payoutResult.cashgram_link || null,
+                cashgramId: payoutResult.cashgram_id || null,
+                routeUsed: withdrawalResult.routeUsed || payoutResult?.provider || 'payout_direct',
                 routeReason: withdrawalResult.routeReason || 'Payout completed via provider',
-                provider: payoutResult?.provider || 'cashfree',
-                method: withdrawalResult.method || payoutResult?.provider || 'cashfree',
+                provider: payoutResult?.provider || 'unknown',
+                method: withdrawalResult.method || payoutResult?.provider || 'unknown',
                 estimatedCompletion: withdrawalResult.estimatedCompletion || new Date(Date.now() + 30 * 60 * 1000)
             };
         } catch (error) {
@@ -1330,7 +1342,6 @@ class OfframpEngine {
 }
 
 module.exports = OfframpEngine;
-
 
 
 

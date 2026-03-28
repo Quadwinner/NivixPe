@@ -59,6 +59,8 @@ interface TransferReceipt {
     burn: string;
   };
   payoutId: string;
+  cashgramLink?: string;
+  payoutProvider?: string;
   sessionId: string;
 }
 
