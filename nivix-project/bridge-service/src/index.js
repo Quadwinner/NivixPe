@@ -1,10 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Gateway, Wallets } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 const { directInvokeChaincode } = require('./direct-invoke');
+const fabricConfig = require('./config/fabric-config');
+const { evaluateViaGateway, disconnectFabricGateway } = require('./fabric-gateway-client');
 const { execPromise } = require('./exec-promise');
 const { storeKYCDirectly, getKYCStatusDirectly } = require('./direct-kyc');
 const { storeKYC, getKYC } = require('./file-storage');
@@ -102,45 +103,67 @@ app.get('/health', (req, res) => {
 // Storage for temporary KYC data if Hyperledger connection fails
 const tempKYCData = new Map();
 
-// Connect to Hyperledger Fabric
+// Connect to Hyperledger Fabric (gateway / AMB or local test-network CLI)
 async function connectToFabric() {
   try {
     console.log('Attempting to connect to Hyperledger Fabric...');
-    
-    // First check if the network is running using docker
+
+    if (fabricConfig.useFabricGateway()) {
+      console.log('Fabric mode: gateway (Amazon Managed Blockchain or remote Fabric)');
+      try {
+        await evaluateViaGateway('GetKYCStatus', ['__nivix_connect_probe__']);
+        console.log('Successfully connected to Hyperledger Fabric via gateway');
+        return true;
+      } catch (e) {
+        const text = `${e.message || ''} ${e.stack || ''}`.toLowerCase();
+        if (
+          text.includes('no kyc') ||
+          text.includes('not found') ||
+          text.includes('does not exist')
+        ) {
+          console.log(
+            'Fabric gateway reachable (probe address has no KYC record, as expected)'
+          );
+          return true;
+        }
+        console.error('Fabric gateway connection failed:', e.message);
+        return null;
+      }
+    }
+
     try {
       const { stdout } = await execPromise('docker ps | grep "hyperledger/fabric-peer" | wc -l');
-      const runningContainers = parseInt(stdout.trim());
+      const runningContainers = parseInt(stdout.trim(), 10);
       if (runningContainers === 0) {
-        console.log('No Hyperledger Fabric containers are running. Please start the network first.');
+        console.log(
+          'No local Hyperledger Fabric containers detected. Start test-network or set FABRIC_MODE=gateway for AMB.'
+        );
         return null;
       }
       console.log(`Found ${runningContainers} running Hyperledger containers`);
     } catch (error) {
       console.error('Error checking Docker containers:', error);
     }
-    
-    // Check if the fabric-invoke.sh script can be executed
-    const helperScriptPath = '/tmp/fabric-invoke.sh';
+
+    const helperScriptPath = fabricConfig.getFabricConfig().invokeScript;
     if (!fs.existsSync(helperScriptPath)) {
       console.error(`Fabric invoke script not found at: ${helperScriptPath}`);
       return null;
     }
-    
-    // Test chaincode connectivity with a query for a known Solana address
+
     console.log('Testing chaincode connectivity with GetKYCStatus query...');
     try {
       const args = ['user123_solana_address'];
       const argsJson = JSON.stringify(args);
       const command = `NIVIX_PROJECT_ROOT="${PROJECT_ROOT}" ${helperScriptPath} "GetKYCStatus" '${argsJson}' "query"`;
-      
+
       const { stdout, stderr } = await execPromise(command);
-      
+
       if (stderr && stderr.includes('Error') && !stderr.includes('no KYC record found')) {
         console.error('Chaincode connection test error:', stderr);
         throw new Error(stderr);
       }
-      
+
       console.log('Successfully connected to Hyperledger Fabric chaincode');
       return true;
     } catch (error) {
@@ -2630,6 +2653,13 @@ app.post('/api/test/cashfree-payout', async (req, res) => {
       error: error.message
     });
   }
+});
+
+process.on('SIGINT', () => {
+  disconnectFabricGateway();
+});
+process.on('SIGTERM', () => {
+  disconnectFabricGateway();
 });
 
 // Start the server
