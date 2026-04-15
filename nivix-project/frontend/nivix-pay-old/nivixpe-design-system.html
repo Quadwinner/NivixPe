@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NivixPe — Design System · Color & Typography Standard v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* ── Navy Blue Primary ── */
+    --navy-50:   #E8F0F8;
+    --navy-100:  #C2D5ED;
+    --navy-200:  #96B6E0;
+    --navy-300:  #6A97D3;
+    --navy-400:  #3A78C4;
+    --navy-500:  #1A5FA3;
+    --navy-600:  #0A4174;
+    --navy-700:  #073155;
+    --navy-800:  #042140;
+    --navy-900:  #001D39;
+
+    /* ── Ocean Teal Secondary ── */
+    --teal-50:   #E1F5F5;
+    --teal-100:  #B3E6E7;
+    --teal-200:  #7DD0D3;
+    --teal-300:  #44B9BE;
+    --teal-400:  #0F9688;
+    --teal-500:  #0C7075;
+    --teal-600:  #094F54;
+    --teal-700:  #072E33;
+    --teal-800:  #041B1E;
+    --teal-900:  #05161A;
+
+    /* ── Deep Blue Connector ── */
+    --deep-50:   #EBF4FB;
+    --deep-100:  #BDD8E9;
+    --deep-200:  #7BBDE8;
+    --deep-300:  #49769F;
+    --deep-400:  #294D61;
+    --deep-500:  #1C3A4D;
+    --deep-600:  #0F2A3A;
+    --deep-700:  #0A1E2B;
+    --deep-800:  #07141E;
+    --deep-900:  #040D14;
+
+    /* ── Ink Neutral ── */
+    --ink-0:     #FFFFFF;
+    --ink-50:    #F4F6F9;
+    --ink-100:   #E8EBF1;
+    --ink-200:   #CDD2DD;
+    --ink-300:   #A6AEBB;
+    --ink-400:   #78839A;
+    --ink-500:   #56607A;
+    --ink-600:   #3D4560;
+    --ink-700:   #2A3148;
+    --ink-800:   #1C2535;
+    --ink-900:   #0A0E14;
+    --ink-950:   #05070D;
+
+    /* ── Semantic / Status ── */
+    --success:   #00C48C;
+    --warning:   #FFB800;
+    --error:     #FF4D4F;
+    --info:      #378ADD;
+    --on-chain:  #0F9688;
+
+    /* ── Fonts ── */
+    --font-display: 'Sora', system-ui, sans-serif;
+    --font-body:    'DM Sans', system-ui, sans-serif;
+    --font-mono:    'Space Mono', 'Fira Code', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--ink-950);
+    color: var(--ink-200);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    background: linear-gradient(135deg, #001D39 0%, #040D14 55%, #05161A 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    width: 900px; height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(10,65,116,0.18) 0%, transparent 65%);
+    top: -250px; right: -200px;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(12,112,117,0.12) 0%, transparent 65%);
+    bottom: -200px; left: -100px;
+  }
+
+  .cover-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy-400);
+    margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-logo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-logo-mark {
+    width: 64px; height: 64px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #0A4174 0%, #0C7075 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(74, 185, 190, 0.3);
+  }
+
+  .cover-logo-mark svg { width: 34px; height: 34px; }
+
+  .cover-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(44px, 6vw, 82px);
+    line-height: 1.0;
+    color: #fff;
+    position: relative; z-index: 1;
+    margin-bottom: 4px;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--teal-300);
+  }
+
+  .cover-sub {
+    font-size: 19px;
+    font-weight: 300;
+    color: var(--ink-400);
+    max-width: 560px;
+    position: relative; z-index: 1;
+    margin-bottom: 52px;
+    line-height: 1.8;
+  }
+
+  .cover-swatches {
+    display: flex;
+    gap: 6px;
+    position: relative; z-index: 1;
+    margin-bottom: 40px;
+  }
+  .cover-swatch {
+    height: 6px;
+    border-radius: 3px;
+    flex: 1;
+    max-width: 80px;
+  }
+
+  .cover-meta {
+    position: relative; z-index: 1;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .cover-meta-item {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-600);
+  }
+
+  /* ── NAV ── */
+  .toc {
+    background: var(--ink-900);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 0 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    text-decoration: none;
+    padding: 16px 20px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .toc a:hover { color: var(--ink-200); border-bottom-color: var(--navy-400); }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 60px; }
+
+  section { padding: 80px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy-400);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 44px);
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    margin: 48px 0 20px;
+  }
+
+  p { color: var(--ink-300); line-height: 1.85; margin-bottom: 16px; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink-100); font-weight: 500; }
+
+  /* ── COLOR RAMPS ── */
+  .ramp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 32px; }
+
+  .ramp-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .ramp-header {
+    padding: 24px 20px 20px;
+    position: relative;
+  }
+  .ramp-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+  .ramp-desc { font-size: 12px; opacity: 0.7; color: #fff; font-weight: 300; }
+  .ramp-role {
+    position: absolute;
+    top: 20px; right: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .ramp-stops {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+  }
+  .ramp-stop {
+    aspect-ratio: 1;
+    position: relative;
+    cursor: default;
+  }
+  .ramp-stop:hover::after {
+    content: attr(data-stop);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink-800);
+    color: var(--ink-200);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 3px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .ramp-meta {
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.03);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .ramp-meta-item { }
+  .ramp-meta-label { font-size: 10px; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .ramp-meta-value { font-family: var(--font-mono); font-size: 12px; color: var(--ink-200); }
+
+  /* ── STATES ── */
+  .states-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .state-card {
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .state-name { font-family: var(--font-display); font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .state-hex { font-family: var(--font-mono); font-size: 11px; }
+
+  /* ── ROLE CARDS ── */
+  .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 32px; }
+  .role-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .role-card-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .role-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--ink-300);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .role-chip:last-child { border-bottom: none; }
+  .role-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .type-specimen {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .type-row:last-child { border-bottom: none; }
+
+  .type-sample { flex: 1; }
+
+  .type-meta {
+    flex-shrink: 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-600);
+    line-height: 1.7;
+  }
+
+  .t-display  { font-family: var(--font-display); font-size: 52px; font-weight: 700; letter-spacing: -0.03em; color: #fff; line-height: 1; }
+  .t-h1       { font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+  .t-h2       { font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -0.01em; color: #fff; }
+  .t-h3t      { font-family: var(--font-display); font-size: 18px; font-weight: 500; color: #fff; }
+  .t-body-lg  { font-family: var(--font-body); font-size: 16px; font-weight: 400; color: var(--ink-200); line-height: 1.75; }
+  .t-body     { font-family: var(--font-body); font-size: 14px; font-weight: 400; color: var(--ink-300); line-height: 1.75; }
+  .t-caption  { font-family: var(--font-body); font-size: 12px; color: var(--ink-500); }
+  .t-label    { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-400); }
+  .t-mono     { font-family: var(--font-mono); font-size: 14px; color: var(--navy-300); }
+  .t-amount   { font-family: var(--font-mono); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+
+  /* Font family showcase */
+  .font-showcase {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .font-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .font-card-role {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--navy-400);
+    margin-bottom: 12px;
+  }
+  .font-card-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .font-card-desc { font-size: 12px; color: var(--ink-500); line-height: 1.7; margin-bottom: 16px; }
+  .font-card-sample { font-size: 13px; color: var(--ink-300); margin-bottom: 6px; }
+  .font-card-use {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .font-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    color: var(--ink-400);
+  }
+
+  /* ── TOKENS ── */
+  .code-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 28px 32px;
+    overflow-x: auto;
+    margin-top: 24px;
+  }
+  .code-block pre {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 2;
+    white-space: pre;
+  }
+  .code-comment { color: var(--ink-600); }
+  .code-key     { color: var(--teal-300); }
+  .code-value   { color: var(--navy-300); }
+  .code-section { color: var(--ink-400); }
+
+  /* ── COMPONENT DEMO ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .comp-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .comp-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-600);
+    margin-bottom: 16px;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    background: var(--navy-600);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 600;
+    border: none; cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--navy-500); }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--navy-300);
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 600;
+    border: 1.5px solid var(--navy-600);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(10,65,116,0.15); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--teal-300);
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.04); }
+
+  .btn-teal {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    background: var(--teal-500);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-teal:hover { background: var(--teal-400); }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .badge-success  { background: rgba(0,196,140,0.12);  color: #00C48C; border: 1px solid rgba(0,196,140,0.25); }
+  .badge-info     { background: rgba(55,138,221,0.12); color: #7BBDE8; border: 1px solid rgba(55,138,221,0.25); }
+  .badge-warning  { background: rgba(255,184,0,0.12);  color: #FFB800; border: 1px solid rgba(255,184,0,0.25); }
+  .badge-error    { background: rgba(255,77,79,0.12);  color: #FF4D4F; border: 1px solid rgba(255,77,79,0.25); }
+  .badge-onchain  { background: rgba(15,150,136,0.12); color: var(--teal-300); border: 1px solid rgba(15,150,136,0.25); }
+
+  /* Input */
+  .input-demo {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input-demo:focus {
+    border-color: var(--navy-500);
+    box-shadow: 0 0 0 3px rgba(10,65,116,0.25);
+  }
+
+  /* Transaction card */
+  .tx-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Amount display */
+  .amount-big {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .amount-sub {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink-500);
+    margin-top: 4px;
+  }
+
+  /* Contrast grid */
+  .contrast-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .contrast-chip {
+    border-radius: 10px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .cc-label { font-size: 12px; font-weight: 500; }
+  .cc-ratio { font-family: var(--font-mono); font-size: 18px; font-weight: 700; }
+  .cc-pass  { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; }
+
+  /* Theme demo */
+  .theme-demo {
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 24px;
+  }
+  .theme-demo-tabs {
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+  }
+  .theme-tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .theme-tab.active { color: var(--navy-300); border-bottom-color: var(--navy-400); }
+  .theme-content { padding: 28px; }
+
+  /* Light mode demo */
+  .theme-ui-light {
+    background: #F4F6F9;
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .theme-ui-dark {
+    background: #0A0E14;
+    border-radius: 10px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .ui-btn-primary, .ui-btn-secondary {
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* DO / DON'T */
+  .dd-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .dd-block {
+    border-radius: 12px;
+    padding: 28px;
+    border: 1px solid;
+  }
+  .dd-block.do   { background: rgba(0,196,140,0.05);  border-color: rgba(0,196,140,0.2); }
+  .dd-block.dont { background: rgba(255,77,79,0.05);   border-color: rgba(255,77,79,0.2); }
+  .dd-label {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .dd-item {
+    display: flex; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px; color: var(--ink-300); line-height: 1.7;
+  }
+  .dd-item:last-child { border-bottom: none; }
+  .dd-marker { font-family: var(--font-mono); font-size: 13px; flex-shrink: 0; }
+  .dd-block.do   .dd-marker { color: #00C48C; }
+  .dd-block.dont .dd-marker { color: #FF4D4F; }
+
+  /* Final palette table */
+  .palette-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    font-size: 13px;
+  }
+  .palette-table th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-600);
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .palette-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+  }
+  .palette-table tr:last-child td { border-bottom: none; }
+  .palette-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .pswatch {
+    display: inline-block;
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+    vertical-align: middle;
+  }
+  .token-name  { font-family: var(--font-mono); font-size: 12px; color: var(--teal-300); }
+  .token-value { font-family: var(--font-mono); font-size: 12px; color: var(--navy-300); }
+  .token-desc  { color: var(--ink-400); font-size: 12px; }
+  .ptag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    color: var(--ink-500);
+    margin-right: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .page { padding: 0 24px; }
+    .cover { padding: 60px 24px; }
+    .toc { padding: 0 24px; }
+    .ramp-grid { grid-template-columns: 1fr; }
+    .role-grid { grid-template-columns: 1fr; }
+    .dd-grid { grid-template-columns: 1fr; }
+    .contrast-grid { grid-template-columns: repeat(2, 1fr); }
+    .states-row { grid-template-columns: repeat(3, 1fr); }
+    .font-showcase { grid-template-columns: 1fr; }
+    .comp-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER ══════════════ -->
+<div class="cover">
+  <div class="cover-eyebrow">Design System · Color & Typography Standard · v1.0</div>
+  <div class="cover-logo">
+    <div class="cover-logo-mark">
+      <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 3 L31 17 L17 31 L3 17 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <path d="M17 9 L25 17 L17 25 L9 17 Z" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+        <circle cx="17" cy="17" r="4" fill="white"/>
+        <circle cx="17" cy="17" r="2" fill="#0A4174"/>
+      </svg>
+    </div>
+  </div>
+  <h1 class="cover-title">NivixPe<br><em>Design System</em></h1>
+  <p class="cover-sub">A premium color and typography architecture for blockchain-powered cross-border payments — built on trust, precision, and the velocity of Solana.</p>
+
+  <div class="cover-swatches">
+    <div class="cover-swatch" style="background:#001D39"></div>
+    <div class="cover-swatch" style="background:#0A4174"></div>
+    <div class="cover-swatch" style="background:#1A5FA3"></div>
+    <div class="cover-swatch" style="background:#3A78C4"></div>
+    <div class="cover-swatch" style="background:#05161A"></div>
+    <div class="cover-swatch" style="background:#072E33"></div>
+    <div class="cover-swatch" style="background:#0C7075"></div>
+    <div class="cover-swatch" style="background:#0F9688"></div>
+    <div class="cover-swatch" style="background:#00C48C; max-width:40px"></div>
+    <div class="cover-swatch" style="background:#FFB800; max-width:40px"></div>
+    <div class="cover-swatch" style="background:#FF4D4F; max-width:40px"></div>
+  </div>
+
+  <div class="cover-meta">
+    <div class="cover-meta-item">v1.0 · Design System</div>
+    <div class="cover-meta-item">WCAG 2.1 AA Compliant</div>
+    <div class="cover-meta-item">Light + Dark Mode</div>
+    <div class="cover-meta-item">Token-Based Architecture</div>
+    <div class="cover-meta-item">NivixPe Private Limited</div>
+  </div>
+</div>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav class="toc">
+  <a href="#strategy">01 Strategy</a>
+  <a href="#ramps">02 Ramps</a>
+  <a href="#typography">03 Typography</a>
+  <a href="#roles">04 Roles</a>
+  <a href="#tokens">05 Tokens</a>
+  <a href="#components">06 Components</a>
+  <a href="#accessibility">07 Accessibility</a>
+  <a href="#final">08 Final Palette</a>
+  <a href="#sizing">09 Sizing System</a>
+</nav>
+
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 1: STRATEGY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="strategy">
+  <div class="section-label">01 — Primary Color Strategy</div>
+  <h2>Two Families.<br>One Coherent Signal.</h2>
+  <p>NivixPe operates at the intersection of finance and blockchain. The color system must communicate two things simultaneously: the <strong>trustworthiness of a bank</strong> and the <strong>innovation of a crypto-native platform</strong>. The strategy is to anchor on Navy Blue as the trust signal, then layer Ocean Teal as the innovation and blockchain signal — with a deep connector ramp bridging them into a coherent premium identity.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px;">
+
+    <div style="background: linear-gradient(135deg, #001D39, #0A4174); border-radius: 12px; padding: 28px; border: 1px solid rgba(58,120,196,0.3);">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #96B6E0; margin-bottom: 16px;">Primary</div>
+      <div style="font-family: var(--font-display); font-size: 30px; color: #fff; font-weight: 700; margin-bottom: 8px;">Navy Blue</div>
+      <div style="font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 20px;">Anchor colour for CTAs, buttons, links, and primary interactive states. Communicates trust, financial stability, and institutional credibility.</div>
+      <div style="font-family: var(--font-mono); font-size: 14px; color: #6A97D3;">#0A4174</div>
+      <div style="margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.35);">Psychology: Trust · Authority · Stability</div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #05161A, #0C7075); border-radius: 12px; padding: 28px; border: 1px solid rgba(15,150,136,0.3);">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #7DD0D3; margin-bottom: 16px;">Secondary</div>
+      <div style="font-family: var(--font-display); font-size: 30px; color: #fff; font-weight: 700; margin-bottom: 8px;">Ocean Teal</div>
+      <div style="font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 20px;">Innovation colour for blockchain moments, on-chain badges, Solana features, and secondary actions. Signals speed, transparency, and the future of finance.</div>
+      <div style="font-family: var(--font-mono); font-size: 14px; color: #44B9BE;">#0C7075</div>
+      <div style="margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.35);">Psychology: Innovation · Flow · Transparency</div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #040D14, #294D61); border-radius: 12px; padding: 28px; border: 1px solid rgba(41,77,97,0.4);">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #7BBDE8; margin-bottom: 16px;">Connector</div>
+      <div style="font-family: var(--font-display); font-size: 30px; color: #fff; font-weight: 700; margin-bottom: 8px;">Deep Blue</div>
+      <div style="font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 20px;">Bridge colour for gradients, dark surfaces, and mid-level emphasis. Unifies Navy and Teal into a seamless depth hierarchy for backgrounds and cards.</div>
+      <div style="font-family: var(--font-mono); font-size: 14px; color: #49769F;">#294D61</div>
+      <div style="margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.35);">Psychology: Depth · Precision · Calmness</div>
+    </div>
+  </div>
+
+  <h3>Why this spectrum works for fintech</h3>
+  <p>Blue is the universal trust colour in financial services — JPMorgan, Visa, PayPal, and virtually every successful payment brand uses it as their anchor. It reduces anxiety in high-stakes transactions and signals reliability. Teal adds the differentiation fintech needs: it signals technology, freshness, and innovation without the recklessness of red or the coldness of pure grey. Together they make NivixPe feel simultaneously as safe as a bank and as fast as Solana.</p>
+  <p>The Deep Blue connector ramp is what makes the system feel <strong>premium</strong> rather than just functional. It gives depth to dark backgrounds, creates rich card layering, and ensures the hero gradients feel like a single brand moment rather than two colors in a room.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 2: RAMPS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="ramps">
+  <div class="section-label">02 — Color Ramps</div>
+  <h2>Full Tonal Scales</h2>
+  <p>Each family is built as a 10-stop scale from near-white (50) to near-black (900). This gives designers and engineers precise control over surface, border, text, and icon tints without introducing off-system colours.</p>
+
+  <div class="ramp-grid">
+
+    <!-- Navy Blue Primary -->
+    <div class="ramp-card">
+      <div class="ramp-header" style="background: linear-gradient(135deg, #0A4174, #1A5FA3);">
+        <div class="ramp-name">Navy Blue</div>
+        <div class="ramp-desc">Primary · Trust · Interactive</div>
+        <div class="ramp-role">PRIMARY</div>
+      </div>
+      <div class="ramp-stops">
+        <div class="ramp-stop" style="background:#E8F0F8" data-stop="50"></div>
+        <div class="ramp-stop" style="background:#C2D5ED" data-stop="100"></div>
+        <div class="ramp-stop" style="background:#96B6E0" data-stop="200"></div>
+        <div class="ramp-stop" style="background:#6A97D3" data-stop="300"></div>
+        <div class="ramp-stop" style="background:#3A78C4" data-stop="400"></div>
+        <div class="ramp-stop" style="background:#1A5FA3" data-stop="500"></div>
+        <div class="ramp-stop" style="background:#0A4174" data-stop="600"></div>
+        <div class="ramp-stop" style="background:#073155" data-stop="700"></div>
+        <div class="ramp-stop" style="background:#042140" data-stop="800"></div>
+        <div class="ramp-stop" style="background:#001D39" data-stop="900"></div>
+      </div>
+      <div class="ramp-meta">
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Base (600)</div><div class="ramp-meta-value">#0A4174</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">CTA at</div><div class="ramp-meta-value">500–600</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Dark BG at</div><div class="ramp-meta-value">800–900</div></div>
+      </div>
+    </div>
+
+    <!-- Ocean Teal Secondary -->
+    <div class="ramp-card">
+      <div class="ramp-header" style="background: linear-gradient(135deg, #0C7075, #0F9688);">
+        <div class="ramp-name">Ocean Teal</div>
+        <div class="ramp-desc">Secondary · Blockchain · Innovation</div>
+        <div class="ramp-role">SECONDARY</div>
+      </div>
+      <div class="ramp-stops">
+        <div class="ramp-stop" style="background:#E1F5F5" data-stop="50"></div>
+        <div class="ramp-stop" style="background:#B3E6E7" data-stop="100"></div>
+        <div class="ramp-stop" style="background:#7DD0D3" data-stop="200"></div>
+        <div class="ramp-stop" style="background:#44B9BE" data-stop="300"></div>
+        <div class="ramp-stop" style="background:#0F9688" data-stop="400"></div>
+        <div class="ramp-stop" style="background:#0C7075" data-stop="500"></div>
+        <div class="ramp-stop" style="background:#094F54" data-stop="600"></div>
+        <div class="ramp-stop" style="background:#072E33" data-stop="700"></div>
+        <div class="ramp-stop" style="background:#041B1E" data-stop="800"></div>
+        <div class="ramp-stop" style="background:#05161A" data-stop="900"></div>
+      </div>
+      <div class="ramp-meta">
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Base (500)</div><div class="ramp-meta-value">#0C7075</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">On-chain at</div><div class="ramp-meta-value">400–500</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Dark BG at</div><div class="ramp-meta-value">700–900</div></div>
+      </div>
+    </div>
+
+    <!-- Deep Blue Connector -->
+    <div class="ramp-card">
+      <div class="ramp-header" style="background: linear-gradient(135deg, #294D61, #49769F);">
+        <div class="ramp-name">Deep Blue</div>
+        <div class="ramp-desc">Connector · Surfaces · Depth</div>
+        <div class="ramp-role">CONNECTOR</div>
+      </div>
+      <div class="ramp-stops">
+        <div class="ramp-stop" style="background:#EBF4FB" data-stop="50"></div>
+        <div class="ramp-stop" style="background:#BDD8E9" data-stop="100"></div>
+        <div class="ramp-stop" style="background:#7BBDE8" data-stop="200"></div>
+        <div class="ramp-stop" style="background:#49769F" data-stop="300"></div>
+        <div class="ramp-stop" style="background:#294D61" data-stop="400"></div>
+        <div class="ramp-stop" style="background:#1C3A4D" data-stop="500"></div>
+        <div class="ramp-stop" style="background:#0F2A3A" data-stop="600"></div>
+        <div class="ramp-stop" style="background:#0A1E2B" data-stop="700"></div>
+        <div class="ramp-stop" style="background:#07141E" data-stop="800"></div>
+        <div class="ramp-stop" style="background:#040D14" data-stop="900"></div>
+      </div>
+      <div class="ramp-meta">
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Base (400)</div><div class="ramp-meta-value">#294D61</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Gradient at</div><div class="ramp-meta-value">300–500</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Surfaces at</div><div class="ramp-meta-value">600–800</div></div>
+      </div>
+    </div>
+
+    <!-- Ink Neutral -->
+    <div class="ramp-card">
+      <div class="ramp-header" style="background: var(--ink-600);">
+        <div class="ramp-name">Ink Neutral</div>
+        <div class="ramp-desc">Text · Backgrounds · Borders</div>
+        <div class="ramp-role">NEUTRAL</div>
+      </div>
+      <div class="ramp-stops">
+        <div class="ramp-stop" style="background:#FFFFFF; border-top: 1px solid #eee;" data-stop="0"></div>
+        <div class="ramp-stop" style="background:#F4F6F9" data-stop="50"></div>
+        <div class="ramp-stop" style="background:#E8EBF1" data-stop="100"></div>
+        <div class="ramp-stop" style="background:#CDD2DD" data-stop="200"></div>
+        <div class="ramp-stop" style="background:#A6AEBB" data-stop="300"></div>
+        <div class="ramp-stop" style="background:#78839A" data-stop="400"></div>
+        <div class="ramp-stop" style="background:#56607A" data-stop="500"></div>
+        <div class="ramp-stop" style="background:#3D4560" data-stop="600"></div>
+        <div class="ramp-stop" style="background:#2A3148" data-stop="700"></div>
+        <div class="ramp-stop" style="background:#1C2535" data-stop="800"></div>
+        <div class="ramp-stop" style="background:#0A0E14" data-stop="900"></div>
+      </div>
+      <div class="ramp-meta">
+        <div class="ramp-meta-item"><div class="ramp-meta-label">White</div><div class="ramp-meta-value">#FFFFFF</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Dark BG</div><div class="ramp-meta-value">#0A0E14</div></div>
+        <div class="ramp-meta-item"><div class="ramp-meta-label">Body Text</div><div class="ramp-meta-value">700–800</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3>Brand Gradient</h3>
+  <div style="border-radius: 12px; overflow: hidden; margin-top: 20px;">
+    <div style="height: 64px; background: linear-gradient(90deg, #001D39 0%, #0A4174 30%, #294D61 55%, #0C7075 80%, #0F9688 100%);"></div>
+    <div style="background: rgba(255,255,255,0.03); padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border: 1px solid rgba(255,255,255,0.07); border-top: none; border-radius: 0 0 12px 12px;">
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500);">#001D39 → #0A4174 → #294D61 → #0C7075 → #0F9688</span>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500);">Use: Hero sections · Loading screens · Brand moments · Dashboard headers</span>
+    </div>
+  </div>
+
+  <h3>Semantic / Status Colors</h3>
+  <p>Fixed-value semantic colors for transaction and system states. Not a ramp — one canonical value per state.</p>
+  <div class="states-row">
+    <div class="state-card" style="background: rgba(0,196,140,0.1); border: 1px solid rgba(0,196,140,0.25);">
+      <div class="state-name" style="color: #00C48C;">Success</div>
+      <div class="state-hex" style="color: #00C48C;">#00C48C</div>
+      <div style="font-size: 11px; color: var(--ink-500); margin-top: 8px;">Tx Completed<br>KYC Passed</div>
+    </div>
+    <div class="state-card" style="background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.25);">
+      <div class="state-name" style="color: #FFB800;">Warning</div>
+      <div class="state-hex" style="color: #FFB800;">#FFB800</div>
+      <div style="font-size: 11px; color: var(--ink-500); margin-top: 8px;">Pending<br>Rate Change</div>
+    </div>
+    <div class="state-card" style="background: rgba(255,77,79,0.1); border: 1px solid rgba(255,77,79,0.25);">
+      <div class="state-name" style="color: #FF4D4F;">Error</div>
+      <div class="state-hex" style="color: #FF4D4F;">#FF4D4F</div>
+      <div style="font-size: 11px; color: var(--ink-500); margin-top: 8px;">Tx Failed<br>Auth Error</div>
+    </div>
+    <div class="state-card" style="background: rgba(55,138,221,0.1); border: 1px solid rgba(55,138,221,0.25);">
+      <div class="state-name" style="color: #7BBDE8;">Info</div>
+      <div class="state-hex" style="color: #7BBDE8;">#7BBDE8</div>
+      <div style="font-size: 11px; color: var(--ink-500); margin-top: 8px;">System Msg<br>Tooltips</div>
+    </div>
+    <div class="state-card" style="background: rgba(15,150,136,0.1); border: 1px solid rgba(15,150,136,0.25);">
+      <div class="state-name" style="color: #0F9688;">On-Chain</div>
+      <div class="state-hex" style="color: #0F9688;">#0F9688</div>
+      <div style="font-size: 11px; color: var(--ink-500); margin-top: 8px;">Solana<br>Confirmed</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 3: TYPOGRAPHY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="typography">
+  <div class="section-label">03 — Typography System</div>
+  <h2>Three Typefaces.<br>Zero Ambiguity.</h2>
+  <p>Every surface in NivixPe uses one of three fonts. <strong>Sora</strong> for everything that represents the brand voice — headlines, CTAs, labels. <strong>DM Sans</strong> for all readable body content. <strong>Space Mono</strong> for all financial data, transaction hashes, and amounts. This three-way split eliminates font choice decisions and creates an immediately recognisable typographic fingerprint.</p>
+
+  <div class="font-showcase">
+    <div class="font-card" style="border-color: rgba(58,120,196,0.3);">
+      <div class="font-card-role">Display / UI</div>
+      <div class="font-card-name" style="font-family: var(--font-display);">Sora</div>
+      <div class="font-card-desc">Geometric, confident, premium. Designed for the digital era with excellent legibility at all sizes. The brand voice of NivixPe.</div>
+      <div class="font-card-sample" style="font-family: var(--font-display); font-size: 18px; font-weight: 600; color: #fff;">Send money, anywhere.</div>
+      <div class="font-card-sample" style="font-family: var(--font-display); font-weight: 300; font-size: 14px; color: var(--ink-400);">Light 300 · Regular 400 · Medium 500 · SemiBold 600 · Bold 700</div>
+      <div class="font-card-use">
+        <span class="font-tag">hero headings</span>
+        <span class="font-tag">h1–h4</span>
+        <span class="font-tag">buttons</span>
+        <span class="font-tag">nav links</span>
+        <span class="font-tag">labels</span>
+        <span class="font-tag">badges</span>
+      </div>
+    </div>
+    <div class="font-card" style="border-color: rgba(15,150,136,0.3);">
+      <div class="font-card-role">Body / Prose</div>
+      <div class="font-card-name" style="font-family: var(--font-body);">DM Sans</div>
+      <div class="font-card-desc">Humanist sans-serif with warmth and clarity. Optimised for body text across device sizes. Pairs perfectly with Sora's geometric precision.</div>
+      <div class="font-card-sample" style="font-family: var(--font-body); font-size: 14px; color: var(--ink-200); line-height: 1.7;">Blockchain-powered cross-border payments with near-zero fees and sub-2 second settlement, built on the Solana network.</div>
+      <div class="font-card-use">
+        <span class="font-tag">body text</span>
+        <span class="font-tag">descriptions</span>
+        <span class="font-tag">form help</span>
+        <span class="font-tag">tooltips</span>
+        <span class="font-tag">captions</span>
+      </div>
+    </div>
+    <div class="font-card" style="border-color: rgba(41,77,97,0.4);">
+      <div class="font-card-role">Data / Amounts</div>
+      <div class="font-card-name" style="font-family: var(--font-mono);">Space Mono</div>
+      <div class="font-card-desc">Fixed-width, tabular, technical. Used exclusively for financial amounts, wallet addresses, transaction IDs, and API keys. Trust through precision.</div>
+      <div class="font-card-sample" style="font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: #fff;">₹ 1,24,800.00</div>
+      <div class="font-card-sample" style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-500);">7xKm...9Bqr · 0.00018 SOL · 2.14s</div>
+      <div class="font-card-use">
+        <span class="font-tag">amounts</span>
+        <span class="font-tag">tx hashes</span>
+        <span class="font-tag">wallet addr</span>
+        <span class="font-tag">rates</span>
+        <span class="font-tag">api keys</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Type Scale</h3>
+
+  <div class="type-specimen">
+    <div class="type-row">
+      <div class="type-sample"><span class="t-display">NivixPe</span></div>
+      <div class="type-meta">Sora 700<br>52px / -0.03em<br>Display Hero</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-h1">Send money anywhere, instantly.</span></div>
+      <div class="type-meta">Sora 600<br>32px / -0.02em<br>Heading 1</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-h2">Cross-border Payments</span></div>
+      <div class="type-meta">Sora 600<br>24px / -0.01em<br>Heading 2</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-h3t">Transaction Details</span></div>
+      <div class="type-meta">Sora 500<br>18px<br>Heading 3</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-body-lg">Blockchain-powered cross-border payments with near-zero fees and instant settlement on the Solana network. Fast, transparent, and low-cost.</span></div>
+      <div class="type-meta">DM Sans 400<br>16px / 1.75<br>Body Large</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-body">Transfer funds securely across borders using the Solana blockchain. All transactions are verified on-chain and settled in under 2 seconds.</span></div>
+      <div class="type-meta">DM Sans 400<br>14px / 1.75<br>Body Default</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-caption">Last updated 2 minutes ago · SOL/INR live rate · Solana Mainnet</span></div>
+      <div class="type-meta">DM Sans 400<br>12px<br>Caption</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-label">Transaction ID</span></div>
+      <div class="type-meta">Sora 600<br>11px / +0.12em CAPS<br>Label / Tag</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-amount">₹ 84,250.00</span></div>
+      <div class="type-meta">Space Mono 700<br>26px / -0.02em<br>Amount Display</div>
+    </div>
+    <div class="type-row">
+      <div class="type-sample"><span class="t-mono">7xKmNz4pQ...9BqrLmV · 0.00018 SOL</span></div>
+      <div class="type-meta">Space Mono 400<br>14px<br>Hash / Address</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 4: ROLES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="roles">
+  <div class="section-label">04 — Color Roles & Usage</div>
+  <h2>Every Color Has a Job.</h2>
+  <p>Color roles prevent arbitrary decisions and ensure consistency across app, marketing, and docs. This defines what each color does — not just what it looks like.</p>
+
+  <div class="role-grid">
+    <div class="role-card">
+      <div class="role-card-title">Backgrounds</div>
+      <div class="role-chip"><span class="role-dot" style="background:#FFFFFF"></span> White — Card surfaces, modals, input backgrounds (light)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#F4F6F9"></span> Ink-50 — Page background (light mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#0A0E14"></span> Ink-900 — Page background (dark mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#1C2535"></span> Ink-800 — Card surface (dark mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#001D39"></span> Navy-900 — Brand hero sections, cover backgrounds</div>
+      <div class="role-chip"><span class="role-dot" style="background:#072E33"></span> Teal-700 — Blockchain feature sections</div>
+    </div>
+    <div class="role-card">
+      <div class="role-card-title">Interactive / CTA</div>
+      <div class="role-chip"><span class="role-dot" style="background:#0A4174"></span> Navy-600 — Primary button, main CTA</div>
+      <div class="role-chip"><span class="role-dot" style="background:#1A5FA3"></span> Navy-500 — Button hover state</div>
+      <div class="role-chip"><span class="role-dot" style="background:#073155"></span> Navy-700 — Button pressed / active state</div>
+      <div class="role-chip"><span class="role-dot" style="background:#0C7075"></span> Teal-500 — Secondary CTA, on-chain actions</div>
+      <div class="role-chip"><span class="role-dot" style="background:#6A97D3"></span> Navy-300 — Links, text actions (dark mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#49769F"></span> Deep-300 — Active nav item, focus ring</div>
+    </div>
+    <div class="role-card">
+      <div class="role-card-title">Typography</div>
+      <div class="role-chip"><span class="role-dot" style="background:#1C2535"></span> Ink-800 — Body text (light mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#CDD2DD"></span> Ink-200 — Body text (dark mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#78839A"></span> Ink-400 — Secondary / helper text</div>
+      <div class="role-chip"><span class="role-dot" style="background:#56607A"></span> Ink-500 — Placeholder text</div>
+      <div class="role-chip"><span class="role-dot" style="background:#3A78C4"></span> Navy-400 — Links (light mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#96B6E0"></span> Navy-200 — Links (dark mode)</div>
+    </div>
+    <div class="role-card">
+      <div class="role-card-title">Borders & Dividers</div>
+      <div class="role-chip"><span class="role-dot" style="background:#E8EBF1"></span> Ink-100 — Subtle dividers (light mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#CDD2DD"></span> Ink-200 — Card borders (light mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#2A3148"></span> Ink-700 — Card borders (dark mode)</div>
+      <div class="role-chip"><span class="role-dot" style="background:#0A4174"></span> Navy-600 — Focus ring, active border</div>
+      <div class="role-chip"><span class="role-dot" style="background:#0C7075"></span> Teal-500 — Blockchain confirmation borders</div>
+      <div class="role-chip"><span class="role-dot" style="background:#3D4560"></span> Ink-600 — Section separators (dark mode)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 5: TOKENS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="tokens">
+  <div class="section-label">05 — Design Tokens</div>
+  <h2>The Token Layer</h2>
+  <p>Never reference raw hex values in component code. All colors must flow through the token layer. This ensures the design system can be updated in one place and change everywhere.</p>
+
+  <div class="code-block">
+    <pre>
+<span class="code-comment">/* ════════════════════════════════════════════
+   NIVIXPE DESIGN TOKENS — Primitive Layer
+   Copy into: globals.css / tokens.css
+════════════════════════════════════════════ */</span>
+<span class="code-section">:root {</span>
+
+  <span class="code-comment">/* Navy Blue Primary */</span>
+  <span class="code-key">--color-navy-50</span>:   <span class="code-value">#E8F0F8</span>;
+  <span class="code-key">--color-navy-100</span>:  <span class="code-value">#C2D5ED</span>;
+  <span class="code-key">--color-navy-200</span>:  <span class="code-value">#96B6E0</span>;
+  <span class="code-key">--color-navy-300</span>:  <span class="code-value">#6A97D3</span>;
+  <span class="code-key">--color-navy-400</span>:  <span class="code-value">#3A78C4</span>;
+  <span class="code-key">--color-navy-500</span>:  <span class="code-value">#1A5FA3</span>;
+  <span class="code-key">--color-navy-600</span>:  <span class="code-value">#0A4174</span>;  <span class="code-comment">/* ★ Primary CTA */</span>
+  <span class="code-key">--color-navy-700</span>:  <span class="code-value">#073155</span>;
+  <span class="code-key">--color-navy-800</span>:  <span class="code-value">#042140</span>;
+  <span class="code-key">--color-navy-900</span>:  <span class="code-value">#001D39</span>;
+
+  <span class="code-comment">/* Ocean Teal Secondary */</span>
+  <span class="code-key">--color-teal-50</span>:   <span class="code-value">#E1F5F5</span>;
+  <span class="code-key">--color-teal-100</span>:  <span class="code-value">#B3E6E7</span>;
+  <span class="code-key">--color-teal-200</span>:  <span class="code-value">#7DD0D3</span>;
+  <span class="code-key">--color-teal-300</span>:  <span class="code-value">#44B9BE</span>;
+  <span class="code-key">--color-teal-400</span>:  <span class="code-value">#0F9688</span>;
+  <span class="code-key">--color-teal-500</span>:  <span class="code-value">#0C7075</span>;  <span class="code-comment">/* ★ Secondary CTA / On-chain */</span>
+  <span class="code-key">--color-teal-600</span>:  <span class="code-value">#094F54</span>;
+  <span class="code-key">--color-teal-700</span>:  <span class="code-value">#072E33</span>;
+  <span class="code-key">--color-teal-800</span>:  <span class="code-value">#041B1E</span>;
+  <span class="code-key">--color-teal-900</span>:  <span class="code-value">#05161A</span>;
+
+  <span class="code-comment">/* Deep Blue Connector */</span>
+  <span class="code-key">--color-deep-200</span>:  <span class="code-value">#7BBDE8</span>;
+  <span class="code-key">--color-deep-300</span>:  <span class="code-value">#49769F</span>;
+  <span class="code-key">--color-deep-400</span>:  <span class="code-value">#294D61</span>;
+  <span class="code-key">--color-deep-600</span>:  <span class="code-value">#0F2A3A</span>;
+  <span class="code-key">--color-deep-900</span>:  <span class="code-value">#040D14</span>;
+
+  <span class="code-comment">/* Ink Neutral */</span>
+  <span class="code-key">--color-ink-0</span>:     <span class="code-value">#FFFFFF</span>;
+  <span class="code-key">--color-ink-50</span>:    <span class="code-value">#F4F6F9</span>;
+  <span class="code-key">--color-ink-100</span>:   <span class="code-value">#E8EBF1</span>;
+  <span class="code-key">--color-ink-200</span>:   <span class="code-value">#CDD2DD</span>;
+  <span class="code-key">--color-ink-300</span>:   <span class="code-value">#A6AEBB</span>;
+  <span class="code-key">--color-ink-400</span>:   <span class="code-value">#78839A</span>;
+  <span class="code-key">--color-ink-500</span>:   <span class="code-value">#56607A</span>;
+  <span class="code-key">--color-ink-600</span>:   <span class="code-value">#3D4560</span>;
+  <span class="code-key">--color-ink-700</span>:   <span class="code-value">#2A3148</span>;
+  <span class="code-key">--color-ink-800</span>:   <span class="code-value">#1C2535</span>;
+  <span class="code-key">--color-ink-900</span>:   <span class="code-value">#0A0E14</span>;
+  <span class="code-key">--color-ink-950</span>:   <span class="code-value">#05070D</span>;
+
+  <span class="code-comment">/* Semantic */</span>
+  <span class="code-key">--color-success</span>:   <span class="code-value">#00C48C</span>;
+  <span class="code-key">--color-warning</span>:   <span class="code-value">#FFB800</span>;
+  <span class="code-key">--color-error</span>:     <span class="code-value">#FF4D4F</span>;
+  <span class="code-key">--color-info</span>:      <span class="code-value">#7BBDE8</span>;
+  <span class="code-key">--color-onchain</span>:   <span class="code-value">#0F9688</span>;
+
+  <span class="code-comment">/* Typography */</span>
+  <span class="code-key">--font-display</span>: <span class="code-value">'Sora', system-ui, sans-serif</span>;
+  <span class="code-key">--font-body</span>:    <span class="code-value">'DM Sans', system-ui, sans-serif</span>;
+  <span class="code-key">--font-mono</span>:    <span class="code-value">'Space Mono', 'Fira Code', monospace</span>;
+<span class="code-section">}</span>
+
+<span class="code-comment">/* ════════════════════════════════════════════
+   SEMANTIC TOKENS — Light Mode
+════════════════════════════════════════════ */</span>
+<span class="code-section">:root {</span>
+  <span class="code-key">--bg-page</span>:           <span class="code-value">var(--color-ink-50)</span>;
+  <span class="code-key">--bg-surface</span>:        <span class="code-value">var(--color-ink-0)</span>;
+  <span class="code-key">--bg-surface-raised</span>: <span class="code-value">var(--color-ink-0)</span>;
+  <span class="code-key">--bg-blockchain</span>:     <span class="code-value">var(--color-teal-50)</span>;
+
+  <span class="code-key">--text-primary</span>:      <span class="code-value">var(--color-ink-800)</span>;
+  <span class="code-key">--text-secondary</span>:    <span class="code-value">var(--color-ink-500)</span>;
+  <span class="code-key">--text-placeholder</span>:  <span class="code-value">var(--color-ink-400)</span>;
+  <span class="code-key">--text-link</span>:         <span class="code-value">var(--color-navy-600)</span>;
+  <span class="code-key">--text-link-hover</span>:   <span class="code-value">var(--color-navy-500)</span>;
+
+  <span class="code-key">--border-default</span>:    <span class="code-value">var(--color-ink-200)</span>;
+  <span class="code-key">--border-subtle</span>:     <span class="code-value">var(--color-ink-100)</span>;
+  <span class="code-key">--border-focus</span>:      <span class="code-value">var(--color-navy-600)</span>;
+
+  <span class="code-key">--cta-bg</span>:            <span class="code-value">var(--color-navy-600)</span>;
+  <span class="code-key">--cta-bg-hover</span>:      <span class="code-value">var(--color-navy-500)</span>;
+  <span class="code-key">--cta-bg-active</span>:     <span class="code-value">var(--color-navy-700)</span>;
+  <span class="code-key">--cta-text</span>:          <span class="code-value">var(--color-ink-0)</span>;
+
+  <span class="code-key">--cta2-bg</span>:           <span class="code-value">var(--color-teal-500)</span>;
+  <span class="code-key">--cta2-bg-hover</span>:     <span class="code-value">var(--color-teal-400)</span>;
+<span class="code-section">}</span>
+
+<span class="code-comment">/* ════════════════════════════════════════════
+   SEMANTIC TOKENS — Dark Mode
+════════════════════════════════════════════ */</span>
+<span class="code-section">[data-theme="dark"], @media (prefers-color-scheme: dark) {</span>
+  <span class="code-key">--bg-page</span>:           <span class="code-value">var(--color-ink-950)</span>;
+  <span class="code-key">--bg-surface</span>:        <span class="code-value">var(--color-ink-900)</span>;
+  <span class="code-key">--bg-surface-raised</span>: <span class="code-value">var(--color-ink-800)</span>;
+  <span class="code-key">--bg-blockchain</span>:     <span class="code-value">var(--color-teal-900)</span>;
+
+  <span class="code-key">--text-primary</span>:      <span class="code-value">var(--color-ink-200)</span>;
+  <span class="code-key">--text-secondary</span>:    <span class="code-value">var(--color-ink-400)</span>;
+  <span class="code-key">--text-placeholder</span>:  <span class="code-value">var(--color-ink-600)</span>;
+  <span class="code-key">--text-link</span>:         <span class="code-value">var(--color-navy-300)</span>;
+  <span class="code-key">--text-link-hover</span>:   <span class="code-value">var(--color-navy-200)</span>;
+
+  <span class="code-key">--border-default</span>:    <span class="code-value">var(--color-ink-700)</span>;
+  <span class="code-key">--border-subtle</span>:     <span class="code-value">var(--color-ink-800)</span>;
+  <span class="code-key">--border-focus</span>:      <span class="code-value">var(--color-navy-400)</span>;
+
+  <span class="code-key">--cta-bg</span>:            <span class="code-value">var(--color-navy-600)</span>;
+  <span class="code-key">--cta-bg-hover</span>:      <span class="code-value">var(--color-navy-500)</span>;
+  <span class="code-key">--cta-bg-active</span>:     <span class="code-value">var(--color-navy-700)</span>;
+<span class="code-section">}</span>
+    </pre>
+  </div>
+
+  <h3>Theme Demo — Light vs Dark</h3>
+  <div class="theme-demo">
+    <div class="theme-demo-tabs">
+      <button class="theme-tab active" onclick="showTheme('light', this)">Light Mode</button>
+      <button class="theme-tab" onclick="showTheme('dark', this)">Dark Mode</button>
+    </div>
+    <div class="theme-content">
+
+      <div id="theme-light">
+        <div class="theme-ui-light">
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 18px; color: #1C2535; margin-bottom: 4px;">Payment Dashboard</div>
+          <div style="font-family: var(--font-body); font-size: 13px; color: #56607A; margin-bottom: 20px;">Welcome back. Your last transfer was 2 hours ago.</div>
+          <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="ui-btn-primary" style="background: #0A4174; color: white; font-family: var(--font-display);">Send Money →</button>
+            <button class="ui-btn-secondary" style="background: white; color: #3D4560; border: 1px solid #CDD2DD; font-family: var(--font-display);">View History</button>
+          </div>
+          <div style="background: #E1F5F5; border: 1px solid #B3E6E7; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;">
+            <div style="font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #0C7075; margin-bottom: 4px;">On-Chain Confirmed</div>
+            <div style="font-family: var(--font-body); font-size: 13px; color: #2A3148;">Transfer of ₹50,000 settled on Solana in 1.8s.</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div style="background: #F4F6F9; border: 1px solid #E8EBF1; border-radius: 8px; padding: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: #78839A; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Sent Today</div>
+              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: #1C2535;">₹84,250</div>
+            </div>
+            <div style="background: #F4F6F9; border: 1px solid #E8EBF1; border-radius: 8px; padding: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: #78839A; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Avg. Fee</div>
+              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: #0C7075;">0.00018</div>
+            </div>
+            <div style="background: #F4F6F9; border: 1px solid #E8EBF1; border-radius: 8px; padding: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: #78839A; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Settle Time</div>
+              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: #0A4174;">1.9s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="theme-dark" style="display:none">
+        <div class="theme-ui-dark">
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 18px; color: #fff; margin-bottom: 4px;">Payment Dashboard</div>
+          <div style="font-family: var(--font-body); font-size: 13px; color: var(--ink-500); margin-bottom: 20px;">Welcome back. Your last transfer was 2 hours ago.</div>
+          <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="ui-btn-primary" style="background: #0A4174; color: white; font-family: var(--font-display);">Send Money →</button>
+            <button class="ui-btn-secondary" style="background: transparent; color: #96B6E0; border: 1px solid #2A3148; font-family: var(--font-display);">View History</button>
+          </div>
+          <div style="background: rgba(12,112,117,0.1); border: 1px solid rgba(12,112,117,0.25); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;">
+            <div style="font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #44B9BE; margin-bottom: 4px;">On-Chain Confirmed</div>
+            <div style="font-family: var(--font-body); font-size: 13px; color: var(--ink-300);">Transfer of ₹50,000 settled on Solana in 1.8s.</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Sent Today</div>
+              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: #fff;">₹84,250</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Avg. Fee</div>
+              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: #44B9BE;">0.00018</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Settle Time</div>
+              <div style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: #96B6E0;">1.9s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 6: COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="components">
+  <div class="section-label">06 — Component Library Preview</div>
+  <h2>Tokens in Action.</h2>
+  <p>These component samples demonstrate how the token layer translates into real UI. Every component here is production-ready — copy and apply directly.</p>
+
+  <div class="comp-grid">
+
+    <!-- Buttons -->
+    <div class="comp-card">
+      <div class="comp-label">Buttons</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
+        <button class="btn-primary">Send Payment →</button>
+        <button class="btn-teal">Confirm on Solana</button>
+        <button class="btn-secondary">View Transaction</button>
+        <button class="btn-ghost">Learn More</button>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="comp-card">
+      <div class="comp-label">Transaction Status Badges</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
+        <span class="badge badge-success">● Completed</span>
+        <span class="badge badge-info">● Processing</span>
+        <span class="badge badge-warning">● Pending</span>
+        <span class="badge badge-error">● Failed</span>
+        <span class="badge badge-onchain">⬡ On-Chain · Solana</span>
+      </div>
+    </div>
+
+    <!-- Form Input -->
+    <div class="comp-card">
+      <div class="comp-label">Form Inputs</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-500); margin-bottom: 2px;">Amount (INR)</div>
+        <input class="input-demo" type="text" value="₹ 50,000" />
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-600);">≈ 0.842 SOL · live rate · Mainnet</div>
+        <div style="font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-500); margin: 10px 0 2px;">Recipient Address</div>
+        <input class="input-demo" type="text" value="7xKmNz4pQa8...9BqrLmV" />
+      </div>
+    </div>
+
+    <!-- Amount Display -->
+    <div class="comp-card">
+      <div class="comp-label">Amount & Metric Display</div>
+      <div class="amount-big">₹ 1,24,800.00</div>
+      <div class="amount-sub">Total transferred · last 30 days</div>
+      <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: #44B9BE;">0.00018</div>
+          <div style="font-family: var(--font-body); font-size: 11px; color: var(--ink-500); margin-top: 3px;">Avg. fee (SOL)</div>
+        </div>
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: #00C48C;">1.9s</div>
+          <div style="font-family: var(--font-body); font-size: 11px; color: var(--ink-500); margin-top: 3px;">Avg. settle</div>
+        </div>
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: #96B6E0;">99.8%</div>
+          <div style="font-family: var(--font-body); font-size: 11px; color: var(--ink-500); margin-top: 3px;">Success rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction Cards -->
+    <div class="comp-card" style="grid-column: 1 / -1;">
+      <div class="comp-label">Transaction Card List</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+        <div class="tx-card">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: rgba(0,196,140,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #00C48C;">↑</div>
+            <div>
+              <div style="font-family: var(--font-display); font-size: 14px; font-weight: 500; color: #fff;">Sent to Rahul Singh</div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500); margin-top: 2px;">7xKm...9Bqr · 2 hours ago</div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: #FF4D4F;">- ₹50,000</div>
+            <span class="badge badge-success" style="font-size: 10px; padding: 2px 8px;">● Completed</span>
+          </div>
+        </div>
+        <div class="tx-card">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: rgba(55,138,221,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #7BBDE8;">↓</div>
+            <div>
+              <div style="font-family: var(--font-display); font-size: 14px; font-weight: 500; color: #fff;">Received from Priya Verma</div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500); margin-top: 2px;">4pQa...mV7x · Yesterday</div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: #00C48C;">+ ₹25,000</div>
+            <span class="badge badge-onchain" style="font-size: 10px; padding: 2px 8px;">⬡ On-Chain</span>
+          </div>
+        </div>
+        <div class="tx-card">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: rgba(255,184,0,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #FFB800;">⏳</div>
+            <div>
+              <div style="font-family: var(--font-display); font-size: 14px; font-weight: 500; color: #fff;">Cross-border to UK</div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500); margin-top: 2px;">9Bqr...Km4p · Just now</div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: #fff;">- ₹1,20,000</div>
+            <span class="badge badge-warning" style="font-size: 10px; padding: 2px 8px;">● Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 7: ACCESSIBILITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="accessibility">
+  <div class="section-label">07 — Accessibility & Contrast</div>
+  <h2>Readable at Every Level.</h2>
+  <p>WCAG 2.1 AA requires a minimum contrast ratio of <strong>4.5:1 for body text</strong> and <strong>3:1 for large text and UI components</strong>. All primary color combinations in this system meet or exceed these requirements.</p>
+
+  <div class="contrast-grid">
+    <div class="contrast-chip" style="background: #0A4174;">
+      <div class="cc-label" style="color: #fff;">White on Navy-600</div>
+      <div class="cc-ratio" style="color: #fff;">8.4:1</div>
+      <div class="cc-pass" style="color: rgba(255,255,255,0.6);">WCAG AAA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #001D39;">
+      <div class="cc-label" style="color: #96B6E0;">Navy-200 on Navy-900</div>
+      <div class="cc-ratio" style="color: #96B6E0;">6.1:1</div>
+      <div class="cc-pass" style="color: rgba(150,182,224,0.6);">WCAG AA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #0C7075;">
+      <div class="cc-label" style="color: #fff;">White on Teal-500</div>
+      <div class="cc-ratio" style="color: #fff;">5.8:1</div>
+      <div class="cc-pass" style="color: rgba(255,255,255,0.6);">WCAG AA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #F4F6F9;">
+      <div class="cc-label" style="color: #0A4174;">Navy-600 on Ink-50</div>
+      <div class="cc-ratio" style="color: #0A4174;">8.9:1</div>
+      <div class="cc-pass" style="color: #78839A;">WCAG AAA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #0A0E14;">
+      <div class="cc-label" style="color: #CDD2DD;">Ink-200 on Ink-900</div>
+      <div class="cc-ratio" style="color: #CDD2DD;">11.2:1</div>
+      <div class="cc-pass" style="color: rgba(205,210,221,0.6);">WCAG AAA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #1C2535;">
+      <div class="cc-label" style="color: #44B9BE;">Teal-300 on Ink-800</div>
+      <div class="cc-ratio" style="color: #44B9BE;">5.3:1</div>
+      <div class="cc-pass" style="color: rgba(68,185,190,0.6);">WCAG AA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #E1F5F5;">
+      <div class="cc-label" style="color: #0C7075;">Teal-500 on Teal-50</div>
+      <div class="cc-ratio" style="color: #0C7075;">6.7:1</div>
+      <div class="cc-pass" style="color: rgba(12,112,117,0.6);">WCAG AA ✓</div>
+    </div>
+    <div class="contrast-chip" style="background: #05070D;">
+      <div class="cc-label" style="color: #6A97D3;">Navy-300 on Ink-950</div>
+      <div class="cc-ratio" style="color: #6A97D3;">7.2:1</div>
+      <div class="cc-pass" style="color: rgba(106,151,211,0.6);">WCAG AAA ✓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 8: DO'S AND DON'TS + FINAL PALETTE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="final">
+  <div class="section-label">08 — Do's, Don'ts & Final Palette</div>
+  <h2>Rules of Engagement.</h2>
+
+  <div class="dd-grid">
+    <div class="dd-block do">
+      <div class="dd-label">
+        <span style="width: 14px; height: 14px; background: #00C48C; border-radius: 50%; display: inline-block;"></span>
+        DO
+      </div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Use <strong>Navy-600 (#0A4174)</strong> for all primary CTAs, buttons, and interactive elements. This is the trust anchor — consistency builds user confidence in financial transactions.</div></div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Reserve <strong>Teal-500 (#0C7075)</strong> for on-chain confirmations, Solana-specific features, and blockchain moments. Scarcity maintains its signal value.</div></div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Always use <strong>Space Mono</strong> for every number, amount, address, hash, and rate displayed to the user. Never mix with DM Sans in the same number.</div></div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Use <strong>semantic tokens</strong> (e.g. <code style="font-family: var(--font-mono); font-size: 11px; color: var(--teal-300);">--cta-bg</code>) in all component code — never raw hex values. One place to update = changes everywhere.</div></div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Let <strong>dark backgrounds step gradually</strong> — Ink-950 for page, Ink-900 for cards, Ink-800 for elevated elements. Depth creates premium feel.</div></div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Pair color with <strong>icon + text</strong> for all tx states — never rely on color alone. A colorblind user must still understand if a transaction succeeded or failed.</div></div>
+      <div class="dd-item"><div class="dd-marker">✓</div><div>Use the <strong>brand gradient</strong> for hero sections, landing pages, and dashboard headers only. Not for buttons, badges, or inline UI elements.</div></div>
+    </div>
+
+    <div class="dd-block dont">
+      <div class="dd-label">
+        <span style="width: 14px; height: 14px; background: #FF4D4F; border-radius: 50%; display: inline-block;"></span>
+        DON'T
+      </div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't use <strong>Teal as the primary CTA</strong>. It is the secondary/blockchain colour — using it for primary actions creates confusion about what on-chain means.</div></div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't hardcode <strong>hex values</strong> in component code. Every color reference must go through the token layer — no exceptions, even for one-off fixes.</div></div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't mix <strong>DM Sans with Space Mono</strong> in the same number or amount string. Pick one. Financial data must always use Space Mono exclusively.</div></div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't apply the <strong>brand gradient to buttons</strong>. Gradient CTAs are difficult to manage state variants for (hover, focus, disabled) and feel cheap in fintech contexts.</div></div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't use <strong>Error (#FF4D4F) or Warning (#FFB800)</strong> decoratively. Semantic overload destroys user trust — if everything is red, nothing is urgent.</div></div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't introduce <strong>off-system colours</strong> without a formal token addition. One rogue purple in a fintech dashboard signals unprofessionalism to investors and users.</div></div>
+      <div class="dd-item"><div class="dd-marker">✗</div><div>Don't use <strong>pure white (#FFFFFF) as a page background</strong> in light mode — use Ink-50 (#F4F6F9). Pure white creates eye strain in financial dashboards with dense data.</div></div>
+    </div>
+  </div>
+
+  <h3>Complete Token Reference</h3>
+  <table class="palette-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Token Name</th>
+        <th>Value</th>
+        <th>Usage</th>
+        <th>Tags</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Navy Blue -->
+      <tr><td><span class="pswatch" style="background:#E8F0F8"></span></td><td class="token-name">color-navy-50</td><td class="token-value">#E8F0F8</td><td class="token-desc">Navy badge bg (light), link tint surfaces</td><td><span class="ptag">bg</span><span class="ptag">light</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#96B6E0"></span></td><td class="token-name">color-navy-200</td><td class="token-value">#96B6E0</td><td class="token-desc">Links in dark mode, decorative accents</td><td><span class="ptag">text</span><span class="ptag">dark</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#6A97D3"></span></td><td class="token-name">color-navy-300</td><td class="token-value">#6A97D3</td><td class="token-desc">Secondary labels (dark), CTA hover (dark)</td><td><span class="ptag">text</span><span class="ptag">dark</span></td></tr>
+      <tr style="background: rgba(10,65,116,0.08)"><td><span class="pswatch" style="background:#0A4174"></span></td><td class="token-name">color-navy-600 ★</td><td class="token-value">#0A4174</td><td class="token-desc"><strong>Primary CTA, main interactive color, trust anchor</strong></td><td><span class="ptag">primary</span><span class="ptag">cta</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#073155"></span></td><td class="token-name">color-navy-700</td><td class="token-value">#073155</td><td class="token-desc">Button pressed/active state</td><td><span class="ptag">state</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#001D39"></span></td><td class="token-name">color-navy-900</td><td class="token-value">#001D39</td><td class="token-desc">Deep hero backgrounds, brand cover sections</td><td><span class="ptag">bg</span><span class="ptag">dark</span></td></tr>
+
+      <!-- Teal -->
+      <tr><td><span class="pswatch" style="background:#E1F5F5"></span></td><td class="token-name">color-teal-50</td><td class="token-value">#E1F5F5</td><td class="token-desc">On-chain badge bg (light), blockchain tint</td><td><span class="ptag">bg</span><span class="ptag">blockchain</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#44B9BE"></span></td><td class="token-name">color-teal-300</td><td class="token-value">#44B9BE</td><td class="token-desc">Blockchain highlights, Solana feature accents</td><td><span class="ptag">highlight</span></td></tr>
+      <tr style="background: rgba(12,112,117,0.08)"><td><span class="pswatch" style="background:#0C7075"></span></td><td class="token-name">color-teal-500 ★</td><td class="token-value">#0C7075</td><td class="token-desc"><strong>Secondary CTA, on-chain actions, blockchain moments</strong></td><td><span class="ptag">secondary</span><span class="ptag">blockchain</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#072E33"></span></td><td class="token-name">color-teal-700</td><td class="token-value">#072E33</td><td class="token-desc">Blockchain section backgrounds (dark)</td><td><span class="ptag">bg</span><span class="ptag">dark</span></td></tr>
+
+      <!-- Deep Blue -->
+      <tr><td><span class="pswatch" style="background:#7BBDE8"></span></td><td class="token-name">color-deep-200</td><td class="token-value">#7BBDE8</td><td class="token-desc">Info badges, informational text elements</td><td><span class="ptag">info</span></td></tr>
+      <tr style="background: rgba(41,77,97,0.08)"><td><span class="pswatch" style="background:#294D61"></span></td><td class="token-name">color-deep-400 ★</td><td class="token-value">#294D61</td><td class="token-desc"><strong>Active nav, gradient midpoint, focus rings</strong></td><td><span class="ptag">active</span><span class="ptag">nav</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#040D14"></span></td><td class="token-name">color-deep-900</td><td class="token-value">#040D14</td><td class="token-desc">Deepest background, extreme dark surfaces</td><td><span class="ptag">bg</span><span class="ptag">dark</span></td></tr>
+
+      <!-- Neutral -->
+      <tr><td><span class="pswatch" style="background:#FFFFFF; border:1px solid #ddd"></span></td><td class="token-name">color-ink-0</td><td class="token-value">#FFFFFF</td><td class="token-desc">Card surfaces, modals (light mode only)</td><td><span class="ptag">bg</span><span class="ptag">light</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#F4F6F9"></span></td><td class="token-name">color-ink-50</td><td class="token-value">#F4F6F9</td><td class="token-desc">Page background (light mode)</td><td><span class="ptag">bg</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#CDD2DD"></span></td><td class="token-name">color-ink-200</td><td class="token-value">#CDD2DD</td><td class="token-desc">Borders, dividers (light mode)</td><td><span class="ptag">border</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#56607A"></span></td><td class="token-name">color-ink-500</td><td class="token-value">#56607A</td><td class="token-desc">Secondary text, placeholder text</td><td><span class="ptag">text</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#1C2535"></span></td><td class="token-name">color-ink-800</td><td class="token-value">#1C2535</td><td class="token-desc">Primary body text (light mode)</td><td><span class="ptag">text</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#0A0E14"></span></td><td class="token-name">color-ink-900</td><td class="token-value">#0A0E14</td><td class="token-desc">Page background (dark mode)</td><td><span class="ptag">bg</span><span class="ptag">dark</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#05070D"></span></td><td class="token-name">color-ink-950</td><td class="token-value">#05070D</td><td class="token-desc">Deepest dark bg — cover, hero sections</td><td><span class="ptag">bg</span><span class="ptag">dark</span></td></tr>
+
+      <!-- Semantic -->
+      <tr><td><span class="pswatch" style="background:#00C48C"></span></td><td class="token-name">color-success</td><td class="token-value">#00C48C</td><td class="token-desc">Tx completed, KYC passed, on-chain confirmed</td><td><span class="ptag">semantic</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#FFB800"></span></td><td class="token-name">color-warning</td><td class="token-value">#FFB800</td><td class="token-desc">Pending tx, rate alerts, degraded network</td><td><span class="ptag">semantic</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#FF4D4F"></span></td><td class="token-name">color-error</td><td class="token-value">#FF4D4F</td><td class="token-desc">Tx failed, auth errors, destructive actions</td><td><span class="ptag">semantic</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#7BBDE8"></span></td><td class="token-name">color-info</td><td class="token-value">#7BBDE8</td><td class="token-desc">System messages, tooltips, informational states</td><td><span class="ptag">semantic</span></td></tr>
+      <tr><td><span class="pswatch" style="background:#0F9688"></span></td><td class="token-name">color-onchain</td><td class="token-value">#0F9688</td><td class="token-desc">Solana on-chain confirmed state badge</td><td><span class="ptag">semantic</span><span class="ptag">solana</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Brand Gradient Reference</h3>
+  <div style="border-radius: 12px; overflow: hidden; margin-top: 20px;">
+    <div style="height: 72px; background: linear-gradient(90deg, #001D39 0%, #0A4174 30%, #294D61 55%, #0C7075 80%, #0F9688 100%);"></div>
+    <div style="background: rgba(255,255,255,0.04); padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border: 1px solid rgba(255,255,255,0.07); border-top: none; border-radius: 0 0 12px 12px;">
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500);">#001D39 → #0A4174 → #294D61 → #0C7075 → #0F9688</span>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-500);">Use: Hero sections · App headers · Brand moments · Loading screens</span>
+    </div>
+  </div>
+
+  <!-- Sign-off -->
+  <div style="margin-top: 72px; padding: 52px; background: linear-gradient(135deg, rgba(10,65,116,0.1), rgba(12,112,117,0.1)); border-radius: 16px; border: 1px solid rgba(10,65,116,0.25); text-align: center;">
+    <div style="font-family: var(--font-display); font-size: 34px; color: white; margin-bottom: 16px; font-weight: 700; letter-spacing: -0.02em;">One system. Every surface.</div>
+    <div style="font-family: var(--font-body); font-size: 15px; color: var(--ink-400); max-width: 560px; margin: 0 auto 36px; line-height: 1.85;">This document is a living standard for NivixPe. Token additions require design review. Color removals require engineering + design sign-off. Brand gradient usage requires co-founder approval.</div>
+    <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">v1.0 · NivixPe Design System</div>
+      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">WCAG 2.1 AA Compliant</div>
+      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Light + Dark Mode</div>
+      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Token-Based Architecture</div>
+      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Built on Solana</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION 9: SIZING SYSTEM -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="sizing">
+  <div class="section-label">09 — Sizing & Spacing System</div>
+  <h2>Every Pixel Has<br>a Purpose.</h2>
+  <p>A consistent sizing system eliminates one-off magic numbers and makes layouts predictable across app, marketing, and docs. NivixPe uses a <strong>base-4 spacing scale</strong> — every spacing value is a multiple of 4px. Components follow fixed height tokens. Breakpoints follow a mobile-first grid.</p>
+
+  <!-- ── SPACING SCALE ── -->
+  <h3>Spacing Scale (Base 4)</h3>
+  <p>Use these tokens for all padding, margin, and gap values. Never use arbitrary pixel values.</p>
+  <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 6px;">
+    <!-- header row -->
+    <div style="display: grid; grid-template-columns: 80px 80px 1fr 220px; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.07);">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Token</div>
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Value</div>
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Visual</div>
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-600);">Common Use</div>
+    </div>
+    <!-- rows -->
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-1</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">4px</div>
+      <div><div style="height:4px;width:4px;background:#0A4174;border-radius:1px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Icon gap, badge padding, hairline</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-2</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">8px</div>
+      <div><div style="height:8px;width:8px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Button gap, inline item spacing</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-3</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">12px</div>
+      <div><div style="height:8px;width:12px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Badge padding, tight card gap</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-4</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">16px</div>
+      <div><div style="height:8px;width:16px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Default padding, card inner gap</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-5</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">20px</div>
+      <div><div style="height:8px;width:20px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Form field gap, list spacing</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-6</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">24px</div>
+      <div><div style="height:8px;width:24px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Card padding, section gap (mobile)</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-8</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">32px</div>
+      <div><div style="height:8px;width:32px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Card gap, modal padding</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-10</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">40px</div>
+      <div><div style="height:8px;width:40px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Section header gap, large card padding</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-12</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">48px</div>
+      <div><div style="height:8px;width:48px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Section padding (mobile)</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-16</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">64px</div>
+      <div><div style="height:8px;width:64px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Section padding (desktop)</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-20</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">80px</div>
+      <div><div style="height:8px;width:80px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Hero section padding, page top</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 80px 1fr 220px;gap:12px;padding:10px 0;align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--space-24</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">96px</div>
+      <div><div style="height:8px;width:96px;background:#0A4174;border-radius:2px"></div></div>
+      <div style="font-size:12px;color:var(--ink-400)">Full-bleed hero section gap</div>
+    </div>
+  </div>
+
+  <!-- ── BORDER RADIUS ── -->
+  <h3>Border Radius Scale</h3>
+  <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-top: 20px;">
+    <div style="text-align:center">
+      <div style="height:48px;background:rgba(10,65,116,0.25);border:1px solid rgba(10,65,116,0.4);border-radius:2px;margin-bottom:10px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">--radius-xs</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:2px">2px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Tags, chips</div>
+    </div>
+    <div style="text-align:center">
+      <div style="height:48px;background:rgba(10,65,116,0.25);border:1px solid rgba(10,65,116,0.4);border-radius:4px;margin-bottom:10px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">--radius-sm</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:2px">4px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Code, table rows</div>
+    </div>
+    <div style="text-align:center">
+      <div style="height:48px;background:rgba(10,65,116,0.25);border:1px solid rgba(10,65,116,0.4);border-radius:8px;margin-bottom:10px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">--radius-md</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:2px">8px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Buttons, inputs</div>
+    </div>
+    <div style="text-align:center">
+      <div style="height:48px;background:rgba(10,65,116,0.25);border:1px solid rgba(10,65,116,0.4);border-radius:12px;margin-bottom:10px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">--radius-lg</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:2px">12px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Cards, dropdowns</div>
+    </div>
+    <div style="text-align:center">
+      <div style="height:48px;background:rgba(10,65,116,0.25);border:1px solid rgba(10,65,116,0.4);border-radius:16px;margin-bottom:10px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">--radius-xl</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:2px">16px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Modals, sheets</div>
+    </div>
+    <div style="text-align:center">
+      <div style="height:48px;background:rgba(10,65,116,0.25);border:1px solid rgba(10,65,116,0.4);border-radius:999px;margin-bottom:10px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">--radius-pill</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:2px">999px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Badges, pills</div>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT SIZES ── -->
+  <h3>Component Height Standards</h3>
+  <p>All interactive components use standardised heights across the three size tiers — sm, md (default), lg. Never use arbitrary heights.</p>
+  <div style="margin-top: 20px; overflow-x: auto;">
+    <table class="palette-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Size SM</th>
+          <th>Size MD (default)</th>
+          <th>Size LG</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:var(--ink-200);font-weight:500">Button</td><td class="token-value">32px h · 12px px</td><td class="token-value">40px h · 16px px</td><td class="token-value">48px h · 20px px</td><td class="token-desc">Sora 600, 13/14/15px text</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Input / Textfield</td><td class="token-value">32px h</td><td class="token-value">40px h</td><td class="token-value">48px h</td><td class="token-desc">14px DM Sans, 12px padding</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Select / Dropdown</td><td class="token-value">32px h</td><td class="token-value">40px h</td><td class="token-value">48px h</td><td class="token-desc">Same as input, add 24px right pad</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Textarea</td><td class="token-value">80px min</td><td class="token-value">120px min</td><td class="token-value">160px min</td><td class="token-desc">Resizable, padding 12px all</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Badge / Pill</td><td class="token-value">20px h · 8px px</td><td class="token-value">24px h · 10px px</td><td class="token-value">28px h · 12px px</td><td class="token-desc">Sora 600, 10/11/12px, radius-pill</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Avatar / User icon</td><td class="token-value">24px</td><td class="token-value">36px</td><td class="token-value">48px</td><td class="token-desc">Circle, initials 10/13/16px</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Navbar (app)</td><td class="token-value">—</td><td class="token-value">56px h</td><td class="token-value">64px h</td><td class="token-desc">Sticky, z-index 100</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Sidebar (dashboard)</td><td class="token-value">—</td><td class="token-value">240px w</td><td class="token-value">280px w</td><td class="token-desc">Collapsible to 64px icon-only</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Card</td><td class="token-value">16px pad</td><td class="token-value">20px pad</td><td class="token-value">24px pad</td><td class="token-desc">radius-lg, no fixed height</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Modal</td><td class="token-value">320px w</td><td class="token-value">480px w</td><td class="token-value">640px w</td><td class="token-desc">radius-xl, 32px padding, centered</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Toast / Snackbar</td><td class="token-value">—</td><td class="token-value">48px h · 280px w</td><td class="token-value">—</td><td class="token-desc">radius-lg, bottom-right, z 200</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Tooltip</td><td class="token-value">—</td><td class="token-value">28px h · auto w</td><td class="token-value">—</td><td class="token-desc">radius-sm, 8px pad, 11px mono</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Bottom Nav (mobile)</td><td class="token-value">—</td><td class="token-value">56px h</td><td class="token-value">—</td><td class="token-desc">Fixed bottom, 5 items max</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Tab Bar</td><td class="token-value">—</td><td class="token-value">44px h</td><td class="token-value">—</td><td class="token-desc">2px underline active indicator</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Transaction row</td><td class="token-value">—</td><td class="token-value">64px h</td><td class="token-value">72px h</td><td class="token-desc">16px side padding, 12px gap</td></tr>
+        <tr><td style="color:var(--ink-200);font-weight:500">Metric / Stat card</td><td class="token-value">—</td><td class="token-value">80px h min</td><td class="token-value">100px h min</td><td class="token-desc">Space Mono amount, DM Sans label</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── ICON SIZES ── -->
+  <h3>Icon Size System</h3>
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 20px;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;text-align:center">
+      <div style="width:12px;height:12px;background:rgba(10,65,116,0.6);border-radius:2px;margin:0 auto 12px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">12px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Inline text icon</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-600);margin-top:4px">badges · labels</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;text-align:center">
+      <div style="width:16px;height:16px;background:rgba(10,65,116,0.6);border-radius:3px;margin:0 auto 12px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">16px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Default UI icon</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-600);margin-top:4px">buttons · inputs · nav</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;text-align:center">
+      <div style="width:20px;height:20px;background:rgba(10,65,116,0.6);border-radius:4px;margin:0 auto 12px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">20px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Standalone icon</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-600);margin-top:4px">tx row · sidebar</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;text-align:center">
+      <div style="width:24px;height:24px;background:rgba(10,65,116,0.6);border-radius:5px;margin:0 auto 12px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">24px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Feature icon</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-600);margin-top:4px">cards · empty states</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px;text-align:center">
+      <div style="width:32px;height:32px;background:rgba(10,65,116,0.6);border-radius:7px;margin:0 auto 12px"></div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">32px</div>
+      <div style="font-size:11px;color:var(--ink-500);margin-top:4px">Hero icon</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-600);margin-top:4px">landing · marketing</div>
+    </div>
+  </div>
+
+  <!-- ── BREAKPOINTS ── -->
+  <h3>Breakpoints & Responsive Grid</h3>
+  <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07)">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-600)">Token</div>
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-600)">Breakpoint</div>
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-600)">Columns</div>
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-600)">Surface</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--bp-xs</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">0 – 375px</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-300)">4 cols</div>
+      <div style="font-size:12px;color:var(--ink-400)">Mobile S · iPhone SE, small Android · 16px gutter · 12px margin</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--bp-sm</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">376 – 767px</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-300)">4 cols</div>
+      <div style="font-size:12px;color:var(--ink-400)">Mobile L · iPhone 14, most Android · 16px gutter · 16px margin</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--bp-md</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">768 – 1023px</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-300)">8 cols</div>
+      <div style="font-size:12px;color:var(--ink-400)">Tablet · iPad, small laptop · 20px gutter · 24px margin</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--bp-lg</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">1024 – 1279px</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-300)">12 cols</div>
+      <div style="font-size:12px;color:var(--ink-400)">Desktop S · MacBook 13", common laptop · 24px gutter · 40px margin</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--bp-xl</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">1280 – 1535px</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-300)">12 cols</div>
+      <div style="font-size:12px;color:var(--ink-400)">Desktop M · MacBook 14/16", standard monitor · 24px gutter · 60px margin</div>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 110px 100px 1fr;gap:12px;padding:12px 0;align-items:center">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">--bp-2xl</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">1536px+</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-300)">12 cols</div>
+      <div style="font-size:12px;color:var(--ink-400)">Desktop XL · 4K, widescreen monitors · max-width: 1100px centered</div>
+    </div>
+  </div>
+
+  <!-- ── STANDARD SIZES BY SURFACE ── -->
+  <h3>Standard Sizes by Surface</h3>
+  <p>Every surface NivixPe appears on has a defined size standard. These are the canonical dimensions your team should design to.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
+
+    <!-- App -->
+    <div style="background:rgba(10,65,116,0.08);border:1px solid rgba(10,65,116,0.25);border-radius:12px;padding:24px">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--navy-400);margin-bottom:12px">Mobile App</div>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:600;color:#fff;margin-bottom:16px">React Native / iOS / Android</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Design canvas</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">390 × 844px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Status bar</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">44px (iOS) / 24px (Android)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Nav header</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">56px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Bottom tab bar</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">56px + safe area</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Screen padding</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">16px sides</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:var(--ink-400)">Touch target min</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--navy-300)">44 × 44px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Web App / Dashboard -->
+    <div style="background:rgba(12,112,117,0.08);border:1px solid rgba(12,112,117,0.25);border-radius:12px;padding:24px">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--teal-400);margin-bottom:12px">Web App / Dashboard</div>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:600;color:#fff;margin-bottom:16px">React / Next.js</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Design canvas</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">1440 × 900px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Max content width</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">1100px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Top navbar</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">64px sticky</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Sidebar</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">240px / 64px collapsed</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Page horizontal pad</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">60px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:var(--ink-400)">Section vertical pad</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--teal-300)">80px top/bottom</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketing / Landing -->
+    <div style="background:rgba(41,77,97,0.12);border:1px solid rgba(41,77,97,0.3);border-radius:12px;padding:24px">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--deep-300);margin-bottom:12px">Marketing / Landing</div>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:600;color:#fff;margin-bottom:16px">Website / Ads / Pitch</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Landing design canvas</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--deep-200)">1440 × 900px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Hero section height</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--deep-200)">100vh min</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">OG image (social preview)</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--deep-200)">1200 × 630px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">Twitter / X card</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--deep-200)">1200 × 628px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px">
+          <span style="font-size:12px;color:var(--ink-400)">App store screenshot</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--deep-200)">1290 × 2796px</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:var(--ink-400)">Pitch deck slide</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--deep-200)">1920 × 1080px</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ad Sizes -->
+  <div style="margin-top: 16px; background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:24px">
+    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-500);margin-bottom:16px">Standard Ad & Marketing Asset Sizes</div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-300);margin-bottom:8px;font-family:var(--font-display)">Google Display Ads</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300)">728 × 90px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Leaderboard</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:6px">300 × 250px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Medium Rectangle</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:6px">160 × 600px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Wide Skyscraper</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:6px">320 × 50px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Mobile Banner</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-300);margin-bottom:8px;font-family:var(--font-display)">Social Media</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300)">1080 × 1080px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Instagram / FB Square</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300);margin-top:6px">1080 × 1920px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Stories / Reels</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300);margin-top:6px">1200 × 628px</div>
+          <div style="font-size:11px;color:var(--ink-500)">LinkedIn / Twitter Post</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal-300);margin-top:6px">800 × 418px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Twitter In-feed</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-300);margin-bottom:8px;font-family:var(--font-display)">Logo & Brand Assets</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--deep-200)">512 × 512px</div>
+          <div style="font-size:11px;color:var(--ink-500)">App icon (store)</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--deep-200);margin-top:6px">1024 × 1024px</div>
+          <div style="font-size:11px;color:var(--ink-500)">App icon (max)</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--deep-200);margin-top:6px">200 × 60px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Logo horizontal</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--deep-200);margin-top:6px">32 × 32px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Favicon</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-300);margin-bottom:8px;font-family:var(--font-display)">Email Marketing</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300)">600px wide</div>
+          <div style="font-size:11px;color:var(--ink-500)">Email template width</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:6px">600 × 200px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Email header banner</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:6px">16px pad sides</div>
+          <div style="font-size:11px;color:var(--ink-500)">Email body padding</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--navy-300);margin-top:6px">14–16px</div>
+          <div style="font-size:11px;color:var(--ink-500)">Email body font size</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</div><!-- end .page -->
+
+<script>
+function showTheme(mode, btn) {
+  document.getElementById('theme-light').style.display = mode === 'light' ? 'block' : 'none';
+  document.getElementById('theme-dark').style.display  = mode === 'dark'  ? 'block' : 'none';
+  document.querySelectorAll('.theme-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

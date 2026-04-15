@@ -1,504 +1,545 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { motion } from 'framer-motion';
-import CountUp from 'react-countup';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { LaserHero } from '../components/ui/laser-focus-crypto-hero-section';
+import { GlowCard } from '../components/ui/spotlight-card';
+import CookieConsent from '../components/CookieConsent';
+import VideoPlayer from '../components/ui/video-player';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
-  // Show floating CTA after scrolling
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowFloatingCTA(window.scrollY > 800);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Animation variants
-  const fadeInUp = {
-    initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  };
-
-  const staggerContainer = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1
-      }
+  const scrollToHowItWorks = () => {
+    const element = document.getElementById('how-it-works');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="bg-white overflow-hidden">
-      {/* Floating CTA Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: showFloatingCTA ? 1 : 0, y: showFloatingCTA ? 0 : 100 }}
-        transition={{ duration: 0.3 }}
-        className="fixed bottom-8 right-8 z-50"
-      >
-        <Button
-          size="lg"
-          onClick={() => document.getElementById('hero-cta')?.scrollIntoView({ behavior: 'smooth' })}
-          className="!bg-gradient-to-r from-accent to-accent-800 hover:shadow-glow !rounded-full !px-8 !py-4 !font-semibold !text-white shadow-premium transform hover:scale-105 transition-all duration-200"
-        >
-          Get Started →
-        </Button>
-      </motion.div>
+    <div className="overflow-hidden min-h-screen bg-white">
+      {/* 
+        NEW LASER FOCUS HERO SECTION
+        This replaces the old gradient hero while matching the NivixPe colour system perfectly
+      */}
+      <LaserHero onMakeTransfer={() => navigate('/automated-transfer')} onSeeHowItWorks={scrollToHowItWorks} />
 
-      {/* Hero Section - Modern Fintech Design */}
-      <section className="relative py-28 lg:py-36 bg-gradient-to-b from-[#EEF2FF] via-[#F9FAFB] to-[#FFFFFF] overflow-hidden">
-        {/* Animated Background Orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            animate={{
-              x: [0, 100, 0],
-              y: [0, -50, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute top-20 right-20 w-[500px] h-[500px] bg-blue-400/30 rounded-full blur-3xl opacity-30"
-          />
-          <motion.div
-            animate={{
-              x: [0, -80, 0],
-              y: [0, 80, 0],
-              scale: [1, 1.15, 1],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-accent/20 rounded-full blur-3xl opacity-20"
-          />
+      {/* Beta Launch Banner — teal brand strip */}
+      <div className="relative z-20 overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--color-navy-700), var(--color-navy-600), var(--color-teal-600))' }}>
+        <div className="max-w-7xl mx-auto px-6 py-6 relative">
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            {/* Beta Badge */}
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border-2 shadow-lg" style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.35)' }}>
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-white shadow-lg"></span>
+              </span>
+              <span className="font-display text-sm font-black text-white tracking-wider uppercase">
+                Beta Launch
+              </span>
+            </div>
+            
+            {/* Main Message */}
+            <div className="text-center">
+              <p className="text-white font-display text-lg md:text-xl font-bold">
+                India-UAE Trade Corridor{' '}
+                <span className="font-black" style={{ color: 'var(--color-ink-900)', backgroundColor: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: '4px' }}>Beta</span>
+                {' '}— Q1 2026
+              </p>
+              <p className="font-body text-sm mt-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                Be among the <span className="font-bold text-white">first</span> to eliminate SWIFT delays. Priority access available now!
+              </p>
+            </div>
+            
+            {/* CTA Button */}
+            <button
+              onClick={() => navigate('/automated-transfer')}
+              className="px-6 py-3 font-display font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2"
+              style={{ backgroundColor: 'white', color: 'var(--color-teal-600)' }}
+            >
+              Join Waitlist
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10">
-          {/* Two Column Layout */}
-          <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-center">
-            {/* Left Column - Text Content (60%) */}
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={staggerContainer}
-              className="lg:col-span-3"
+      {/* Floating Beta Badges */}
+      <style>{`
+        @keyframes gradient-x {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        @keyframes shimmer {
+          0% { background-position: -250% 0, 0 0; }
+          100% { background-position: 250% 0, 0 0; }
+        }
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-x 3s ease infinite;
+        }
+        .animate-shimmer {
+          animation: shimmer 3s infinite;
+        }
+      `}</style>
+
+      {/* Stats / Ticker Section — white background */}
+      <div className="relative z-20 bg-white border-b" style={{ borderColor: '#E5E8EF' }}>
+        <div className="max-w-7xl mx-auto px-6 py-8 relative">
+          <div className="flex items-center justify-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border" style={{ backgroundColor: 'rgba(12,112,117,0.06)', borderColor: 'rgba(12,112,117,0.2)' }}>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-teal-500)' }}></span>
+                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: 'var(--color-teal-500)' }}></span>
+              </span>
+              <span className="font-display text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--color-teal-600)' }}>Live Network Stats</span>
+            </div>
+          </div>
+            
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="h-full"
             >
-              {/* Brand Tagline */}
-              <motion.div variants={fadeInUp} className="mb-6">
-                <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">
-                  Built on Solana • Real-time Global Transfers
-                </span>
-              </motion.div>
-
-              {/* Main Headline */}
-              <motion.h1
-                variants={fadeInUp}
-                className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-[1.1]"
+              <GlowCard 
+                glowColor="teal" 
+                customSize={true} 
+                className="text-center h-full transition-all duration-300 hover:shadow-md !border-2 !border-[var(--color-teal-500)]"
+                style={{ backgroundColor: '#F8F9FC' }}
               >
-                Send Money Anywhere,{' '}
-                <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                  Pay Almost Nothing
-                </span>
-              </motion.h1>
-
-              {/* Subtitle */}
-              <motion.p
-                variants={fadeInUp}
-                className="text-lg lg:text-xl text-gray-600 max-w-xl leading-relaxed mb-8"
-              >
-                Experience the power of blockchain transfers with the simplicity of your local bank.
-                Send SOL, USDC, or convert to INR, USD, EUR — instantly and securely.
-              </motion.p>
-
-              {/* CTA Buttons */}
-              <motion.div
-                variants={fadeInUp}
-                id="hero-cta"
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6"
-              >
-                <button className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-base hover:bg-blue-700 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
-                  Get Started
-                </button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate('/automated-transfer')}
-                  className="!border-2 !border-blue-600 !text-blue-600 hover:!bg-blue-50 !px-8 !py-4 !text-base !font-semibold !rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105"
-                >
-                  See How It Works →
-                </Button>
-              </motion.div>
-
-              {/* Trust Signals */}
-              <motion.div
-                variants={fadeInUp}
-                className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-8"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">🔒</span>
-                  <span className="font-medium">Secure</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">⚡</span>
-                  <span className="font-medium">Instant</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">🌍</span>
-                  <span className="font-medium">Multi-Currency Support</span>
-                </div>
-              </motion.div>
-
-              {/* Quick Stats - Inline/Compact */}
-              <motion.div
-                variants={fadeInUp}
-                className="border-t border-gray-200 pt-6"
-              >
-                <div className="grid grid-cols-3 gap-6">
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
-                      $<CountUp end={0.00001} decimals={5} duration={2} />
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide">
-                      Avg. Fee
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
-                      &lt;2 minutes
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide">
-                      Transfer Time
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
-                      <CountUp end={24} duration={2} />/7
-                    </div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide">
-                      Always Online
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                <div className="text-xs font-display uppercase tracking-widest mb-2" style={{ color: 'var(--color-ink-500)' }}>Settlement Time</div>
+                <div className="font-mono text-2xl md:text-3xl font-bold mb-1" style={{ color: 'var(--color-teal-600)' }}>&lt; 10s</div>
+                <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>on Solana</div>
+              </GlowCard>
             </motion.div>
-
-            {/* Right Column - Hero Illustration (40%) */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:col-span-2 hidden lg:block"
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="h-full"
             >
-              <div className="relative">
-                {/* Main Illustration Container */}
-                <motion.div
-                  animate={{
-                    y: [0, -20, 0],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="relative"
-                >
-                  {/* 3D Card Visual */}
-                  <div className="relative w-full aspect-square max-w-md mx-auto">
-                    {/* Background Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
-
-                    {/* Main Card */}
-                    <motion.div
-                      whileHover={{ scale: 1.05, rotateY: 5 }}
-                      className="relative bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl shadow-2xl p-8 transform perspective-1000"
-                      style={{ transformStyle: 'preserve-3d' }}
-                    >
-                      {/* Card Content */}
-                      <div className="text-white space-y-6">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="text-sm opacity-80 mb-1">From</div>
-                            <div className="font-bold text-xl">🇺🇸 USD</div>
-                          </div>
-                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="text-center py-4">
-                          <div className="text-5xl font-bold mb-2">$1,000</div>
-                          <div className="text-sm opacity-80">Instant Transfer</div>
-                        </div>
-
-                        <div className="flex justify-between items-end">
-                          <div>
-                            <div className="text-sm opacity-80 mb-1">To</div>
-                            <div className="font-bold text-xl">🇮🇳 INR</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-xs opacity-80">Fee</div>
-                            <div className="font-bold text-green-300">$0.00001</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Decorative Elements */}
-                      <div className="absolute -top-4 -right-4 w-24 h-24 bg-purple-500/30 rounded-full blur-xl" />
-                      <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-400/30 rounded-full blur-xl" />
-                    </motion.div>
-
-                    {/* Floating Currency Icons */}
-                    <motion.div
-                      animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className="absolute -top-8 -left-8 bg-white rounded-2xl shadow-xl p-4 text-3xl"
-                    >
-                      💸
-                    </motion.div>
-
-                    <motion.div
-                      animate={{ y: [0, 10, 0], rotate: [0, -5, 0] }}
-                      transition={{ duration: 3.5, repeat: Infinity }}
-                      className="absolute -bottom-4 -right-8 bg-white rounded-2xl shadow-xl p-4 text-3xl z-0"
-                    >
-                      ⚡
-                    </motion.div>
-
-                    <motion.div
-                      animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
-                      transition={{ duration: 4, repeat: Infinity }}
-                      className="absolute top-1/4 -right-12 bg-white rounded-2xl shadow-xl p-4 text-3xl"
-                    >
-                      🌍
-                    </motion.div>
-                  </div>
-                </motion.div>
-
-                {/* Success Indicator */}
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  className="absolute -bottom-6 left-[20%] bg-green-500 text-white pl-[20px] pr-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-semibold z-10"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span>Transfer Complete!</span>
-                </motion.div>
-              </div>
+              <GlowCard 
+                glowColor="teal" 
+                customSize={true} 
+                className="text-center h-full transition-all duration-300 hover:shadow-md !border-2 !border-[var(--color-teal-500)]"
+                style={{ backgroundColor: '#F8F9FC' }}
+              >
+                <div className="text-xs font-display uppercase tracking-widest mb-2" style={{ color: 'var(--color-ink-500)' }}>Transaction Fees</div>
+                <div className="font-mono text-2xl md:text-3xl font-bold mb-1" style={{ color: 'var(--color-teal-600)' }}>0%</div>
+                <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>vs SWIFT avg $25</div>
+              </GlowCard>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="col-span-2 md:col-span-1 h-full"
+            >
+              <GlowCard 
+                glowColor="navy" 
+                customSize={true} 
+                className="text-center h-full transition-all duration-300 hover:shadow-md !border-2 !border-[var(--color-navy-500)]"
+                style={{ backgroundColor: '#F8F9FC' }}
+              >
+                <div className="text-xs font-display uppercase tracking-widest mb-2" style={{ color: 'var(--color-ink-500)' }}>Beta Launch</div>
+                <div className="font-mono text-2xl md:text-3xl font-bold mb-1" style={{ color: 'var(--color-navy-600)' }}>Q1 2026</div>
+                <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>India-UAE corridor</div>
+              </GlowCard>
             </motion.div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Exchange Rate Ticker */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="bg-gradient-to-r from-accent-50 to-blue-50 py-3 border-y border-accent/10"
-      >
-        <div className="scroll-container">
-          <div className="animate-scroll-left flex items-center gap-8">
-            {/* Duplicate content for seamless loop */}
-            {[1, 2].map((copy) => (
-              <div key={copy} className="flex items-center gap-8">
-                <span className="text-sm font-semibold text-accent whitespace-nowrap">Live Rates:</span>
-                {[
-                  { pair: 'SOL/USD', rate: '142.50', change: '+2.4%' },
-                  { pair: 'USDC/INR', rate: '83.25', change: '+0.1%' },
-                  { pair: 'SOL/EUR', rate: '131.20', change: '+1.8%' },
-                  { pair: 'USDC/USD', rate: '1.00', change: '0.0%' }
-                ].map((item, index) => (
-                  <div key={`${copy}-${index}`} className="flex items-center gap-2 text-sm whitespace-nowrap">
-                    <span className="font-medium text-[#111827]">{item.pair}</span>
-                    <span className="text-[#6B7280]">{item.rate}</span>
-                    <span className="text-green-600 text-xs">{item.change}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Why Section - Two Column Layout */}
-      <section className="py-24 bg-gradient-to-b from-white to-gray-50 relative">
-        {/* Background Illustration */}
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 border-4 border-accent rounded-full" />
-          <div className="absolute bottom-1/3 right-1/4 w-24 h-24 border-4 border-accent rounded-full" />
-          <div className="absolute top-1/2 right-1/3 w-16 h-16 border-4 border-accent rounded-full" />
-        </div>
-
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10">
+      {/* Problem / Solution Section — dark theme */}
+      <section id="how-it-works" className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--color-navy-800), var(--color-navy-700))' }}>
+        {/* Background decorations */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(12,112,117,0.15), transparent 70%)' }}></div>
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="text-center mb-24"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111827] mb-4">
-              Why We Built This
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border" style={{ backgroundColor: 'rgba(229,53,53,0.15)', borderColor: 'rgba(229,53,53,0.3)', color: '#FF6B6B' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
+              The Problem
+            </div>
+            <h2 className="text-[36px] md:text-[52px] font-display font-bold mb-5 tracking-[-0.03em] leading-[1.1]" style={{ color: 'white' }}>
+              Traditional payments are{' '}
+              <span className="font-black" style={{ color: '#FF6B6B' }}>broken</span>.
             </h2>
-            <p className="text-xl text-[#6B7280] mb-12 max-w-3xl">
-              Traditional money transfers are broken. We're fixing them with blockchain technology.
+            <p className="text-lg font-body mb-8 leading-relaxed max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              We combined the security of banks with the speed of Solana to create the perfect global transfer system.
             </p>
+            {/* Beta Highlight */}
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border" style={{ backgroundColor: 'rgba(12,112,117,0.15)', borderColor: 'rgba(12,112,117,0.35)' }}>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-teal-500)' }}></span>
+                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: 'var(--color-teal-500)' }}></span>
+              </span>
+              <span className="font-display text-sm font-bold tracking-wide" style={{ color: 'var(--color-teal-600)' }}>
+                Beta launching Q1 2026 — India-UAE corridor
+              </span>
+            </div>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               {
-                icon: '🏦',
+                icon: (
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                  </svg>
+                ),
                 title: 'Traditional Banks',
-                description: 'International transfers take 3-5 business days and cost $15-45 per transaction. Weekend? Forget about it. You\'re waiting till Monday.',
-                badge: '❌ Too slow, too expensive',
-                badgeColor: 'text-red-600'
+                description: 'Takes 3-5 business days. Not open on weekends. Averages $25-45 in hidden fees and markup.',
+                badge: 'Slow & Expensive',
+                type: 'negative',
+                stats: ['3-5 days', '$25-45 fees', 'Business hours only']
               },
               {
-                icon: '💸',
-                title: 'Money Transfer Apps',
-                description: 'Apps like Wise or Western Union are better, but still charge 2-5% fees. Plus, they don\'t support crypto at all.',
-                badge: '⚠️ Limited, still pricey',
-                badgeColor: 'text-orange-600'
+                icon: (
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3h3m-3 3h3" />
+                  </svg>
+                ),
+                title: 'Fintech Apps',
+                description: 'Faster, but still charge 2-5% on conversion rates. Limited crypto support and custodial risks.',
+                badge: 'Better, but limited',
+                type: 'warning',
+                stats: ['1-2 days', '2-5% fees', 'Limited crypto']
               },
               {
-                icon: '⚡',
-                title: 'Nivix Pay',
-                description: 'Instant transfers, crypto or fiat. Pay fractions of a cent. No business hours - it\'s blockchain, it never sleeps.',
-                badge: '✓ Fast, cheap, always works',
-                badgeColor: 'text-green-600',
-                highlight: true
+                icon: (
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                ),
+                title: 'NivixPe',
+                description: 'Instant settlement. Costs fractions of a penny. 24/7 blockchain availability with full fiat support.',
+                badge: 'Fast & Transparent',
+                type: 'positive',
+                stats: ['< 10 seconds', 'Zero fees vs SWIFT', '24/7 available', 'Beta: Q1 2026']
               }
-            ].map((item, index) => (
+            ].map((item, i) => (
               <motion.div
-                key={index}
+                key={i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                className="relative group"
               >
-                <Card className={`bg-white h-full ${item.highlight ? 'border-2 border-accent ring-2 ring-accent/10' : 'border border-[#E5E7EB]'} shadow-card hover:shadow-premium transition-all duration-200`}>
-                  <div className="text-4xl mb-4">{item.icon}</div>
-                  <h3 className={`text-xl font-semibold mb-3 ${item.highlight ? 'text-accent' : 'text-[#111827]'}`}>
+                <GlowCard 
+                  glowColor={item.type === 'positive' ? 'teal' : 'ink'} 
+                  customSize={true} 
+                  className={`h-full transition-all duration-300 hover:shadow-lg !p-7 !border-2 ${
+                    item.type === 'positive' ? '!border-[var(--color-teal-500)]' : item.type === 'warning' ? '!border-orange-400/60' : '!border-red-400/60'
+                  }`}
+                  style={item.type === 'positive' ? {
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 0 30px rgba(12,112,117,0.2)'
+                  } : {
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  {/* Icon */}
+                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${
+                    item.type === 'positive'
+                      ? ''
+                      : item.type === 'warning'
+                      ? ''
+                      : ''
+                  }`} style={{
+                    backgroundColor: item.type === 'positive' ? 'rgba(12,112,117,0.2)' : 'rgba(255,255,255,0.1)',
+                    color: item.type === 'positive' ? 'var(--color-teal-400)' : 'rgba(255,255,255,0.7)'
+                  }}>
+                    {item.icon}
+                  </div>
+                  
+                  {/* Badge */}
+                  <div className="mb-4">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-display font-bold uppercase tracking-wider ${
+                      item.type === 'positive' ? 'text-teal-300' :
+                      item.type === 'warning' ? 'text-amber-300' :
+                      'text-red-300'
+                    }`} style={{
+                      backgroundColor: item.type === 'positive' ? 'rgba(12,112,117,0.2)' : item.type === 'warning' ? 'rgba(217,119,6,0.2)' : 'rgba(220,38,38,0.2)',
+                      border: `1px solid ${item.type === 'positive' ? 'rgba(12,112,117,0.4)' : item.type === 'warning' ? 'rgba(217,119,6,0.4)' : 'rgba(220,38,38,0.4)'}`
+                    }}>
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-display font-bold mb-3" style={{ color: 'white' }}>
                     {item.title}
                   </h3>
-                  <p className="text-[#6B7280] mb-4 text-sm leading-relaxed">
+
+                  {/* Description */}
+                  <p className="font-body text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.7)' }}>
                     {item.description}
                   </p>
-                  <div className={`text-xs font-medium ${item.badgeColor}`}>
-                    {item.badge}
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Who Uses Section - Enhanced with Avatars */}
-      <section className="py-24 bg-white">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111827] mb-4">
-              Who Uses Nivix Pay?
-            </h2>
-            <p className="text-xl text-[#6B7280]">Real people, real needs</p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: '👨‍💻',
-                avatar: '🧑‍💻',
-                name: 'Sarah',
-                role: 'Freelancers',
-                title: 'Freelancers Getting Paid',
-                description: 'Sarah is a graphic designer in India working with clients in the US. Instead of losing 5% to PayPal and waiting 3 days, she gets paid in USDC instantly. Then converts to INR directly to her bank account - all in under a minute.',
-                savings: 'Saves ~$150 per month in fees',
-                microcopy: 'Perfect for remote workers & contractors'
-              },
-              {
-                icon: '🏠',
-                avatar: '👨‍👩‍👧',
-                name: 'Miguel',
-                role: 'Families',
-                title: 'Sending Money Home',
-                description: 'Miguel works in Spain but sends money to his family in Mexico every month. Traditional remittance services charge him €25-40 per transfer. With Nivix, he pays less than a cent and his family receives it instantly.',
-                savings: 'Saves ~€350 per year',
-                microcopy: 'Trusted by families worldwide'
-              },
-              {
-                icon: '🛍️',
-                avatar: '🏪',
-                name: 'Alex',
-                role: 'Businesses',
-                title: 'E-commerce Merchants',
-                description: 'An online store accepts payments globally. Credit card processors take 2.9% + $0.30 per transaction. With Nivix, they accept crypto payments for almost free, and can convert to their local currency whenever they want.',
-                savings: 'Saves thousands on fees annually',
-                microcopy: 'Scale globally without high fees'
-              }
-            ].map((useCase, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
-              >
-                <Card className="bg-white border border-[#E5E7EB] hover:border-accent shadow-card hover:shadow-premium transition-all duration-200 h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">{useCase.avatar}</div>
-                    <div>
-                      <div className="text-xs font-semibold text-accent uppercase tracking-wide mb-1">
-                        {useCase.role}
+                  {/* Stats */}
+                  <div className="space-y-2 mb-6">
+                    {item.stats.map((stat, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-sm">
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          item.type === 'positive' ? 'bg-teal-400' :
+                          item.type === 'warning' ? 'bg-orange-400' :
+                          'bg-red-400'
+                        }`}></div>
+                        <span className="font-mono text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>{stat}</span>
                       </div>
-                      <h3 className="text-xl font-semibold text-[#111827]">
-                        {useCase.title}
-                      </h3>
-                    </div>
+                    ))}
                   </div>
-                  <p className="text-[#6B7280] mb-3 leading-relaxed text-sm">
-                    {useCase.description}
-                  </p>
-                  <div className="text-sm text-accent font-medium mb-2">
-                    {useCase.savings}
-                  </div>
-                  <div className="text-xs text-[#9CA3AF] italic">
-                    {useCase.microcopy}
-                  </div>
-                </Card>
+
+                  {/* CTA for NivixPe */}
+                  {item.type === 'positive' && (
+                    <>
+                      <button
+                        onClick={() => navigate('/automated-transfer')}
+                        className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-400 text-white font-display font-bold rounded-xl hover:shadow-[0_0_30px_rgba(20,184,166,0.4)] transition-all duration-300 flex items-center justify-center gap-2 group"
+                      >
+                        Join Beta Waitlist
+                        <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </button>
+                      {/* Beta Exclusive Badge */}
+                      <div className="mt-4 text-center">
+                        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 text-sm font-display font-bold shadow-lg" style={{ backgroundColor: 'var(--color-navy-600)', borderColor: 'var(--color-navy-500)', color: 'white' }}>
+                          <svg className="w-4 h-4 text-teal-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          Beta Exclusive — Priority Support
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </GlowCard>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works - Horizontal Flow */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
+      {/* Target Audience / Use Cases — white */}
+      <section className="py-24 relative overflow-hidden bg-white">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(12,112,117,0.04), transparent 70%)' }}></div>
+        
+        {/* Animated background grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-500/10 via-teal-500/10 to-transparent rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-purple-500/10 via-teal-500/10 to-transparent rounded-full blur-[120px]"></div>
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left: Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-teal-400/30 backdrop-blur-sm mb-6">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+                </span>
+                <span className="font-display text-xs font-bold text-teal-300 tracking-wider uppercase">Beta Q1 2026</span>
+              </div>
+              
+              <h2 className="text-[36px] md:text-[50px] font-display font-bold mb-6 tracking-[-0.03em] leading-[1.05]" style={{ color: 'var(--color-ink-900)' }}>
+                Designed for global{' '}
+                <span className="font-black" style={{ color: 'var(--color-teal-600)' }}>citizens</span>{' '}
+                and{' '}
+                <span className="font-black" style={{ color: 'var(--color-navy-600)' }}>businesses</span>
+              </h2>
+              
+              <div className="space-y-8">
+                {[
+                  {
+                    title: 'Freelancers & Remote Workers',
+                    desc: 'Get paid instantly in USDC, convert to your local currency avoiding 3-5% platform fees.',
+                    icon: (
+                      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                    ),
+                    borderColor: 'rgba(10,65,116,0.3)'
+                  },
+                  {
+                    title: 'Cross-Border Families',
+                    desc: 'Send remittances home for less than a cent. No intermediaries, no hidden markup.',
+                    icon: (
+                      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253M3 12c0 .778.099 1.533.284 2.253" />
+                      </svg>
+                    ),
+                    borderColor: 'rgba(12,112,117,0.3)'
+                  },
+                  {
+                    title: 'Global Businesses',
+                    desc: 'Pay international contractors instantly and manage treasury with on-chain precision.',
+                    icon: (
+                      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                      </svg>
+                    ),
+                    borderColor: 'rgba(10,65,116,0.3)'
+                  }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.15 }}
+                    className="group relative"
+                  >
+                    <GlowCard 
+                      glowColor={i === 1 ? 'teal' : 'navy'}
+                      customSize={true}
+                      className={`flex gap-4 !p-5 rounded-xl transition-all duration-300 hover:shadow-md group !border-2 ${
+                        i === 1 ? '!border-[var(--color-teal-500)]' : '!border-[var(--color-navy-500)]'
+                      }`}
+                      style={{ backgroundColor: 'white' }}
+                    >
+                      <div className="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center shadow-sm border group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'rgba(12,112,117,0.06)', border: '1px solid rgba(12,112,117,0.15)', color: 'var(--color-teal-600)' }}>
+                        {item.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-display font-bold mb-2 leading-tight group-hover:text-teal-600 transition-colors" style={{ color: 'var(--color-ink-900)' }}>{item.title}</h4>
+                        <p className="font-body text-sm leading-relaxed mb-3" style={{ color: 'var(--color-ink-500)' }}>{item.desc}</p>
+                        <button
+                          onClick={() => navigate('/automated-transfer')}
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors group/btn"
+                          style={{ color: 'var(--color-teal-600)' }}
+                        >
+                          Join Beta Waitlist
+                          <svg className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </button>
+                      </div>
+                    </GlowCard>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+            
+            {/* Right: Dashboard Mockup */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative lg:pl-10"
+            >
+              {/* Glow effects */}
+              <div className="absolute -top-20 -right-20 w-96 h-96 bg-teal-400/20 rounded-full blur-[120px] animate-pulse"></div>
+              <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-blue-400/10 rounded-full blur-[120px]"></div>
+              
+              <div className="relative rounded-3xl border-2 shadow-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0A1628, #0D2040)', borderColor: 'rgba(12,112,117,0.35)' }}>
+                {/* Header */}
+                <div className="border-b border-white/10 bg-gradient-to-r from-teal-500/10 to-transparent px-8 py-6 flex items-center justify-between">
+                  <div>
+                    <div className="font-display font-bold text-white text-lg mb-1">Recent Activity</div>
+                    <div className="text-xs text-gray-300">Real-time blockchain transactions</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-400/70"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400/70"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400/70"></div>
+                  </div>
+                </div>
+                
+                {/* Transactions */}
+                <div className="p-8 space-y-6">
+                  {[
+                    { name: 'Upwork Payment', type: 'Received', amount: '+ $1,250.00', time: '2 mins ago', hash: '8xLm...Kk9v', color: 'teal' },
+                    { name: 'Mom in Mexico', type: 'Sent', amount: '- $500.00', time: '1 hr ago', hash: '3mPz...B7Rq', color: 'blue' },
+                    { name: 'Server Hosting', type: 'Sent', amount: '- $45.99', time: 'Yesterday', hash: '9vWc...L2Nj', color: 'purple' },
+                  ].map((tx, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 + i * 0.1 }}
+                      className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 transition-all duration-300 group backdrop-blur-sm"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          tx.type === 'Received' 
+                            ? 'bg-gradient-to-br from-teal-500/30 to-teal-500/10 text-teal-300 border border-teal-400/40' 
+                            : 'bg-gradient-to-br from-white/10 to-white/5 text-gray-300 border border-white/20'
+                        }`}>
+                          {tx.type === 'Received' ? (
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                          ) : (
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-display font-bold text-white text-base mb-1 group-hover:text-teal-300 transition-colors">{tx.name}</div>
+                          <div className="font-body text-xs text-gray-400">{tx.time} · On-chain</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`font-mono font-bold text-lg mb-1 ${tx.type === 'Received' ? 'text-teal-400' : 'text-white'}`}>{tx.amount}</div>
+                        <a
+                          href="https://explorer.solana.com/?cluster=mainnet-beta"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-[10px] text-teal-400/70 hover:text-teal-300 transition-colors"
+                        >
+                          {tx.hash}
+                        </a>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                {/* Footer */}
+                <div className="bg-gradient-to-r from-teal-500/10 to-transparent px-8 py-5 flex items-center justify-between border-t border-white/10">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
+                    <span className="font-body text-xs text-gray-300">Powered by Solana</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-teal-400 flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Verified
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Video Section — dark theme */}
+      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--color-navy-800), var(--color-navy-700))' }}>
+        {/* Background decorations */}
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(12,112,117,0.15), transparent 70%)' }}></div>
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(10,65,116,0.15), transparent 70%)' }}></div>
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -506,477 +547,415 @@ const Home: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111827] mb-4">
-              How Does It Work?
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border" style={{ backgroundColor: 'rgba(12,112,117,0.15)', borderColor: 'rgba(12,112,117,0.3)', color: 'var(--color-teal-400)' }}>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              See It In Action
+            </div>
+            <h2 className="text-[36px] md:text-[52px] font-display font-bold mb-5 tracking-[-0.03em] leading-[1.1]" style={{ color: 'white' }}>
+              Watch NivixPe in{' '}
+              <span className="font-black" style={{ color: 'var(--color-teal-400)' }}>Action</span>
             </h2>
-            <p className="text-xl text-[#6B7280] max-w-3xl mx-auto">
-              We're combining Solana's speed with Hyperledger's security for the perfect money transfer experience
+            <p className="text-lg font-body mb-8 leading-relaxed max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              See how easy it is to send money across borders in under 10 seconds with NivixPe's India-UAE corridor.
             </p>
           </motion.div>
 
-          {/* Horizontal Step Flow */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            {/* Connection Lines - Desktop */}
-            <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-accent/20 via-accent/50 to-accent/20" style={{ top: '48px' }} />
+            {/* Placeholder for video - will be replaced with actual demo video */}
+            <div className="relative rounded-3xl overflow-hidden border-2 shadow-2xl" style={{ borderColor: 'rgba(12,112,117,0.35)' }}>
+              {/* Placeholder content - replace src with actual video URL when available */}
+              <div className="aspect-video bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(12,112,117,0.2)', border: '2px solid rgba(12,112,117,0.4)' }}>
+                    <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--color-teal-400)' }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-display font-bold mb-3" style={{ color: 'white' }}>
+                    Demo Video Coming Soon
+                  </h3>
+                  <p className="text-base font-body max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                    We're preparing an exciting demo showcasing the speed and simplicity of NivixPe transfers.
+                  </p>
+                  <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border" style={{ backgroundColor: 'rgba(12,112,117,0.15)', borderColor: 'rgba(12,112,117,0.35)' }}>
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-teal-500)' }}></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: 'var(--color-teal-500)' }}></span>
+                    </span>
+                    <span className="font-display text-sm font-bold tracking-wide" style={{ color: 'var(--color-teal-400)' }}>
+                      Beta Q1 2026
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {/* Uncomment and use VideoPlayer component when video is ready:
+              <VideoPlayer src="/path/to/your/demo-video.mp4" />
+              */}
+            </div>
+            
+            {/* Decorative glow effects */}
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-teal-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+          </motion.div>
+        </div>
+      </section>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
-              {[
-                {
-                  number: 1,
-                  title: 'Connect Wallet',
-                  description: 'Use Phantom, Solflare, or any Solana wallet',
-                  icon: '🔗'
-                },
-                {
-                  number: 2,
-                  title: 'Verify Once',
-                  description: 'Quick KYC verification (takes 2 minutes)',
-                  icon: '✓'
-                },
-                {
-                  number: 3,
-                  title: 'Send Money',
-                  description: 'Choose crypto or fiat, enter amount',
-                  icon: '💸'
-                },
-                {
-                  number: 4,
-                  title: 'Done!',
-                  description: 'Money arrives in seconds, not days',
-                  icon: '🎉'
-                }
-              ].map((step, index) => (
+      {/* Trust & Architecture Section — dark theme */}
+      <section className="py-24 overflow-hidden relative" style={{ background: 'linear-gradient(135deg, var(--color-navy-800), var(--color-navy-700))' }}>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(10,65,116,0.04), transparent 65%)' }}></div>
+        
+        {/* Animated background */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-teal-500/15 to-blue-500/10 rounded-full blur-[150px] animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-purple-500/10 to-teal-500/15 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+          <div className="text-center mb-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6" style={{ backgroundColor: 'rgba(12,112,117,0.15)', borderColor: 'rgba(12,112,117,0.35)' }}
+            >
+              <svg className="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span className="font-display text-xs font-bold tracking-wider uppercase" style={{ color: 'var(--color-teal-400)' }}>Dual-Chain Architecture</span>
+            </motion.div>
+            
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-[36px] md:text-[50px] font-display font-bold mb-6 tracking-[-0.03em] leading-[1.1]"
+              style={{ color: 'white' }}
+            >
+              Institutional <span className="font-black" style={{ color: 'var(--color-teal-400)' }}>Trust</span>.<br/>
+              Crypto <span className="font-black" style={{ color: 'var(--color-teal-300)' }}>Velocity</span>.
+            </motion.h2>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-lg font-body max-w-2xl mx-auto leading-relaxed"
+              style={{ color: 'rgba(255,255,255,0.7)' }}
+            >
+              NivixPe bridges fiat banking compliance with decentralised finance infrastructure.
+            </motion.p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Solana Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="relative group h-full"
+            >
+              <GlowCard glowColor="teal" customSize={true} className="h-full w-full !p-8 z-10 !border-2 !border-[var(--color-teal-500)]" style={{ backgroundColor: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)' }}>
+                {/* Icon */}
+                <div className="mb-6">
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(12,112,117,0.2)', color: 'var(--color-teal-400)' }}>
+                    <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-2xl font-display font-bold mb-4" style={{ color: 'white' }}>
+                  Solana Engine
+                </h3>
+
+                {/* Description */}
+                <p className="font-body text-base leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  All value transfers occur on the <a href="https://solana.com" target="_blank" rel="noopener noreferrer" className="text-teal-300 hover:text-teal-200 transition-colors font-semibold border-b border-teal-400/30 hover:border-teal-300">Solana</a> blockchain ensuring sub-2-second finality and fees under a fraction of a cent. Smart contracts automate routing instantly.
+                </p>
+
+                {/* Features */}
+                <div className="space-y-4">
+                  {[
+                    { text: 'India-UAE Trade Corridor (Beta Q1 2026)', link: null },
+                    { text: 'Up to 65,000 TPS', link: 'https://solana.com/news/solana-network-performance-report', linkText: 'Solana network' },
+                    { text: 'Programmable escrow contracts', link: null },
+                    { text: 'Transparent public ledger', link: null }
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: 'rgba(12,112,117,0.2)', border: '1px solid rgba(12,112,117,0.35)' }}>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--color-teal-600)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      {feature.link ? (
+                        <a href={feature.link} target="_blank" rel="noopener noreferrer" className="font-body text-sm hover:underline transition-colors" style={{ color: 'var(--color-teal-600)' }}>
+                          {feature.text} ({feature.linkText})
+                        </a>
+                      ) : (
+                        <span className="font-body text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{feature.text}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </GlowCard>
+            </motion.div>
+
+            {/* Hyperledger Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="relative group h-full"
+            >
+              <GlowCard glowColor="navy" customSize={true} className="h-full w-full !p-8 z-10 !border-2 !border-[var(--color-teal-500)]" style={{ backgroundColor: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)' }}>
+                {/* Icon */}
+                <div className="mb-6">
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(10,65,116,0.2)', border: '1px solid rgba(10,65,116,0.3)', color: 'var(--color-navy-400)' }}>
+                    <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-2xl font-display font-bold mb-4" style={{ color: 'white' }}>
+                  Hyperledger Identity
+                </h3>
+
+                {/* Description */}
+                <p className="font-body text-base leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  Identity and KYC data is never exposed to the public blockchain. It resides on a permissioned <a href="https://www.hyperledger.org/projects/fabric" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline transition-colors" style={{ color: 'var(--color-navy-600)' }}>Hyperledger Fabric</a> network ensuring complete privacy and regulatory compliance.
+                </p>
+
+                {/* Features */}
+                <div className="space-y-4">
+                  {[
+                    'Bank-grade data protection',
+                    'Compliant with RBI, FEMA regulations',
+                    'Private node architecture',
+                    'Priority beta support included'
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: 'rgba(10,65,116,0.2)', border: '1px solid rgba(10,65,116,0.3)' }}>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--color-navy-600)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="font-body text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </GlowCard>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section — White background with styled card */}
+      <section className="py-24 relative overflow-hidden bg-white">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(12,112,117,0.08), transparent 65%)' }}></div>
+        
+        {/* Background effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-teal-500/10 via-blue-500/5 to-purple-500/5 rounded-full blur-[150px]"></div>
+        </div>
+        
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            {/* Main CTA Card */}
+            <div className="relative rounded-[40px] p-12 md:p-20 border-2 overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--color-navy-800), var(--color-navy-700), var(--color-teal-700))', borderColor: 'rgba(12,112,117,0.3)' }}>
+              {/* Animated gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-transparent to-blue-500/10 opacity-50"></div>
+              
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-teal-400/20 rounded-full blur-[100px]"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/20 rounded-full blur-[100px]"></div>
+              
+              {/* Content */}
+              <div className="relative z-10 text-center">
                 <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.15 }}
-                  className="flex flex-col items-center text-center relative"
+                  className="mb-8"
                 >
-                  {/* Step Circle with Glow */}
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    className="relative mb-4"
-                  >
-                    <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl" />
-                    <div className="relative w-24 h-24 bg-gradient-to-br from-accent to-accent-800 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-glow">
-                      {step.icon}
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-white border-2 border-accent rounded-full flex items-center justify-center text-sm font-bold text-accent shadow-md">
-                      {step.number}
-                    </div>
-                  </motion.div>
-
-                  <h3 className="text-lg font-semibold text-[#111827] mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-[#6B7280]">
-                    {step.description}
-                  </p>
+                  {/* Enhanced Beta Badge */}
+                  <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border-2 backdrop-blur-sm shadow-lg" style={{ background: 'linear-gradient(135deg, rgba(12,112,117,0.2), rgba(10,65,116,0.2))', borderColor: 'rgba(15,150,136,0.4)' }}>
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-400 shadow-lg"></span>
+                    </span>
+                    <span className="font-display text-sm font-black text-white tracking-wider uppercase">
+                      <span className="font-black" style={{ color: 'var(--color-teal-300)' }}>Beta Launch Q1 2026</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgba(15,150,136,0.2)', borderColor: 'rgba(15,150,136,0.4)', border: '1px solid', color: 'var(--color-teal-200)' }}>
+                      Limited Spots
+                    </span>
+                  </div>
                 </motion.div>
-              ))}
-            </div>
-          </motion.div>
 
-          {/* Technology Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="grid md:grid-cols-2 gap-8 mt-16"
-          >
-            <Card className="bg-white border border-[#E5E7EB] shadow-card hover:shadow-premium transition-all duration-200">
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">🔗</div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-[#111827] mb-3">
-                    Solana Blockchain
-                  </h3>
-                  <p className="text-[#6B7280] leading-relaxed mb-3 text-sm">
-                    Solana can process over 65,000 transactions per second. That's faster than Visa.
-                    And it costs almost nothing - literally fractions of a penny per transaction.
-                  </p>
-                  <div className="inline-flex items-center gap-2 text-sm text-accent font-medium hover:underline cursor-pointer">
-                    Learn more about Solana →
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="bg-white border border-[#E5E7EB] shadow-card hover:shadow-premium transition-all duration-200">
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">🔐</div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-[#111827] mb-3">
-                    Hyperledger Fabric KYC
-                  </h3>
-                  <p className="text-[#6B7280] leading-relaxed mb-3 text-sm">
-                    Your identity is verified once and stored on Hyperledger Fabric - a private blockchain used by IBM,
-                    Walmart, and major banks. Your data stays private and secure.
-                  </p>
-                  <div className="inline-flex items-center gap-2 text-sm text-accent font-medium">
-                    Your data stays private
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Pricing Table with Glassmorphism */}
-      <section className="py-24 bg-white">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111827] mb-4">
-              Let's Be Honest About Fees
-            </h2>
-            <p className="text-xl text-[#6B7280]">Sending $1,000 internationally</p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="overflow-hidden rounded-2xl border border-[#E5E7EB] shadow-premium"
-          >
-            <div className="overflow-x-auto">
-              <table className="w-full bg-white">
-                <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
-                  <tr>
-                    <th className="px-6 py-4 text-left font-semibold text-[#111827]">Service</th>
-                    <th className="px-6 py-4 text-left font-semibold text-[#111827]">Fee</th>
-                    <th className="px-6 py-4 text-left font-semibold text-[#111827]">Time</th>
-                    <th className="px-6 py-4 text-left font-semibold text-[#111827]">Exchange Rate Markup</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E5E7EB]">
-                  {[
-                    { service: 'Bank Wire Transfer', fee: '$25-45', time: '3-5 business days', markup: '~3-5%' },
-                    { service: 'Western Union', fee: '$15-30', time: 'Minutes to days', markup: '~2-4%' },
-                    { service: 'Wise (formerly TransferWise)', fee: '$4-8', time: '1-2 business days', markup: 'Real rate (best traditional option)' },
-                    { service: 'PayPal', fee: '$5-15', time: 'Instant', markup: '~4-5%' }
-                  ].map((row, index) => (
-                    <motion.tr
-                      key={index}
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
-                      className="transition-colors duration-200"
-                    >
-                      <td className="px-6 py-4 text-[#6B7280]">{row.service}</td>
-                      <td className="px-6 py-4 text-[#111827]">{row.fee}</td>
-                      <td className="px-6 py-4 text-[#111827]">{row.time}</td>
-                      <td className="px-6 py-4 text-[#111827]">{row.markup}</td>
-                    </motion.tr>
-                  ))}
-
-                  {/* Nivix Pay Row - Highlighted */}
-                  <motion.tr
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
-                    className="bg-gradient-to-r from-accent-50 to-blue-50 relative"
-                  >
-                    <td className="px-6 py-4 font-semibold text-accent relative">
-                      <div className="flex items-center gap-3">
-                        Nivix Pay
-                        <span className="px-3 py-1 bg-accent text-white text-xs font-semibold rounded-full shadow-sm">
-                          Best Value
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-accent">$0.00001</td>
-                    <td className="px-6 py-4 font-semibold text-accent">&lt;1 second</td>
-                    <td className="px-6 py-4 font-semibold text-accent">Real market rate</td>
-                  </motion.tr>
-                </tbody>
-              </table>
-            </div>
-          </motion.div>
-
-          <p className="text-sm text-[#9CA3AF] mt-6 text-center">
-            * Fees and times vary by country and payment method. Bank exchange rates often hide 3-5% markup in the rate.
-          </p>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111827] mb-4">
-              Loved by Users Worldwide
-            </h2>
-            <p className="text-xl text-[#6B7280]">What people say about Nivix Pay</p>
-          </motion.div>
-
-          {/* Testimonial Cards with Carousel Support */}
-          <div className="grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0">
-            {[
-              {
-                quote: "I was skeptical at first, but after my first transfer, I was blown away. My client in the US paid me in USDC and I had INR in my bank account in less than 2 minutes. No more waiting for PayPal to 'process' for 3 days.",
-                name: 'Priya K.',
-                role: 'Freelance Developer',
-                location: 'Mumbai',
-                avatar: '👩‍💻',
-                rating: 5
-              },
-              {
-                quote: "Finally, a way to send money to my family that doesn't eat up half of it in fees. I used to lose $30-40 per transfer. Now it's basically free. This is what fintech should be.",
-                name: 'Carlos M.',
-                role: 'Construction Worker',
-                location: 'Barcelona',
-                avatar: '👨‍🔧',
-                rating: 5
-              },
-              {
-                quote: "We integrated Nivix Pay for our e-commerce store and cut our payment processing costs by 70%. Plus, our international customers love that they can pay with crypto. Win-win.",
-                name: 'Sarah T.',
-                role: 'E-commerce Owner',
-                location: 'London',
-                avatar: '👩‍💼',
-                rating: 5
-              }
-            ].map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
-                className="min-w-[300px] md:min-w-0"
-              >
-                <Card className="bg-white border border-[#E5E7EB] shadow-card hover:shadow-premium transition-all duration-200 h-full">
-                  {/* Star Rating */}
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className="text-[36px] md:text-[50px] font-display font-bold text-white mb-6 tracking-[-0.03em] leading-[1.1]"
+                >
+                  Join the{' '}
+                  <span className="font-black" style={{ color: 'var(--color-teal-300)' }}>Beta</span>.<br/>
+                  Start transacting <span className="font-black" style={{ color: 'rgba(255,255,255,0.85)' }}>immediately</span>.
+                </motion.h2>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="text-xl font-body mb-12 max-w-2xl mx-auto leading-relaxed"
+                  style={{ color: 'var(--color-ink-300)' }}
+                >
+                  Join our <span className="font-bold" style={{ color: 'var(--color-teal-300)' }}>India-UAE beta</span> launching <span className="font-bold" style={{ color: 'var(--color-teal-400)' }}>Q1 2026</span>. Connect your Solana wallet and be among the first to experience instant cross-border transfers.
+                </motion.p>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                  className="flex justify-center mb-10"
+                >
+                  <WalletMultiButton className="!bg-gradient-to-r !from-teal-500 !to-teal-400 hover:!from-teal-400 hover:!to-teal-300 !text-white !font-display !font-bold !px-12 !py-6 !h-auto !rounded-2xl !text-lg !shadow-[0_0_40px_rgba(20,184,166,0.3)] hover:!shadow-[0_0_60px_rgba(20,184,166,0.5)] transition-all duration-300 transform hover:scale-105" />
+                </motion.div>
+                
+                {/* Beta Perks */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 }}
+                  className="mb-12"
+                >
+                  <div className="inline-flex flex-wrap items-center justify-center gap-4 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                    ))}
-                  </div>
-
-                  {/* Quote */}
-                  <p className="text-[#6B7280] mb-6 italic leading-relaxed text-sm">
-                    "{testimonial.quote}"
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-[#E5E7EB]">
-                    <div className="text-3xl">{testimonial.avatar}</div>
-                    <div>
-                      <div className="font-semibold text-[#111827]">{testimonial.name}</div>
-                      <div className="text-sm text-[#6B7280]">
-                        {testimonial.role}, {testimonial.location}
-                      </div>
+                      <span className="text-sm font-semibold text-white">Priority Support</span>
+                    </div>
+                    <div className="w-px h-4 bg-white/20"></div>
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                      </svg>
+                      <span className="text-sm font-semibold text-white">Exclusive Beta Features</span>
+                    </div>
+                    <div className="w-px h-4 bg-white/20"></div>
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span className="text-sm font-semibold text-white">Early Access Rewards</span>
                     </div>
                   </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111827] mb-12">
-              Questions People Actually Ask
-            </h2>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                question: 'Do I need to know about cryptocurrency?',
-                answer: 'Nope. You can send and receive money in your local currency (USD, INR, EUR, etc.) just like any other app. The blockchain stuff happens in the background. If you want to use crypto, that\'s cool too - but it\'s not required.'
-              },
-              {
-                question: 'Is this legal?',
-                answer: 'Yes! We\'re fully compliant with financial regulations. That\'s why we do KYC verification - it\'s required by law for any financial service. We work with licensed payment processors for fiat currency conversions.'
-              },
-              {
-                question: 'What if something goes wrong?',
-                answer: 'Every transaction is recorded on the blockchain, so there\'s a permanent record. If there\'s an issue, we can trace exactly what happened. Plus, we have customer support - real humans who actually respond.'
-              },
-              {
-                question: 'How do you make money if fees are so low?',
-                answer: 'Good question! We make a tiny margin on currency conversions (way less than banks). For crypto-to-crypto transfers, we literally don\'t make money - the blockchain fee is $0.00001 and that goes to validators, not us. Our business model is volume, not gouging each transaction.'
-              },
-              {
-                question: 'Can I try it without risking a lot of money?',
-                answer: 'Absolutely. Start with a small test transaction - send yourself $10 to see how it works. There\'s no minimum, and with fees this low, even testing costs you almost nothing.'
-              },
-              {
-                question: 'Which countries do you support?',
-                answer: 'We support 150+ countries and multiple currencies including USD, EUR, GBP, INR, and more. If you can access Solana, you can use Nivix Pay. Check our supported countries list for details.'
-              }
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="bg-white border border-[#E5E7EB] hover:border-accent shadow-card hover:shadow-premium transition-all duration-200">
-                  <h3 className="text-lg font-semibold text-[#111827] mb-3">
-                    {faq.question}
-                  </h3>
-                  <p className="text-[#6B7280] leading-relaxed text-sm">
-                    {faq.answer}
-                  </p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-accent to-accent-800 text-white relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full" style={{
-            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-            backgroundSize: '50px 50px'
-          }} />
-        </div>
-
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Stop Overpaying?
-            </h2>
-            <p className="text-xl text-white/90 mb-10 leading-relaxed max-w-3xl mx-auto">
-              Connect your wallet and try your first transaction. If it doesn't work as advertised,
-              we'll be shocked (but also sorry and we'll fix it).
-            </p>
-            <WalletMultiButton className="!bg-white !text-accent hover:!bg-gray-100 !rounded-lg !px-8 !py-4 !font-semibold !text-lg shadow-premium transform hover:scale-105 transition-all duration-200" />
-            <p className="text-sm text-white/70 mt-6">
-              No signup forms, no credit card required, no monthly fees. Just connect and go.
-            </p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 }}
+                  className="mb-12"
+                >
+                  <span className="text-base text-gray-300">New to crypto wallets? </span>
+                  <a
+                    href="https://phantom.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-base text-teal-300 hover:text-teal-200 font-semibold transition-colors border-b border-teal-400/30 hover:border-teal-300"
+                  >
+                    Get Phantom Wallet →
+                  </a>
+                  <div className="mt-3 text-sm" style={{ color: 'var(--color-ink-400)' }}>
+                    <span className="inline-flex items-center gap-1">
+                      <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      </svg>
+                      Beta testers get priority onboarding assistance
+                    </span>
+                  </div>
+                </motion.div>
+                
+                {/* Trust badges */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 }}
+                  className="flex items-center justify-center gap-12 pt-8 border-t border-white/10"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <svg className="w-5 h-5 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm font-display font-bold text-white">Bank-Grade</div>
+                      <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>Security</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <svg className="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm font-display font-bold text-white">Instant</div>
+                      <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>Settlement</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <svg className="w-5 h-5 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm font-display font-bold text-white">Minimal</div>
+                      <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>Fees</div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Premium Dark Footer */}
-      <footer className="bg-[#0F172A] text-white py-12">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* Logo & Description */}
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-800 rounded-lg flex items-center justify-center font-bold text-xl">
-                  N
-                </div>
-                <span className="text-2xl font-bold">Nivix Pay</span>
-              </div>
-              <p className="text-gray-400 mb-4 max-w-md">
-                The fastest, cheapest way to send money globally. Built on Solana blockchain with
-                enterprise-grade security.
-              </p>
-              {/* Social Links */}
-              <div className="flex items-center gap-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 className="font-semibold text-white mb-4">Product</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API Docs</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
-              </ul>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="pt-8 border-t border-gray-800">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-gray-400 text-sm text-center md:text-left">
-                Built on <span className="text-white font-medium">Solana</span> blockchain ·
-                KYC powered by <span className="text-white font-medium">Hyperledger Fabric</span>
-              </p>
-              <div className="flex items-center gap-6 text-sm text-gray-400">
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-white transition-colors">Legal</a>
-              </div>
-            </div>
-            <p className="text-gray-500 text-sm text-center mt-4">
-              © 2025 Nivix Pay. Licensed and compliant. Not financial advice, just really cheap money transfers.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Cookie Consent */}
+      <CookieConsent />
     </div>
   );
 };

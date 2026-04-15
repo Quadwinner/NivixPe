@@ -39,27 +39,86 @@ import { ProcessingProvider } from './contexts/ProcessingContext';
 // Import wallet adapter styles
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-// Create theme - Modern minimal white/grey theme
+/* ════════════════════════════════════════════
+   NIVIXPE MUI THEME — Design System v1.0
+   Uses Navy Blue primary, Ocean Teal secondary
+   Sora / DM Sans / Space Mono typography
+════════════════════════════════════════════ */
 const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#2563EB',
+      main: '#0A4174',    // Navy-600 — Primary CTA
+      light: '#1A5FA3',   // Navy-500
+      dark: '#073155',    // Navy-700
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#14B8A6',
+      main: '#0C7075',    // Teal-500 — On-chain / Blockchain
+      light: '#0F9688',   // Teal-400
+      dark: '#094F54',    // Teal-600
+      contrastText: '#FFFFFF',
     },
     background: {
-      default: '#F7F8FA',
+      default: '#FFFFFF',
       paper: '#FFFFFF',
     },
     text: {
-      primary: '#111827',
-      secondary: '#374151',
+      primary: '#1C2535', // Ink-800
+      secondary: '#56607A', // Ink-500
     },
+    success: {
+      main: '#00C48C',
+    },
+    warning: {
+      main: '#FFB800',
+    },
+    error: {
+      main: '#FF4D4F',
+    },
+    info: {
+      main: '#7BBDE8',
+    },
+    divider: '#E5E8EF', // Ink-100
   },
   typography: {
-    fontFamily: '"Inter", "Outfit", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"DM Sans", system-ui, sans-serif',
+    h1: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 700, letterSpacing: '-0.02em' },
+    h2: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 600, letterSpacing: '-0.02em' },
+    h3: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 600, letterSpacing: '-0.01em' },
+    h4: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 600 },
+    h5: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 500 },
+    h6: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 500 },
+    subtitle1: { fontFamily: '"DM Sans", system-ui, sans-serif' },
+    subtitle2: { fontFamily: '"DM Sans", system-ui, sans-serif' },
+    body1: { fontFamily: '"DM Sans", system-ui, sans-serif' },
+    body2: { fontFamily: '"DM Sans", system-ui, sans-serif' },
+    button: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 600, textTransform: 'none' as const },
+    caption: { fontFamily: '"DM Sans", system-ui, sans-serif' },
+    overline: { fontFamily: '"Sora", system-ui, sans-serif', fontWeight: 600, letterSpacing: '0.12em' },
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px',
+          textTransform: 'none' as const,
+          fontWeight: 600,
+          fontFamily: '"Sora", system-ui, sans-serif',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(10, 14, 20, 0.05), 0 10px 30px rgba(10, 14, 20, 0.03)',
+        },
+      },
+    },
   },
 });
 
@@ -77,7 +136,7 @@ function App() {
       // Only include TorusWalletAdapter for now
       new TorusWalletAdapter()
     ],
-    [network]
+    []
   );
 
   return (
@@ -88,7 +147,7 @@ function App() {
           <WalletModalProvider>
             <ProcessingProvider>
               <Router>
-                <div className="app min-h-screen flex flex-col bg-background">
+                <div className="app min-h-screen flex flex-col">
                   <Header />
                   <main className="flex-1 w-full">
                     <Routes>

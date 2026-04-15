@@ -59,6 +59,24 @@ module.exports = function override(config) {
       }
     }
   }
+  // Ignore source map warnings from node_modules
+  config.ignoreWarnings = [/Failed to parse source map/];
+
+  // Disable source-map-loader for node_modules to avoid TypeScript version conflicts
+  config.module.rules = config.module.rules.map(rule => {
+    if (rule.oneOf) {
+      rule.oneOf = rule.oneOf.map(oneOfRule => {
+        if (oneOfRule.loader && oneOfRule.loader.includes('source-map-loader')) {
+          return {
+            ...oneOfRule,
+            exclude: /node_modules/
+          };
+        }
+        return oneOfRule;
+      });
+    }
+    return rule;
+  });
 
   return config;
 }; 

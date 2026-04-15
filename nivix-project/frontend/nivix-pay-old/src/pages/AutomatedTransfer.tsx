@@ -127,14 +127,14 @@ const AutomatedTransfer: React.FC = () => {
       return (
         <div className="text-center py-16">
           <div className="mb-8 relative inline-block">
-            <div className="absolute inset-0 bg-accent/20 blur-3xl rounded-full animate-pulse" />
-            <AccountBalanceWalletIcon className="w-24 h-24 text-accent mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '6rem' }} />
+            <div className="absolute inset-0 blur-3xl rounded-full animate-pulse" style={{ backgroundColor: 'rgba(12,112,117,0.2)' }} />
+            <AccountBalanceWalletIcon className="w-24 h-24 mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '6rem', color: 'var(--color-teal-600)' }} />
           </div>
-          <h3 className="text-2xl font-bold text-text mb-3">Connect Your Wallet</h3>
-          <p className="text-text-muted mb-8 max-w-md mx-auto leading-relaxed">
+          <h3 className="text-2xl font-bold mb-3" style={{ color: 'var(--color-ink-900)' }}>Connect Your Wallet</h3>
+          <p className="mb-8 max-w-md mx-auto leading-relaxed" style={{ color: 'var(--color-ink-500)' }}>
             Please connect your Solana wallet to start the automated money transfer process
           </p>
-          <WalletMultiButton className="!bg-gradient-to-r !from-accent-600 !to-accent-700 hover:!from-accent-700 hover:!to-accent-800 !rounded-xl !px-8 !py-3 !font-semibold !shadow-lg hover:!shadow-xl !transition-all !duration-300" />
+          <WalletMultiButton className="!bg-gradient-to-r !from-teal-500 !to-teal-400 hover:!from-teal-400 hover:!to-teal-300 !rounded-xl !px-8 !py-3 !font-semibold !shadow-lg hover:!shadow-xl !transition-all !duration-300" />
         </div>
       );
     }
@@ -185,7 +185,7 @@ const AutomatedTransfer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-accent-50/20 to-background">
+    <div className="min-h-screen bg-white">
       <div className="max-w-5xl mx-auto py-8 px-4">
         {/* Header Section */}
         <motion.div
@@ -205,7 +205,8 @@ const AutomatedTransfer: React.FC = () => {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="absolute inset-0 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-accent/30 blur-3xl rounded-full"
+              className="absolute inset-0 blur-3xl rounded-full"
+              style={{ background: 'linear-gradient(135deg, rgba(12,112,117,0.3), rgba(10,65,116,0.3))' }}
             />
             <motion.div
               animate={{
@@ -217,7 +218,7 @@ const AutomatedTransfer: React.FC = () => {
                 ease: "easeInOut"
               }}
             >
-              <SendIcon className="w-16 h-16 text-accent mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '4rem' }} />
+              <SendIcon className="w-16 h-16 mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '4rem', color: 'var(--color-teal-600)' }} />
             </motion.div>
           </div>
 
@@ -225,8 +226,8 @@ const AutomatedTransfer: React.FC = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 bg-gradient-to-r from-blue-700 via-blue-600 to-accent-600 bg-clip-text text-transparent tracking-tight"
-            style={{ letterSpacing: '-0.02em' }}
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight font-display"
+            style={{ letterSpacing: '-0.02em', background: 'linear-gradient(135deg, var(--color-navy-700), var(--color-teal-600))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           >
             Automated Money Transfer
           </motion.h1>
@@ -235,14 +236,15 @@ const AutomatedTransfer: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-body"
+            style={{ color: 'var(--color-ink-500)' }}
           >
             Send money directly to bank accounts with real-time blockchain processing
           </motion.p>
         </motion.div>
 
         {/* Main Card */}
-        <Card className="bg-white/90 backdrop-blur-sm shadow-2xl border-accent/20 mb-8">
+        <Card className="bg-white shadow-2xl mb-8" style={{ borderColor: 'rgba(12,112,117,0.2)' }}>
           {/* Step Progress */}
           {connected && (
             <div className="mb-10">
@@ -260,11 +262,11 @@ const AutomatedTransfer: React.FC = () => {
                         <div className="flex flex-col items-center flex-1 relative z-10">
                           <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold transition-all duration-300 mb-3 ${
                             isCompleted
-                              ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg scale-110'
+                              ? 'text-white shadow-lg scale-110'
                               : isCurrent
-                              ? 'bg-gradient-to-br from-accent to-accent-700 text-white ring-4 ring-accent/30 shadow-xl scale-110 animate-pulse'
+                              ? 'text-white ring-4 shadow-xl scale-110 animate-pulse'
                               : 'bg-gray-100 text-gray-400 border-2 border-gray-200'
-                          }`}>
+                          }`} style={isCompleted ? { background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' } : isCurrent ? { background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))', ringColor: 'rgba(12,112,117,0.3)' } : {}}>
                             {isCompleted ? (
                               <CheckCircleIcon className="w-8 h-8" />
                             ) : (
@@ -282,9 +284,10 @@ const AutomatedTransfer: React.FC = () => {
                             <div
                               className={`h-full transition-all duration-500 rounded-full ${
                                 index < currentStep
-                                  ? 'bg-gradient-to-r from-green-400 to-green-600 w-full'
+                                  ? 'w-full'
                                   : 'w-0'
                               }`}
+                              style={index < currentStep ? { background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' } : {}}
                             />
                           </div>
                         )}
@@ -303,11 +306,11 @@ const AutomatedTransfer: React.FC = () => {
 
                       return (
                         <div key={step.label} className="flex flex-col items-center">
-                          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-accent to-accent-700 text-white flex items-center justify-center mb-3 shadow-xl">
+                          <div className="w-20 h-20 rounded-2xl text-white flex items-center justify-center mb-3 shadow-xl" style={{ background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))' }}>
                             <StepIcon className="w-10 h-10" />
                           </div>
-                          <p className="text-sm font-bold text-text">{step.label}</p>
-                          <p className="text-xs text-text-muted mt-1">Step {index + 1} of {steps.length}</p>
+                          <p className="text-sm font-bold" style={{ color: 'var(--color-ink-900)' }}>{step.label}</p>
+                          <p className="text-xs mt-1" style={{ color: 'var(--color-ink-500)' }}>Step {index + 1} of {steps.length}</p>
                         </div>
                       );
                     })}
@@ -318,11 +321,12 @@ const AutomatedTransfer: React.FC = () => {
                         key={index}
                         className={`h-2 rounded-full transition-all duration-300 ${
                           index < currentStep
-                            ? 'w-8 bg-green-500'
+                            ? 'w-8'
                             : index === currentStep
-                            ? 'w-16 bg-accent'
+                            ? 'w-16'
                             : 'w-8 bg-gray-200'
                         }`}
+                        style={index < currentStep ? { backgroundColor: 'var(--color-teal-500)' } : index === currentStep ? { backgroundColor: 'var(--color-navy-600)' } : {}}
                       />
                     ))}
                   </div>
@@ -350,32 +354,32 @@ const AutomatedTransfer: React.FC = () => {
         {/* Info Cards */}
         {!connected && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white/80 backdrop-blur-sm">
-              <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--color-navy-500), var(--color-navy-600))' }}>
                 <VerifiedUserIcon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-text mb-2">Secure KYC</h3>
-              <p className="text-sm text-text-muted">
+              <h3 className="text-lg font-bold mb-2 font-display" style={{ color: 'var(--color-ink-900)' }}>Secure KYC</h3>
+              <p className="text-sm font-body" style={{ color: 'var(--color-ink-500)' }}>
                 Private verification with Hyperledger Fabric blockchain
               </p>
             </Card>
 
-            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white/80 backdrop-blur-sm">
-              <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' }}>
                 <AutorenewIcon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-text mb-2">Real-time Processing</h3>
-              <p className="text-sm text-text-muted">
+              <h3 className="text-lg font-bold mb-2 font-display" style={{ color: 'var(--color-ink-900)' }}>Real-time Processing</h3>
+              <p className="text-sm font-body" style={{ color: 'var(--color-ink-500)' }}>
                 Automated transfers with instant blockchain confirmation
               </p>
             </Card>
 
-            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white/80 backdrop-blur-sm">
-              <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))' }}>
                 <PaymentIcon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-text mb-2">Direct to Bank</h3>
-              <p className="text-sm text-text-muted">
+              <h3 className="text-lg font-bold mb-2 font-display" style={{ color: 'var(--color-ink-900)' }}>Direct to Bank</h3>
+              <p className="text-sm font-body" style={{ color: 'var(--color-ink-500)' }}>
                 Send money directly to any bank account instantly
               </p>
             </Card>
