@@ -28,7 +28,7 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import {
   getAssociatedTokenAddress,
   createBurnInstruction,
-  TOKEN_PROGRAM_ID
+  getMint
 } from '@solana/spl-token';
 
 interface RecipientDetails {
@@ -70,6 +70,7 @@ interface ProcessingStep {
 }
 
 const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
+const DEFAULT_USD_MINT = process.env.REACT_APP_USD_MINT_ADDRESS || '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T';
 
 const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
   paymentData,
@@ -94,6 +95,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
   const [offrampOrderId, setOfframpOrderId] = useState<string | null>(null);
   const [isBurning, setIsBurning] = useState(false);
   const [mintTxHash, setMintTxHash] = useState<string | null>(null);
+  const [burnMintAddress, setBurnMintAddress] = useState<string>(DEFAULT_USD_MINT);
 
   const [steps, setSteps] = useState<ProcessingStep[]>([
     {
@@ -233,6 +235,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         setBurnRequired(true);
         setOfframpOrderId(order.offrampOrderId);
         setMintTxHash(order.mintTransactionHash || order.transactionSignature);
+        setBurnMintAddress(order.cryptoTokenMint || order.receiveTokenMint || order.tokenMint || DEFAULT_USD_MINT);
         updateStepToProcessing('burning_usdc');
         setCurrentStepIndex(2);
         newProgress = 35;
@@ -351,9 +354,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
       setIsBurning(true);
       console.log(`🔥 Starting token burn for automated transfer`);
 
-      // Get token mint address for USD
-      const tokenMint = '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg'; // USD token mint
-      const mintPubkey = new PublicKey(tokenMint);
+      const mintPubkey = new PublicKey(burnMintAddress);
 
       // Get user's token account
       const userTokenAccount = await getAssociatedTokenAddress(
@@ -361,9 +362,19 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         publicKey
       );
 
-      // Convert amount to token units (6 decimals)
-      const tokenAmount = Math.floor(paymentData.amount * Math.pow(10, 6));
-      console.log(`🔥 Burning ${tokenAmount} token units (${paymentData.amount} USD)`);
+      // Read mint decimals and current balance from chain before creating burn transaction.
+      const mintInfo = await getMint(connection, mintPubkey);
+      const tokenAmount = BigInt(Math.floor(paymentData.amount * Math.pow(10, mintInfo.decimals)));
+      const tokenBalance = await connection.getTokenAccountBalance(userTokenAccount);
+      const availableAmount = BigInt(tokenBalance.value.amount);
+
+      if (availableAmount < tokenAmount) {
+        throw new Error(
+          `Insufficient token balance for burn. Required: ${tokenAmount.toString()} base units, available: ${availableAmount.toString()} base units`
+        );
+      }
+
+      console.log(`🔥 Burning ${tokenAmount.toString()} token units (${paymentData.amount} USD) from mint ${mintPubkey.toBase58()}`);
 
       // Create burn instruction
       const burnInstruction = createBurnInstruction(
@@ -483,6 +494,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
           setBurnRequired(true);
           setOfframpOrderId(order.offrampOrderId || order.id);
           setMintTxHash(order.transactionSignature);
+          setBurnMintAddress(order.cryptoTokenMint || order.receiveTokenMint || order.tokenMint || DEFAULT_USD_MINT);
           console.log('Automated transfer detected - user burn confirmation required');
         } else {
           console.log('Regular onramp flow - no burn required');

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>01_PRODUCT_REQUIREMENTS_DOCUMENT</title>
+    <style>
+        @media print {
+            body { margin: 0.5in; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+    <p><h1>NIVIXPE - PRODUCT REQUIREMENTS DOCUMENT (PRD)</h1></p>
+<br>
+<p><strong>Document Version:</strong> 1.0  </p>
+<p><strong>Date:</strong> March 30, 2026  </p>
+<p><strong>Company:</strong> NivixPe Private Limited  </p>
+<p><strong>Incubated at:</strong> Bennett Hatchery, Bennett University  </p>
+<p><strong>Project Status:</strong> Development Phase (Solana Devnet)</p>
+<br>
+<p>---</p>
+<br>
+<p><h2>EXECUTIVE SUMMARY</h2></p>
+<br>
+<p><h3>Product Vision</h3></p>
+<p>NivixPe is a blockchain-powered cross-border payment platform that enables fast, secure, and compliant international money transfers at a fraction of traditional costs. By leveraging Solana's high-performance blockchain and Hyperledger Fabric's private compliance ledger, NivixPe provides a seamless bridge between fiat currencies and digital assets.</p>
+<br>
+<p><h3>Market Opportunity</h3></p>
+<ul>
+<li><strong>Global Remittance Market:</strong> $700+ billion annually</li>
+<li><strong>Average Transaction Fee:</strong> 6-7% (traditional services)</li>
+<li><strong>Average Settlement Time:</strong> 3-5 business days</li>
+<li><strong>Target Reduction:</strong> <1% fees, <2 minutes settlement</li>
+</ul>
+<br>
+<p><h3>Product Goals</h3></p>
+<ol>
+<li>Enable instant cross-border payments with minimal fees</li>
+<li>Ensure regulatory compliance through integrated KYC/AML</li>
+<li>Provide seamless fiat-to-crypto and crypto-to-fiat conversion</li>
+<li>Support multiple currencies and payment corridors</li>
+<li>Deliver superior user experience compared to traditional services</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>PRODUCT OVERVIEW</h2></p>
+<br>
+<p><h3>Core Value Proposition</h3></p>
+<p><strong>"Send money globally in minutes, not days, at 1/10th the cost"</strong></p>
+<br>
+<p><h3>Key Differentiators</h3></p>
+<ol>
+<li><strong>Speed:</strong> Sub-2-minute settlement vs 3-5 days traditional</li>
+<li><strong>Cost:</strong> <1% platform fee vs 6-7% traditional fees</li>
+<li><strong>Transparency:</strong> Real-time tracking on blockchain</li>
+<li><strong>Compliance:</strong> Built-in KYC/AML via Hyperledger Fabric</li>
+<li><strong>Accessibility:</strong> 24/7 availability, no banking hours restriction</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h2>TARGET USERS</h2></p>
+<br>
+<p><h3>Primary User Segments</h3></p>
+<br>
+<p><h4>1. Individual Remittance Senders</h4></p>
+<ul>
+<li><strong>Profile:</strong> Migrant workers sending money home</li>
+<li><strong>Pain Points:</strong> High fees, slow transfers, limited access</li>
+<li><strong>Use Case:</strong> Monthly salary remittance to family</li>
+<li><strong>Volume:</strong> $200-$2,000 per transaction</li>
+</ul>
+<br>
+<p><h4>2. Small Business Owners</h4></p>
+<ul>
+<li><strong>Profile:</strong> E-commerce sellers, freelancers</li>
+<li><strong>Pain Points:</strong> International payment delays, currency conversion fees</li>
+<li><strong>Use Case:</strong> Receiving payments from international clients</li>
+<li><strong>Volume:</strong> $500-$10,000 per transaction</li>
+</ul>
+<br>
+<p><h4>3. Crypto-Savvy Users</h4></p>
+<ul>
+<li><strong>Profile:</strong> Early adopters comfortable with digital wallets</li>
+<li><strong>Pain Points:</strong> Difficulty converting crypto to fiat</li>
+<li><strong>Use Case:</strong> Cashing out crypto holdings to local currency</li>
+<li><strong>Volume:</strong> $100-$50,000 per transaction</li>
+</ul>
+<br>
+<p><h3>User Personas</h3></p>
+<br>
+<p><strong>Persona 1: Maria - Domestic Worker in UAE</strong></p>
+<ul>
+<li>Age: 32, sends $500/month to Philippines</li>
+<li>Needs: Low fees, reliable delivery, easy to use</li>
+<li>Tech Comfort: Medium (uses smartphone apps)</li>
+</ul>
+<br>
+<p><strong>Persona 2: Raj - Freelance Developer in India</strong></p>
+<ul>
+<li>Age: 28, receives $2,000/month from US clients</li>
+<li>Needs: Fast settlement, competitive rates, professional interface</li>
+<li>Tech Comfort: High (comfortable with crypto wallets)</li>
+</ul>
+<br>
+<p><strong>Persona 3: Sarah - E-commerce Seller in UK</strong></p>
+<ul>
+<li>Age: 35, processes $10,000/month international sales</li>
+<li>Needs: Bulk payments, compliance, accounting integration</li>
+<li>Tech Comfort: Medium-High (uses business software)</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>FUNCTIONAL REQUIREMENTS</h2></p>
+<br>
+<p><h3>FR-1: User Registration & KYC</h3></p>
+<br>
+<p><h4>FR-1.1: Account Creation</h4></p>
+<ul>
+<li>User can register with email and phone number</li>
+<li>System generates unique user ID</li>
+<li>Email verification required</li>
+<li>Phone OTP verification required</li>
+</ul>
+<br>
+<p><h4>FR-1.2: KYC Submission</h4></p>
+<ul>
+<li><strong>Level 1 KYC (Basic):</strong></li>
+<li>Full name, date of birth, nationality</li>
+<li>Email and phone verification</li>
+<li>Transaction limit: $1,000/day</li>
+</ul>
+<br>
+<ul>
+<li><strong>Level 2 KYC (Enhanced):</strong></li>
+<li>Government-issued ID (passport, driver's license, national ID)</li>
+<li>Proof of address (utility bill, bank statement)</li>
+<li>Selfie verification</li>
+<li>Transaction limit: $10,000/day</li>
+</ul>
+<br>
+<ul>
+<li><strong>Level 3 KYC (Business):</strong></li>
+<li>Business registration documents</li>
+<li>Tax identification number</li>
+<li>Beneficial ownership information</li>
+<li>Transaction limit: $100,000/day</li>
+</ul>
+<br>
+<p><h4>FR-1.3: KYC Verification</h4></p>
+<ul>
+<li>Admin review dashboard for KYC submissions</li>
+<li>Automated risk scoring (1-5 scale)</li>
+<li>Document verification workflow</li>
+<li>Approval/rejection with reason codes</li>
+<li>User notification on status change</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h3>FR-2: Wallet Management</h3></p>
+<br>
+<p><h4>FR-2.1: Wallet Connection</h4></p>
+<ul>
+<li>Support for Phantom wallet</li>
+<li>Support for Solflare wallet</li>
+<li>Support for Ledger hardware wallet</li>
+<li>Automatic wallet detection</li>
+<li>Secure connection via Solana Wallet Adapter</li>
+</ul>
+<br>
+<p><h4>FR-2.2: Wallet Operations</h4></p>
+<ul>
+<li>View SOL balance</li>
+<li>View SPL token balances (USD, INR, EUR, GBP, JPY, CAD, AUD)</li>
+<li>Transaction history display</li>
+<li>Export transaction records (CSV, PDF)</li>
+<li>Multiple wallet support per user</li>
+</ul>
+<br>
+<p><h4>FR-2.3: Security Features</h4></p>
+<ul>
+<li>Transaction signing required for all operations</li>
+<li>Wallet disconnection option</li>
+<li>Session timeout (30 minutes inactivity)</li>
+<li>Suspicious activity alerts</li>
+</ul>
+<br>
+<p><h3>FR-3: On-Ramp (Fiat to Crypto)</h3></p>
+<br>
+<p><h4>FR-3.1: Order Creation</h4></p>
+<ul>
+<li>User selects fiat currency (INR, USD, EUR, GBP)</li>
+<li>User enters fiat amount</li>
+<li>System displays equivalent crypto amount</li>
+<li>Real-time exchange rate calculation</li>
+<li>Fee breakdown display (platform fee, payment gateway fee)</li>
+<li>Order expiry time (15 minutes)</li>
+</ul>
+<br>
+<p><h4>FR-3.2: Payment Processing</h4></p>
+<ul>
+<li>Integration with Razorpay payment gateway</li>
+<li>Support for multiple payment methods:</li>
+<li>Credit/Debit cards</li>
+<li>UPI (India)</li>
+<li>Net banking</li>
+<li>Wallets (Paytm, PhonePe, Google Pay)</li>
+<li>Payment confirmation via webhook</li>
+<li>Signature verification for security</li>
+</ul>
+<br>
+<p><h4>FR-3.3: Token Delivery</h4></p>
+<ul>
+<li>Automatic token minting to user wallet</li>
+<li>Associated Token Account (ATA) creation if needed</li>
+<li>Blockchain transaction confirmation</li>
+<li>Transaction ID generation</li>
+<li>Email/SMS notification on completion</li>
+</ul>
+<br>
+<p><h4>FR-3.4: Order Management</h4></p>
+<ul>
+<li>View pending orders</li>
+<li>View completed orders</li>
+<li>View failed orders with reason</li>
+<li>Order cancellation (before payment)</li>
+<li>Refund processing for failed transactions</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h3>FR-4: Off-Ramp (Crypto to Fiat)</h3></p>
+<br>
+<p><h4>FR-4.1: Withdrawal Request</h4></p>
+<ul>
+<li>User selects crypto currency to withdraw</li>
+<li>User enters withdrawal amount</li>
+<li>System displays equivalent fiat amount</li>
+<li>Real-time exchange rate calculation</li>
+<li>Fee breakdown display</li>
+<li>Minimum withdrawal amount: $10 equivalent</li>
+</ul>
+<br>
+<p><h4>FR-4.2: Bank Account Management</h4></p>
+<ul>
+<li>Add bank account details</li>
+<li>Verify bank account (micro-deposit or instant verification)</li>
+<li>Support for multiple bank accounts</li>
+<li>Default bank account selection</li>
+<li>Bank account deletion</li>
+</ul>
+<br>
+<p><h4>FR-4.3: Payout Processing</h4></p>
+<ul>
+<li>Token burning from user wallet</li>
+<li>Treasury routing decision (direct vs hybrid)</li>
+<li>Integration with RazorpayX for payouts</li>
+<li>Support for multiple payout modes:</li>
+<li>UPI (instant, up to ₹5 lakh)</li>
+<li>IMPS (instant, up to ₹5 lakh)</li>
+<li>NEFT (2 hours, no limit)</li>
+<li>RTGS (30 minutes, above ₹2 lakh)</li>
+<li>Payout status tracking</li>
+<li>Email/SMS notification on completion</li>
+</ul>
+<br>
+<p><h4>FR-4.4: Withdrawal Limits</h4></p>
+<ul>
+<li>Daily withdrawal limit based on KYC level</li>
+<li>Monthly withdrawal limit</li>
+<li>Per-transaction limits</li>
+<li>Velocity checks for fraud prevention</li>
+</ul>
+<br>
+<p><h3>FR-5: Currency Exchange & Liquidity Pools</h3></p>
+<br>
+<p><h4>FR-5.1: Currency Swap</h4></p>
+<ul>
+<li>User selects source currency</li>
+<li>User selects destination currency</li>
+<li>User enters amount to swap</li>
+<li>System displays exchange rate and fees</li>
+<li>Slippage tolerance setting (0.5%, 1%, 2%, 5%)</li>
+<li>Minimum received amount guarantee</li>
+</ul>
+<br>
+<p><h4>FR-5.2: Liquidity Pool Information</h4></p>
+<ul>
+<li>List all available pools</li>
+<li>Display pool liquidity depth</li>
+<li>Show 24-hour volume</li>
+<li>Display current exchange rate</li>
+<li>Show pool fee rate</li>
+<li>Historical rate charts</li>
+</ul>
+<br>
+<p><h4>FR-5.3: Pool Operations</h4></p>
+<ul>
+<li>Swap execution via Solana smart contract</li>
+<li>Automatic best route selection</li>
+<li>Multi-hop swaps if needed</li>
+<li>Transaction confirmation</li>
+<li>Receipt generation</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h3>FR-6: Cross-Border Transfers</h3></p>
+<br>
+<p><h4>FR-6.1: Transfer Initiation</h4></p>
+<ul>
+<li>User enters recipient wallet address or email</li>
+<li>User selects amount and currency</li>
+<li>System calculates fees and exchange rate</li>
+<li>Recipient receives notification</li>
+<li>Transfer memo/note support (optional)</li>
+</ul>
+<br>
+<p><h4>FR-6.2: Transfer Execution</h4></p>
+<ul>
+<li>KYC verification check for sender</li>
+<li>AML screening for transaction</li>
+<li>Token transfer via Solana blockchain</li>
+<li>Automatic currency conversion if needed</li>
+<li>Transaction confirmation (finalized status)</li>
+</ul>
+<br>
+<p><h4>FR-6.3: Transfer Tracking</h4></p>
+<ul>
+<li>Real-time status updates</li>
+<li>Blockchain explorer link</li>
+<li>Estimated completion time</li>
+<li>Push notifications on status change</li>
+<li>Transaction receipt with all details</li>
+</ul>
+<br>
+<p><h3>FR-7: Compliance & Reporting</h3></p>
+<br>
+<p><h4>FR-7.1: Transaction Monitoring</h4></p>
+<ul>
+<li>Real-time AML screening</li>
+<li>Suspicious activity detection</li>
+<li>Velocity checks</li>
+<li>Geographic risk assessment</li>
+<li>Automated alerts for high-risk transactions</li>
+</ul>
+<br>
+<p><h4>FR-7.2: Regulatory Reporting</h4></p>
+<ul>
+<li>Transaction history export</li>
+<li>Tax reporting documents</li>
+<li>Compliance audit trail</li>
+<li>Regulatory filing support</li>
+<li>Data retention (7 years minimum)</li>
+</ul>
+<br>
+<p><h4>FR-7.3: User Privacy</h4></p>
+<ul>
+<li>GDPR compliance</li>
+<li>Data encryption at rest and in transit</li>
+<li>Right to be forgotten implementation</li>
+<li>Data access request handling</li>
+<li>Privacy policy acceptance</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>NON-FUNCTIONAL REQUIREMENTS</h2></p>
+<br>
+<p><h3>NFR-1: Performance</h3></p>
+<br>
+<p><h4>NFR-1.1: Response Time</h4></p>
+<ul>
+<li>API response time: <200ms (95th percentile)</li>
+<li>Page load time: <2 seconds</li>
+<li>Transaction confirmation: <10 seconds</li>
+<li>Database query time: <100ms</li>
+</ul>
+<br>
+<p><h4>NFR-1.2: Throughput</h4></p>
+<ul>
+<li>Support 1,000 concurrent users</li>
+<li>Process 100 transactions per second</li>
+<li>Handle 10,000 API requests per minute</li>
+<li>Scale to 100,000 daily active users</li>
+</ul>
+<br>
+<p><h4>NFR-1.3: Availability</h4></p>
+<ul>
+<li>System uptime: 99.9% (8.76 hours downtime/year)</li>
+<li>Planned maintenance windows: <4 hours/month</li>
+<li>Disaster recovery time: <1 hour</li>
+<li>Data backup frequency: Every 6 hours</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h3>NFR-2: Security</h3></p>
+<br>
+<p><h4>NFR-2.1: Authentication & Authorization</h4></p>
+<ul>
+<li>Multi-factor authentication (MFA) support</li>
+<li>JWT-based session management</li>
+<li>Role-based access control (RBAC)</li>
+<li>API key authentication for integrations</li>
+<li>Session timeout after 30 minutes inactivity</li>
+</ul>
+<br>
+<p><h4>NFR-2.2: Data Security</h4></p>
+<ul>
+<li>AES-256 encryption for data at rest</li>
+<li>TLS 1.3 for data in transit</li>
+<li>Secure key management (AWS KMS or HashiCorp Vault)</li>
+<li>PII data encryption</li>
+<li>Secure password hashing (bcrypt, 12 rounds)</li>
+</ul>
+<br>
+<p><h4>NFR-2.3: Transaction Security</h4></p>
+<ul>
+<li>Payment signature verification (HMAC SHA256)</li>
+<li>Blockchain transaction confirmation requirements</li>
+<li>Mint authority validation</li>
+<li>Withdrawal address whitelisting</li>
+<li>Transaction amount limits</li>
+</ul>
+<br>
+<p><h4>NFR-2.4: Infrastructure Security</h4></p>
+<ul>
+<li>DDoS protection (Cloudflare or AWS Shield)</li>
+<li>Web Application Firewall (WAF)</li>
+<li>Regular security audits</li>
+<li>Penetration testing (quarterly)</li>
+<li>Vulnerability scanning (weekly)</li>
+</ul>
+<br>
+<p><h3>NFR-3: Scalability</h3></p>
+<br>
+<p><h4>NFR-3.1: Horizontal Scaling</h4></p>
+<ul>
+<li>Stateless API design</li>
+<li>Load balancer support</li>
+<li>Auto-scaling based on CPU/memory</li>
+<li>Database read replicas</li>
+<li>Caching layer (Redis)</li>
+</ul>
+<br>
+<p><h4>NFR-3.2: Database Scaling</h4></p>
+<ul>
+<li>Database sharding support</li>
+<li>Connection pooling</li>
+<li>Query optimization</li>
+<li>Index management</li>
+<li>Archive old data (>1 year)</li>
+</ul>
+<br>
+<p><h4>NFR-3.3: Blockchain Scaling</h4></p>
+<ul>
+<li>Multiple RPC endpoints</li>
+<li>RPC load balancing</li>
+<li>Transaction batching</li>
+<li>Optimistic confirmations</li>
+<li>Fallback to alternative networks</li>
+</ul>
+<br>
+<p><h3>NFR-4: Reliability</h3></p>
+<br>
+<p><h4>NFR-4.1: Error Handling</h4></p>
+<ul>
+<li>Graceful degradation</li>
+<li>Retry mechanisms with exponential backoff</li>
+<li>Circuit breaker pattern</li>
+<li>Fallback services</li>
+<li>Comprehensive error logging</li>
+</ul>
+<br>
+<p><h4>NFR-4.2: Monitoring & Alerting</h4></p>
+<ul>
+<li>Real-time system monitoring</li>
+<li>Application performance monitoring (APM)</li>
+<li>Log aggregation (ELK stack or similar)</li>
+<li>Alert on critical errors</li>
+<li>Health check endpoints</li>
+</ul>
+<br>
+<p><h4>NFR-4.3: Disaster Recovery</h4></p>
+<ul>
+<li>Regular backups (every 6 hours)</li>
+<li>Backup retention (30 days)</li>
+<li>Disaster recovery plan documented</li>
+<li>Recovery time objective (RTO): <1 hour</li>
+<li>Recovery point objective (RPO): <6 hours</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h3>NFR-5: Usability</h3></p>
+<br>
+<p><h4>NFR-5.1: User Interface</h4></p>
+<ul>
+<li>Responsive design (mobile, tablet, desktop)</li>
+<li>Accessibility compliance (WCAG 2.1 Level AA)</li>
+<li>Multi-language support (English, Hindi, Spanish, Arabic)</li>
+<li>Intuitive navigation</li>
+<li>Consistent design system</li>
+</ul>
+<br>
+<p><h4>NFR-5.2: User Experience</h4></p>
+<ul>
+<li>Onboarding flow completion: <5 minutes</li>
+<li>Transaction completion: <3 clicks</li>
+<li>Clear error messages</li>
+<li>Progress indicators for long operations</li>
+<li>Help documentation and FAQs</li>
+</ul>
+<br>
+<p><h4>NFR-5.3: Mobile Experience</h4></p>
+<ul>
+<li>Progressive Web App (PWA) support</li>
+<li>Touch-optimized interface</li>
+<li>Offline capability for viewing history</li>
+<li>Push notifications</li>
+<li>Biometric authentication support</li>
+</ul>
+<br>
+<p><h3>NFR-6: Compliance</h3></p>
+<br>
+<p><h4>NFR-6.1: Regulatory Compliance</h4></p>
+<ul>
+<li>KYC/AML compliance (FATF guidelines)</li>
+<li>GDPR compliance (EU users)</li>
+<li>PCI DSS compliance (payment data)</li>
+<li>SOC 2 Type II certification (target)</li>
+<li>Local regulations per jurisdiction</li>
+</ul>
+<br>
+<p><h4>NFR-6.2: Audit Trail</h4></p>
+<ul>
+<li>Immutable transaction logs</li>
+<li>User action logging</li>
+<li>Admin action logging</li>
+<li>Compliance event logging</li>
+<li>Log retention: 7 years minimum</li>
+</ul>
+<br>
+<p><h4>NFR-6.3: Data Residency</h4></p>
+<ul>
+<li>Data localization per jurisdiction</li>
+<li>Cross-border data transfer compliance</li>
+<li>Data sovereignty requirements</li>
+<li>Regional data centers</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>TECHNICAL ARCHITECTURE</h2></p>
+<br>
+<p><h3>System Components</h3></p>
+<br>
+<p><h4>1. Frontend Layer</h4></p>
+<ul>
+<li><strong>Technology:</strong> React 18.2.0, TypeScript, Material-UI</li>
+<li><strong>Hosting:</strong> AWS S3 + CloudFront or Vercel</li>
+<li><strong>Features:</strong> Wallet integration, responsive design, PWA</li>
+</ul>
+<br>
+<p><h4>2. API Gateway (Bridge Service)</h4></p>
+<ul>
+<li><strong>Technology:</strong> Node.js 18+, Express.js</li>
+<li><strong>Hosting:</strong> AWS EC2 or ECS</li>
+<li><strong>Features:</strong> REST API, WebSocket support, rate limiting</li>
+</ul>
+<br>
+<p><h4>3. Blockchain Layer</h4></p>
+<ul>
+<li><strong>Solana:</strong> Payment settlement, token operations</li>
+<li><strong>Hyperledger Fabric:</strong> KYC/AML compliance ledger</li>
+<li><strong>Smart Contracts:</strong> Anchor framework (Rust)</li>
+</ul>
+<br>
+<p><h4>4. Payment Gateway</h4></p>
+<ul>
+<li><strong>Razorpay:</strong> On-ramp (payment collection)</li>
+<li><strong>RazorpayX:</strong> Off-ramp (payouts)</li>
+<li><strong>Mode:</strong> Test environment (development), Live (production)</li>
+</ul>
+<br>
+<p><h4>5. Database Layer</h4></p>
+<ul>
+<li><strong>Primary:</strong> PostgreSQL (user data, transactions)</li>
+<li><strong>Cache:</strong> Redis (session, rate limiting)</li>
+<li><strong>Search:</strong> Elasticsearch (transaction search)</li>
+</ul>
+<br>
+<p><h4>6. Infrastructure</h4></p>
+<ul>
+<li><strong>Cloud Provider:</strong> AWS</li>
+<li><strong>Container Orchestration:</strong> Docker, Kubernetes (optional)</li>
+<li><strong>CI/CD:</strong> GitHub Actions or GitLab CI</li>
+<li><strong>Monitoring:</strong> Prometheus, Grafana, Sentry</li>
+</ul>
+<br>
+<br>
+<br>
+<p>---</p>
+<br>
+<p><h2>USER STORIES</h2></p>
+<br>
+<p><h3>Epic 1: User Onboarding</h3></p>
+<br>
+<p><strong>US-1.1:</strong> As a new user, I want to register with my email and phone number so that I can create an account.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Email validation required</li>
+<li>Phone OTP verification required</li>
+<li>Unique user ID generated</li>
+<li>Welcome email sent</li>
+</ul>
+<br>
+<p><strong>US-1.2:</strong> As a registered user, I want to complete KYC verification so that I can use the platform.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Multi-step KYC form (personal info, address, documents)</li>
+<li>Document upload support (passport, ID, proof of address)</li>
+<li>Selfie verification</li>
+<li>Status tracking (pending, approved, rejected)</li>
+</ul>
+<br>
+<p><strong>US-1.3:</strong> As a user, I want to connect my Solana wallet so that I can send and receive crypto.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Support for Phantom and Solflare wallets</li>
+<li>Secure wallet connection</li>
+<li>Display wallet address and balance</li>
+<li>Disconnect wallet option</li>
+</ul>
+<br>
+<p><h3>Epic 2: On-Ramp (Fiat to Crypto)</h3></p>
+<br>
+<p><strong>US-2.1:</strong> As a user, I want to buy crypto with fiat currency so that I can use it for transfers.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Select fiat currency and amount</li>
+<li>View real-time exchange rate</li>
+<li>See fee breakdown</li>
+<li>Complete payment via Razorpay</li>
+<li>Receive tokens in wallet within 10 seconds</li>
+</ul>
+<br>
+<p><strong>US-2.2:</strong> As a user, I want to track my on-ramp orders so that I know the status of my purchases.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>View pending orders</li>
+<li>View completed orders</li>
+<li>View failed orders with reason</li>
+<li>Transaction ID and blockchain link provided</li>
+</ul>
+<br>
+<p><h3>Epic 3: Off-Ramp (Crypto to Fiat)</h3></p>
+<br>
+<p><strong>US-3.1:</strong> As a user, I want to withdraw crypto to my bank account so that I can access fiat currency.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Select crypto currency and amount</li>
+<li>View real-time exchange rate</li>
+<li>See fee breakdown</li>
+<li>Add/select bank account</li>
+<li>Receive fiat within 2 hours (IMPS/UPI)</li>
+</ul>
+<br>
+<p><strong>US-3.2:</strong> As a user, I want to manage my bank accounts so that I can receive withdrawals.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Add multiple bank accounts</li>
+<li>Verify bank account</li>
+<li>Set default bank account</li>
+<li>Delete bank account</li>
+</ul>
+<br>
+<p><h3>Epic 4: Cross-Border Transfers</h3></p>
+<br>
+<p><strong>US-4.1:</strong> As a user, I want to send money internationally so that I can support my family abroad.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Enter recipient wallet address or email</li>
+<li>Select amount and currency</li>
+<li>View fees and exchange rate</li>
+<li>Confirm transfer</li>
+<li>Receive confirmation within 2 minutes</li>
+</ul>
+<br>
+<p><strong>US-4.2:</strong> As a user, I want to track my transfers so that I know when they are completed.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Real-time status updates</li>
+<li>Blockchain explorer link</li>
+<li>Push notifications</li>
+<li>Transaction receipt</li>
+</ul>
+<br>
+<p><h3>Epic 5: Currency Exchange</h3></p>
+<br>
+<p><strong>US-5.1:</strong> As a user, I want to swap between different currencies so that I can optimize my holdings.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>Select source and destination currency</li>
+<li>View exchange rate and fees</li>
+<li>Set slippage tolerance</li>
+<li>Execute swap</li>
+<li>Receive confirmation</li>
+</ul>
+<br>
+<p><strong>US-5.2:</strong> As a user, I want to view available liquidity pools so that I can choose the best rates.  </p>
+<p><strong>Acceptance Criteria:</strong></p>
+<ul>
+<li>List all pools</li>
+<li>Display liquidity depth</li>
+<li>Show 24-hour volume</li>
+<li>Display current rate</li>
+<li>Historical rate charts</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>SUCCESS METRICS</h2></p>
+<br>
+<p><h3>Key Performance Indicators (KPIs)</h3></p>
+<br>
+<p><h4>Business Metrics</h4></p>
+<ul>
+<li><strong>Monthly Active Users (MAU):</strong> Target 10,000 in Year 1</li>
+<li><strong>Transaction Volume:</strong> Target $10M in Year 1</li>
+<li><strong>Average Transaction Size:</strong> $500-$1,000</li>
+<li><strong>Customer Acquisition Cost (CAC):</strong> <$50</li>
+<li><strong>Customer Lifetime Value (LTV):</strong> >$500</li>
+<li><strong>LTV:CAC Ratio:</strong> >10:1</li>
+</ul>
+<br>
+<p><h4>Product Metrics</h4></p>
+<ul>
+<li><strong>On-Ramp Success Rate:</strong> >95%</li>
+<li><strong>Off-Ramp Success Rate:</strong> >90%</li>
+<li><strong>Average Transaction Time:</strong> <2 minutes</li>
+<li><strong>User Retention (30-day):</strong> >40%</li>
+<li><strong>Daily Active Users (DAU):</strong> >1,000</li>
+</ul>
+<br>
+<p><h4>Technical Metrics</h4></p>
+<ul>
+<li><strong>API Uptime:</strong> >99.9%</li>
+<li><strong>API Response Time (p95):</strong> <200ms</li>
+<li><strong>Transaction Confirmation Time:</strong> <10 seconds</li>
+<li><strong>Error Rate:</strong> <0.1%</li>
+<li><strong>Support Ticket Resolution Time:</strong> <24 hours</li>
+</ul>
+<br>
+<br>
+<br>
+<p>---</p>
+<br>
+<p><h2>ROADMAP</h2></p>
+<br>
+<p><h3>Phase 1: MVP (Months 1-3) - COMPLETED ✅</h3></p>
+<ul>
+<li>✅ User registration and KYC</li>
+<li>✅ Wallet integration (Phantom, Solflare)</li>
+<li>✅ On-ramp (INR to crypto via Razorpay)</li>
+<li>✅ Basic token operations</li>
+<li>✅ Hyperledger Fabric KYC ledger</li>
+<li>✅ Solana smart contracts deployment</li>
+</ul>
+<br>
+<p><h3>Phase 2: Core Features (Months 4-6) - IN PROGRESS ⏳</h3></p>
+<ul>
+<li>⏳ Off-ramp (crypto to INR via RazorpayX)</li>
+<li>⏳ Multi-currency support (USD, EUR, GBP, JPY, CAD, AUD)</li>
+<li>⏳ Liquidity pools and currency swaps</li>
+<li>⏳ Cross-border transfer optimization</li>
+<li>⏳ Mobile-responsive UI improvements</li>
+<li>⏳ Transaction history and reporting</li>
+</ul>
+<br>
+<p><h3>Phase 3: Scale & Optimize (Months 7-9)</h3></p>
+<ul>
+<li>⬜ Additional payment corridors (US, EU, UK)</li>
+<li>⬜ Bulk payment support for businesses</li>
+<li>⬜ API for third-party integrations</li>
+<li>⬜ Advanced analytics dashboard</li>
+<li>⬜ Referral program</li>
+<li>⬜ Customer support chat integration</li>
+</ul>
+<br>
+<p><h3>Phase 4: Enterprise Features (Months 10-12)</h3></p>
+<ul>
+<li>⬜ White-label solution for partners</li>
+<li>⬜ Treasury management dashboard</li>
+<li>⬜ Automated compliance reporting</li>
+<li>⬜ Multi-signature wallet support</li>
+<li>⬜ Advanced fraud detection</li>
+<li>⬜ Institutional-grade API</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>RISKS & MITIGATION</h2></p>
+<br>
+<p><h3>Technical Risks</h3></p>
+<br>
+<p><strong>Risk 1: Blockchain Network Congestion</strong></p>
+<ul>
+<li><strong>Impact:</strong> High transaction fees, slow confirmations</li>
+<li><strong>Probability:</strong> Medium</li>
+<li><strong>Mitigation:</strong> Use Solana (high throughput), implement priority fees, fallback to alternative networks</li>
+</ul>
+<br>
+<p><strong>Risk 2: Smart Contract Vulnerabilities</strong></p>
+<ul>
+<li><strong>Impact:</strong> Loss of funds, security breach</li>
+<li><strong>Probability:</strong> Low</li>
+<li><strong>Mitigation:</strong> Security audits, bug bounty program, insurance coverage</li>
+</ul>
+<br>
+<p><strong>Risk 3: Payment Gateway Downtime</strong></p>
+<ul>
+<li><strong>Impact:</strong> Unable to process on-ramp/off-ramp</li>
+<li><strong>Probability:</strong> Low</li>
+<li><strong>Mitigation:</strong> Multiple payment gateway integrations, status page, user notifications</li>
+</ul>
+<br>
+<p><h3>Business Risks</h3></p>
+<br>
+<p><strong>Risk 4: Regulatory Changes</strong></p>
+<ul>
+<li><strong>Impact:</strong> Compliance requirements, operational restrictions</li>
+<li><strong>Probability:</strong> Medium</li>
+<li><strong>Mitigation:</strong> Legal counsel, compliance monitoring, flexible architecture</li>
+</ul>
+<br>
+<p><strong>Risk 5: Market Competition</strong></p>
+<ul>
+<li><strong>Impact:</strong> Loss of market share, pricing pressure</li>
+<li><strong>Probability:</strong> High</li>
+<li><strong>Mitigation:</strong> Differentiation through speed and cost, superior UX, strategic partnerships</li>
+</ul>
+<br>
+<p><strong>Risk 6: Liquidity Constraints</strong></p>
+<ul>
+<li><strong>Impact:</strong> Unable to fulfill large withdrawals</li>
+<li><strong>Probability:</strong> Medium</li>
+<li><strong>Mitigation:</strong> Treasury management, partner network, dynamic routing</li>
+</ul>
+<br>
+<p><h3>Operational Risks</h3></p>
+<br>
+<p><strong>Risk 7: Fraud and Money Laundering</strong></p>
+<ul>
+<li><strong>Impact:</strong> Regulatory penalties, reputation damage</li>
+<li><strong>Probability:</strong> Medium</li>
+<li><strong>Mitigation:</strong> KYC/AML compliance, transaction monitoring, risk scoring</li>
+</ul>
+<br>
+<p><strong>Risk 8: Customer Support Overload</strong></p>
+<ul>
+<li><strong>Impact:</strong> Poor user experience, negative reviews</li>
+<li><strong>Probability:</strong> Medium</li>
+<li><strong>Mitigation:</strong> Self-service documentation, chatbot, scalable support team</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>DEPENDENCIES</h2></p>
+<br>
+<p><h3>External Dependencies</h3></p>
+<ol>
+<li><strong>Solana Network:</strong> Blockchain availability and performance</li>
+<li><strong>Razorpay:</strong> Payment gateway uptime and API stability</li>
+<li><strong>Hyperledger Fabric:</strong> Compliance ledger infrastructure</li>
+<li><strong>AWS:</strong> Cloud infrastructure availability</li>
+<li><strong>Third-party APIs:</strong> Exchange rate providers, KYC verification services</li>
+</ul>
+<br>
+<p><h3>Internal Dependencies</h3></p>
+<ol>
+<li><strong>Smart Contract Deployment:</strong> Required before on-ramp/off-ramp</li>
+<li><strong>KYC System:</strong> Required before user transactions</li>
+<li><strong>Treasury Setup:</strong> Required before off-ramp operations</li>
+<li><strong>Liquidity Pools:</strong> Required for currency swaps</li>
+<li><strong>Monitoring Infrastructure:</strong> Required for production deployment</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>ASSUMPTIONS</h2></p>
+<br>
+<ol>
+<li><strong>Regulatory:</strong> Current crypto regulations remain stable during development</li>
+<li><strong>Technical:</strong> Solana network maintains high performance and low fees</li>
+<li><strong>Business:</strong> Users are willing to adopt crypto-based payment solutions</li>
+<li><strong>Market:</strong> Demand for low-cost remittance services continues to grow</li>
+<li><strong>Partnerships:</strong> Payment gateway partnerships remain active and cost-effective</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>CONSTRAINTS</h2></p>
+<br>
+<p><h3>Technical Constraints</h3></p>
+<ul>
+<li>Must use Solana devnet for initial testing</li>
+<li>Limited to Razorpay test environment until production approval</li>
+<li>Hyperledger Fabric requires dedicated infrastructure</li>
+<li>Mobile app development deferred to Phase 3</li>
+</ul>
+<br>
+<p><h3>Business Constraints</h3></p>
+<ul>
+<li>Initial launch limited to India market</li>
+<li>Transaction limits based on KYC level</li>
+<li>Minimum transaction amount: $10 equivalent</li>
+<li>Maximum transaction amount: $10,000 per transaction (KYC Level 2)</li>
+</ul>
+<br>
+<p><h3>Resource Constraints</h3></p>
+<ul>
+<li>Development team: 2-3 developers</li>
+<li>Budget: Limited to operational costs</li>
+<li>Timeline: 12 months to full production launch</li>
+<li>Infrastructure: AWS free tier initially, scale as needed</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>APPROVAL & SIGN-OFF</h2></p>
+<br>
+<p><strong>Product Owner:</strong> _____________________  </p>
+<p><strong>Technical Lead:</strong> _____________________  </p>
+<p><strong>Compliance Officer:</strong> _____________________  </p>
+<p><strong>Date:</strong> March 30, 2026</p>
+<br>
+<p>---</p>
+<br>
+<p><strong>Document Control:</strong></p>
+<ul>
+<li>Version: 1.0</li>
+<li>Last Updated: March 30, 2026</li>
+<li>Next Review: June 30, 2026</li>
+<li>Classification: Internal Use Only</li>
+</ul>
+<br>
+<br>
+</body>
+</html>

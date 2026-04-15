@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QUICK_COMMANDS</title>
+    <style>
+        @media print {
+            body { margin: 0.5in; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+    <p><h1>NivixPe - Quick Commands Reference</h1></p>
+<br>
+<p><h2>Generate PDF Reports</h2></p>
+<br>
+<p><h3>Install Dependencies (Ubuntu/Debian)</h3></p>
+<p><pre><code>bash</p>
+<p>sudo apt-get update</p>
+<p>sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra texlive-xetex</p>
+<p></code></pre></p>
+<br>
+<p><h3>Install Dependencies (macOS)</h3></p>
+<p><pre><code>bash</p>
+<p>brew install pandoc</p>
+<p>brew install --cask mactex-no-gui</p>
+<p></code></pre></p>
+<br>
+<p><h3>Generate All PDFs</h3></p>
+<p><pre><code>bash</p>
+<p>cd reports</p>
+<p>chmod +x generate_all_reports.sh</p>
+<p>./generate_all_reports.sh</p>
+<p></code></pre></p>
+<br>
+<p><h3>Generate Single PDF</h3></p>
+<p><pre><code>bash</p>
+<p><h1>Product Requirements Document</h1></p>
+<p>pandoc 01_PRODUCT_REQUIREMENTS_DOCUMENT.md -o pdf/PRD.pdf --pdf-engine=xelatex --toc --number-sections</p>
+<br>
+<p><h1>AML Compliance Report</h1></p>
+<p>pandoc 02_AML_COMPLIANCE_REPORT.md -o pdf/AML_Report.pdf --pdf-engine=xelatex --toc --number-sections</p>
+<p></code></pre></p>
+<br>
+<p><h3>Alternative: Use Online Converter</h3></p>
+<p>If pandoc installation fails, use online tools:</p>
+<ol>
+<li>Go to: https://www.markdowntopdf.com/</li>
+<li>Upload the .md file</li>
+<li>Download the generated PDF</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>Current Status</h2></p>
+<br>
+<p><h3>✅ Completed Documents</h3></p>
+<ol>
+<li><strong>Product Requirements Document (PRD)</strong> - <code>01_PRODUCT_REQUIREMENTS_DOCUMENT.md</code></li>
+<li>25+ pages of comprehensive product specifications</li>
+<li>Functional & non-functional requirements</li>
+<li>User stories, success metrics, roadmap</li>
+</ul>
+<br>
+<ol>
+<li><strong>AML Compliance Report (Partial)</strong> - <code>02_AML_COMPLIANCE_REPORT.md</code></li>
+<li>Regulatory framework</li>
+<li>Risk assessment matrix</li>
+<li>(Needs completion: KYC procedures, monitoring, reporting)</li>
+</ul>
+<br>
+<ol>
+<li><strong>Reports README</strong> - <code>README_REPORTS.md</code></li>
+<li>Overview of all required documents</li>
+<li>Status tracking</li>
+<li>Generation instructions</li>
+</ul>
+<br>
+<p><h3>⏳ Documents to Complete</h3></p>
+<ol>
+<li>Technical Architecture Report</li>
+<li>Workflow Documentation</li>
+<li>API Documentation</li>
+<li>Security Audit Report</li>
+<li>User Manual</li>
+<li>Deployment Guide</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>Next Steps</h2></p>
+<br>
+<p><h3>To Complete All Documentation:</h3></p>
+<br>
+<ol>
+<li><strong>Finish AML Report</strong> (Priority: High)</li>
+</ul>
+<p>   <pre><code>bash</p>
+<p>   # Continue editing</p>
+<p>   nano reports/02_AML_COMPLIANCE_REPORT.md</p>
+<p>   </code></pre></p>
+<br>
+<ol>
+<li><strong>Create Technical Architecture Report</strong></li>
+</ul>
+<p>   <pre><code>bash</p>
+<p>   # Use existing NIVIX_MASTER_DOCUMENTATION.md as reference</p>
+<p>   cp nivix-project/NIVIX_MASTER_DOCUMENTATION.md reports/03_TECHNICAL_ARCHITECTURE_REPORT.md</p>
+<p>   # Edit and format for formal report</p>
+<p>   </code></pre></p>
+<br>
+<ol>
+<li><strong>Create Workflow Documentation</strong></li>
+</ul>
+<p>   <pre><code>bash</p>
+<p>   # Create new file with process flows</p>
+<p>   nano reports/04_WORKFLOW_DOCUMENTATION.md</p>
+<p>   </code></pre></p>
+<br>
+<ol>
+<li><strong>Generate PDFs</strong></li>
+</ul>
+<p>   <pre><code>bash</p>
+<p>   cd reports</p>
+<p>   ./generate_all_reports.sh</p>
+<p>   </code></pre></p>
+<br>
+<p>---</p>
+<br>
+<p><h2>File Locations</h2></p>
+<br>
+<p><h3>Source Files (Markdown)</h3></p>
+<p><pre><code></p>
+<p>reports/</p>
+<p>├── 01_PRODUCT_REQUIREMENTS_DOCUMENT.md  ✅ Complete</p>
+<p>├── 02_AML_COMPLIANCE_REPORT.md          ⏳ 30% Complete</p>
+<p>├── 03_TECHNICAL_ARCHITECTURE_REPORT.md  ⏳ Pending</p>
+<p>├── 04_WORKFLOW_DOCUMENTATION.md         ⏳ Pending</p>
+<p>├── 05_API_DOCUMENTATION.md              ⏳ Pending</p>
+<p>├── 06_SECURITY_AUDIT_REPORT.md          ⏳ Pending</p>
+<p>├── 07_USER_MANUAL.md                    ⏳ Pending</p>
+<p>├── 08_DEPLOYMENT_GUIDE.md               ⏳ Pending</p>
+<p>├── README_REPORTS.md                    ✅ Complete</p>
+<p>└── generate_all_reports.sh              ✅ Complete</p>
+<p></code></pre></p>
+<br>
+<p><h3>Generated PDFs</h3></p>
+<p><pre><code></p>
+<p>reports/pdf/</p>
+<p>├── 01_PRODUCT_REQUIREMENTS_DOCUMENT.pdf</p>
+<p>├── 02_AML_COMPLIANCE_REPORT.pdf</p>
+<p>├── 03_TECHNICAL_ARCHITECTURE_REPORT.pdf</p>
+<p>├── 04_WORKFLOW_DOCUMENTATION.pdf</p>
+<p>├── 05_API_DOCUMENTATION.pdf</p>
+<p>├── 06_SECURITY_AUDIT_REPORT.pdf</p>
+<p>├── 07_USER_MANUAL.pdf</p>
+<p>└── 08_DEPLOYMENT_GUIDE.pdf</p>
+<p></code></pre></p>
+<br>
+<p>---</p>
+<br>
+<p><h2>Summary</h2></p>
+<br>
+<p>I've created:</p>
+<ol>
+<li>✅ <strong>Complete Product Requirements Document</strong> (PRD) - 25+ pages</li>
+<li>✅ <strong>Partial AML Compliance Report</strong> - Framework and risk assessment</li>
+<li>✅ <strong>Report Generation Script</strong> - Automated PDF creation</li>
+<li>✅ <strong>Documentation README</strong> - Overview and status tracking</li>
+<li>✅ <strong>This Quick Commands Guide</strong> - Easy reference</li>
+</ul>
+<br>
+<p><strong>To get PDFs:</strong></p>
+<p><pre><code>bash</p>
+<p>cd reports</p>
+<p>chmod +x generate_all_reports.sh</p>
+<p>./generate_all_reports.sh</p>
+<p></code></pre></p>
+<br>
+<p>PDFs will be in <code>reports/pdf/</code> folder.</p>
+<br>
+</body>
+</html>

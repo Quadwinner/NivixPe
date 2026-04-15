@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CHAINCODE_DEPLOYMENT_COMPLETE_FIX</title>
+    <style>
+        @media print {
+            body { margin: 0.5in; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+    <p><h1>Nivix-KYC Chaincode Deployment - Complete Fix Guide</h1></p>
+<br>
+<p><h2>Problem Summary</h2></p>
+<p>The chaincode deployment is failing with "invalid UTF-8" error due to corrupted peer database state from multiple failed installation attempts.</p>
+<br>
+<p><h2>Solution: Complete Network Reset and Clean Deployment</h2></p>
+<br>
+<p><h3>Step 1: Bring Down Network and Clean Everything</h3></p>
+<br>
+<p><pre><code>bash</p>
+<p><h1>Navigate to test-network directory</h1></p>
+<p>cd ~/fabric-samples/test-network-old</p>
+<br>
+<p><h1>Bring down the network completely</h1></p>
+<p>./network.sh down</p>
+<br>
+<p><h1>Remove all Docker volumes (clears peer databases)</h1></p>
+<p>docker volume prune -f</p>
+<br>
+<p><h1>Remove all chaincode Docker images</h1></p>
+<p>docker rmi $(docker images | grep dev-peer | awk '{print $3}') 2>/dev/null || true</p>
+<br>
+<p><h1>Remove any cached chaincode packages</h1></p>
+<p>rm -f *.tar.gz</p>
+<br>
+<p><h1>Stop and remove ALL containers to be safe</h1></p>
+<p>docker stop $(docker ps -aq) 2>/dev/null || true</p>
+<p>docker rm $(docker ps -aq) 2>/dev/null || true</p>
+<p></code></pre></p>
+<br>
+<p><h3>Step 2: Clean Chaincode Directory</h3></p>
+<br>
+<p><pre><code>bash</p>
+<p><h1>Go to chaincode directory</h1></p>
+<p>cd ~/fabric-samples/test-network-old/chaincode-nivix-kyc</p>
+<br>
+<p><h1>Remove all non-Go files</h1></p>
+<p>rm -rf vendor node_modules package*.json</p>
+<br>
+<p><h1>Verify only these files exist:</h1></p>
+<p><h1>- nivix-kyc.go</h1></p>
+<p><h1>- go.mod</h1></p>
+<p><h1>- go.sum</h1></p>
+<p><h1>- README.md</h1></p>
+<p><h1>- collections_config.json</h1></p>
+<p>ls -la</p>
+<br>
+<p><h1>Recreate go.mod with correct configuration</h1></p>
+<p>cat > go.mod << 'EOF'</p>
+<p>module nivix-kyc</p>
+<br>
+<p>go 1.16</p>
+<br>
+<p>require (</p>
+<p>    github.com/hyperledger/fabric-contract-api-go v1.2.1</p>
+<p>)</p>
+<p>EOF</p>
+<br>
+<p><h1>Update dependencies</h1></p>
+<p>go clean -modcache</p>
+<p>go mod tidy</p>
+<br>
+<p><h1>Verify the Go file compiles</h1></p>
+<p>go build nivix-kyc.go</p>
+<p>rm -f nivix-kyc  # Remove the compiled binary</p>
+<p></code></pre></p>
+<br>
+<p><h3>Step 3: Update Fabric Binaries Path</h3></p>
+<br>
+<p><pre><code>bash</p>
+<p><h1>Set environment to use Fabric 2.5 binaries</h1></p>
+<p>export PATH=~/fabric-samples/bin:$PATH</p>
+<p>export FABRIC_CFG_PATH=~/fabric-samples/config</p>
+<br>
+<p><h1>Verify Fabric version (should show 2.5.x)</h1></p>
+<p>peer version</p>
+<br>
+<p><h1>Add to .bashrc for persistence</h1></p>
+<p>echo 'export PATH=~/fabric-samples/bin:$PATH' >> ~/.bashrc</p>
+<p>echo 'export FABRIC_CFG_PATH=~/fabric-samples/config' >> ~/.bashrc</p>
+<p></code></pre></p>
+<br>
+<p><h3>Step 4: Start Fresh Network</h3></p>
+<br>
+<p><pre><code>bash</p>
+<p><h1>Navigate to test-network</h1></p>
+<p>cd ~/fabric-samples/test-network-old</p>
+<br>
+<p><h1>Start network and create channel</h1></p>
+<p>./network.sh up createChannel -c mychannel</p>
+<br>
+<p><h1>Wait for network to be fully up</h1></p>
+<p>sleep 5</p>
+<br>
+<p><h1>Verify network is running</h1></p>
+<p>docker ps</p>
+<p></code></pre></p>
+<br>
+<p><h3>Step 5: Deploy Chaincode</h3></p>
+<br>
+<p><pre><code>bash</p>
+<p><h1>Deploy chaincode with version 1.0, sequence 1</h1></p>
+<p>./network.sh deployCC -ccn nivix-kyc -ccp ./chaincode-nivix-kyc -ccl go -ccv 1.0 -ccs 1</p>
+<p></code></pre></p>
+<br>
+<p><h2>Expected Output</h2></p>
+<br>
+<p>If successful, you should see:</p>
+<p><pre><code></p>
+<p>Chaincode is packaged</p>
+<p>Installing chaincode on peer0.org1...</p>
+<p>Chaincode is installed on peer0.org1</p>
+<p>Installing chaincode on peer0.org2...</p>
+<p>Chaincode is installed on peer0.org2</p>
+<p>Querying chaincode definition on peer0.org1...</p>
+<p>Chaincode definition committed on channel 'mychannel'</p>
+<p></code></pre></p>
+<br>
+<p><h2>Verification Commands</h2></p>
+<br>
+<p><pre><code>bash</p>
+<p><h1>Set environment for Org1</h1></p>
+<p>export CORE_PEER_TLS_ENABLED=true</p>
+<p>export CORE_PEER_LOCALMSPID="Org1MSP"</p>
+<p>export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt</p>
+<p>export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp</p>
+<p>export CORE_PEER_ADDRESS=localhost:7051</p>
+<br>
+<p><h1>Query installed chaincodes</h1></p>
+<p>peer lifecycle chaincode queryinstalled</p>
+<br>
+<p><h1>Query committed chaincodes</h1></p>
+<p>peer lifecycle chaincode querycommitted -C mychannel</p>
+<p></code></pre></p>
+<br>
+<p><h2>Alternative: If UTF-8 Error Persists</h2></p>
+<br>
+<p>If the error still occurs, the issue might be in the chaincode source file itself. Try this:</p>
+<br>
+<p><pre><code>bash</p>
+<p>cd ~/fabric-samples/test-network-old/chaincode-nivix-kyc</p>
+<br>
+<p><h1>Create a minimal test chaincode to verify the system works</h1></p>
+<p>cat > test-chaincode.go << 'EOF'</p>
+<p>package main</p>
+<br>
+<p>import (</p>
+<p>    "fmt"</p>
+<p>    "github.com/hyperledger/fabric-contract-api-go/contractapi"</p>
+<p>)</p>
+<br>
+<p>type SmartContract struct {</p>
+<p>    contractapi.Contract</p>
+<p>}</p>
+<br>
+<p>func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {</p>
+<p>    return nil</p>
+<p>}</p>
+<br>
+<p>func (s *SmartContract) Test(ctx contractapi.TransactionContextInterface) (string, error) {</p>
+<p>    return "Hello from chaincode", nil</p>
+<p>}</p>
+<br>
+<p>func main() {</p>
+<p>    chaincode, err := contractapi.NewChaincode(&SmartContract{})</p>
+<p>    if err != nil {</p>
+<p>        fmt.Printf("Error creating chaincode: %s", err.Error())</p>
+<p>        return</p>
+<p>    }</p>
+<p>    if err := chaincode.Start(); err != nil {</p>
+<p>        fmt.Printf("Error starting chaincode: %s", err.Error())</p>
+<p>    }</p>
+<p>}</p>
+<p>EOF</p>
+<br>
+<p><h1>Rename original chaincode</h1></p>
+<p>mv nivix-kyc.go nivix-kyc.go.original</p>
+<br>
+<p><h1>Use test chaincode</h1></p>
+<p>mv test-chaincode.go nivix-kyc.go</p>
+<br>
+<p><h1>Try deployment</h1></p>
+<p>cd ~/fabric-samples/test-network-old</p>
+<p>./network.sh down</p>
+<p>./network.sh up createChannel -c mychannel</p>
+<p>./network.sh deployCC -ccn test-kyc -ccp ./chaincode-nivix-kyc -ccl go -ccv 1.0 -ccs 1</p>
+<p></code></pre></p>
+<br>
+<p>If the test chaincode works, the issue is in the original nivix-kyc.go file encoding.</p>
+<br>
+<p><h2>Troubleshooting</h2></p>
+<br>
+<p><h3>Check Docker Logs</h3></p>
+<p><pre><code>bash</p>
+<p><h1>Check peer logs</h1></p>
+<p>docker logs peer0.org1.example.com</p>
+<br>
+<p><h1>Check orderer logs</h1></p>
+<p>docker logs orderer.example.com</p>
+<p></code></pre></p>
+<br>
+<p><h3>Check Chaincode Container Logs</h3></p>
+<p><pre><code>bash</p>
+<p><h1>List chaincode containers</h1></p>
+<p>docker ps -a | grep dev-peer</p>
+<br>
+<p><h1>Check logs (replace with actual container name)</h1></p>
+<p>docker logs <chaincode-container-name></p>
+<p></code></pre></p>
+<br>
+<p><h3>Network Status</h3></p>
+<p><pre><code>bash</p>
+<p><h1>Check all containers are running</h1></p>
+<p>docker ps</p>
+<br>
+<p><h1>Should see:</h1></p>
+<p><h1>- peer0.org1.example.com</h1></p>
+<p><h1>- peer0.org2.example.com</h1></p>
+<p><h1>- orderer.example.com</h1></p>
+<p><h1>- ca_org1</h1></p>
+<p><h1>- ca_org2</h1></p>
+<p><h1>- ca_orderer</h1></p>
+<p></code></pre></p>
+<br>
+<p><h2>Next Steps After Successful Deployment</h2></p>
+<br>
+<ol>
+<li>Test chaincode invocation</li>
+<li>Set up application to interact with chaincode</li>
+<li>Configure Nginx reverse proxy</li>
+<li>Set up SSL certificates</li>
+<li>Deploy frontend application</li>
+</ul>
+<br>
+<p><h2>Important Notes</h2></p>
+<br>
+<ul>
+<li>Always use <code>./network.sh down</code> before restarting</li>
+<li>The UTF-8 error is usually caused by corrupted peer database</li>
+<li>Fabric 2.5 ccenv image has Go 1.22 which supports modern Go modules</li>
+<li>Keep chaincode directory clean (only .go, go.mod, go.sum files)</li>
+</ul>
+<br>
+</body>
+</html>

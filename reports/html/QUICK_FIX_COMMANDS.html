@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QUICK_FIX_COMMANDS</title>
+    <style>
+        @media print {
+            body { margin: 0.5in; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+    <p>#!/bin/bash</p>
+<p><h1>Quick Fix Script for Nivix-KYC Chaincode Deployment</h1></p>
+<p><h1>Run this on your EC2 server</h1></p>
+<br>
+<p>set -e</p>
+<br>
+<p>echo "=========================================="</p>
+<p>echo "Nivix-KYC Chaincode Deployment Fix"</p>
+<p>echo "=========================================="</p>
+<br>
+<p><h1>Step 1: Clean everything</h1></p>
+<p>echo "Step 1: Cleaning network and Docker..."</p>
+<p>cd ~/fabric-samples/test-network-old</p>
+<p>./network.sh down</p>
+<p>docker volume prune -f</p>
+<p>docker rmi $(docker images | grep dev-peer | awk '{print $3}') 2>/dev/null || true</p>
+<p>rm -f *.tar.gz</p>
+<br>
+<p><h1>Step 2: Clean chaincode directory</h1></p>
+<p>echo "Step 2: Cleaning chaincode directory..."</p>
+<p>cd ~/fabric-samples/test-network-old/chaincode-nivix-kyc</p>
+<p>rm -rf vendor node_modules package*.json</p>
+<br>
+<p><h1>Step 3: Recreate go.mod</h1></p>
+<p>echo "Step 3: Recreating go.mod..."</p>
+<p>cat > go.mod << 'EOF'</p>
+<p>module nivix-kyc</p>
+<br>
+<p>go 1.16</p>
+<br>
+<p>require (</p>
+<p>    github.com/hyperledger/fabric-contract-api-go v1.2.1</p>
+<p>)</p>
+<p>EOF</p>
+<br>
+<p><h1>Step 4: Update dependencies</h1></p>
+<p>echo "Step 4: Updating Go dependencies..."</p>
+<p>go clean -modcache</p>
+<p>go mod tidy</p>
+<br>
+<p><h1>Step 5: Set Fabric paths</h1></p>
+<p>echo "Step 5: Setting Fabric environment..."</p>
+<p>export PATH=~/fabric-samples/bin:$PATH</p>
+<p>export FABRIC_CFG_PATH=~/fabric-samples/config</p>
+<br>
+<p><h1>Step 6: Start network</h1></p>
+<p>echo "Step 6: Starting Fabric network..."</p>
+<p>cd ~/fabric-samples/test-network-old</p>
+<p>./network.sh up createChannel -c mychannel</p>
+<br>
+<p><h1>Wait for network to stabilize</h1></p>
+<p>echo "Waiting for network to stabilize..."</p>
+<p>sleep 5</p>
+<br>
+<p><h1>Step 7: Deploy chaincode</h1></p>
+<p>echo "Step 7: Deploying chaincode..."</p>
+<p>./network.sh deployCC -ccn nivix-kyc -ccp ./chaincode-nivix-kyc -ccl go -ccv 1.0 -ccs 1</p>
+<br>
+<p>echo "=========================================="</p>
+<p>echo "Deployment Complete!"</p>
+<p>echo "=========================================="</p>
+<br>
+<p><h1>Verify</h1></p>
+<p>echo "Verifying deployment..."</p>
+<p>export CORE_PEER_TLS_ENABLED=true</p>
+<p>export CORE_PEER_LOCALMSPID="Org1MSP"</p>
+<p>export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt</p>
+<p>export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp</p>
+<p>export CORE_PEER_ADDRESS=localhost:7051</p>
+<br>
+<p>peer lifecycle chaincode queryinstalled</p>
+<p>peer lifecycle chaincode querycommitted -C mychannel</p>
+<br>
+<p>echo "=========================================="</p>
+<p>echo "All Done! Chaincode is deployed."</p>
+<p>echo "=========================================="</p>
+<br>
+</body>
+</html>

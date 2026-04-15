@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>README_REPORTS</title>
+    <style>
+        @media print {
+            body { margin: 0.5in; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+    <p><h1>NivixPe Project Documentation Suite</h1></p>
+<br>
+<p><h2>Overview</h2></p>
+<p>This folder contains comprehensive documentation for the NivixPe blockchain payment platform. All documents are available in Markdown format and can be converted to PDF using the provided generation script.</p>
+<br>
+<p>---</p>
+<br>
+<p><h2>Available Reports</h2></p>
+<br>
+<p><h3>1. Product Requirements Document (PRD)</h3></p>
+<p><strong>File:</strong> <code>01_PRODUCT_REQUIREMENTS_DOCUMENT.md</code>  </p>
+<p><strong>Status:</strong> ✅ Complete  </p>
+<p><strong>Pages:</strong> ~25 pages  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>Executive Summary</li>
+<li>Product Vision & Goals</li>
+<li>Target Users & Personas</li>
+<li>Functional Requirements (FR-1 to FR-7)</li>
+<li>Non-Functional Requirements (NFR-1 to NFR-6)</li>
+<li>User Stories & Acceptance Criteria</li>
+<li>Technical Architecture</li>
+<li>Success Metrics & KPIs</li>
+<li>Roadmap (4 phases)</li>
+<li>Risks & Mitigation Strategies</li>
+</ul>
+<br>
+<p><h3>2. AML/Compliance Report</h3></p>
+<p><strong>File:</strong> <code>02_AML_COMPLIANCE_REPORT.md</code>  </p>
+<p><strong>Status:</strong> ⏳ In Progress  </p>
+<p><strong>Pages:</strong> ~30 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>Regulatory Framework (FATF, PMLA, BSA, 5AMLD)</li>
+<li>Risk Assessment Matrix</li>
+<li>KYC/CDD Procedures (3-tier system)</li>
+<li>Transaction Monitoring & Screening</li>
+<li>Suspicious Activity Reporting (SAR)</li>
+<li>Record Keeping & Audit Trail</li>
+<li>Training & Awareness Programs</li>
+<li>Compliance Testing & Audits</li>
+</ul>
+<br>
+<p><h3>3. Technical Architecture Report</h3></p>
+<p><strong>File:</strong> <code>03_TECHNICAL_ARCHITECTURE_REPORT.md</code>  </p>
+<p><strong>Status:</strong> ⏳ Pending  </p>
+<p><strong>Pages:</strong> ~35 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>System Architecture Overview</li>
+<li>Component Diagrams</li>
+<li>Data Flow Diagrams</li>
+<li>Blockchain Integration (Solana + Hyperledger Fabric)</li>
+<li>Smart Contract Architecture</li>
+<li>API Gateway Design</li>
+<li>Database Schema</li>
+<li>Security Architecture</li>
+<li>Scalability & Performance</li>
+<li>Disaster Recovery Plan</li>
+</ul>
+<br>
+<p><h3>4. Workflow Documentation</h3></p>
+<p><strong>File:</strong> <code>04_WORKFLOW_DOCUMENTATION.md</code>  </p>
+<p><strong>Status:</strong> ⏳ Pending  </p>
+<p><strong>Pages:</strong> ~20 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>User Registration & KYC Workflow</li>
+<li>On-Ramp Process Flow (Fiat → Crypto)</li>
+<li>Off-Ramp Process Flow (Crypto → Fiat)</li>
+<li>Cross-Border Transfer Workflow</li>
+<li>Currency Exchange Workflow</li>
+<li>Admin Approval Workflows</li>
+<li>Error Handling & Recovery Flows</li>
+<li>Sequence Diagrams for Each Flow</li>
+</ul>
+<br>
+<br>
+<br>
+<p><h3>5. API Documentation</h3></p>
+<p><strong>File:</strong> <code>05_API_DOCUMENTATION.md</code>  </p>
+<p><strong>Status:</strong> ⏳ Pending  </p>
+<p><strong>Pages:</strong> ~40 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>API Overview & Base URLs</li>
+<li>Authentication & Authorization</li>
+<li>Rate Limiting & Throttling</li>
+<li>KYC Endpoints (Submit, Status, Update)</li>
+<li>On-Ramp Endpoints (Order, Payment, Verify)</li>
+<li>Off-Ramp Endpoints (Quote, Initiate, Status)</li>
+<li>Solana Endpoints (Balance, Transfer, Mint)</li>
+<li>Pool Endpoints (List, Swap, Info)</li>
+<li>Webhook Documentation</li>
+<li>Error Codes & Responses</li>
+<li>Code Examples (cURL, JavaScript, Python)</li>
+</ul>
+<br>
+<p><h3>6. Security Audit Report</h3></p>
+<p><strong>File:</strong> <code>06_SECURITY_AUDIT_REPORT.md</code>  </p>
+<p><strong>Status:</strong> ⏳ Pending  </p>
+<p><strong>Pages:</strong> ~25 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>Security Assessment Methodology</li>
+<li>Vulnerability Scan Results</li>
+<li>Penetration Testing Findings</li>
+<li>Smart Contract Audit</li>
+<li>Infrastructure Security Review</li>
+<li>Data Protection Assessment</li>
+<li>Compliance with Security Standards</li>
+<li>Remediation Recommendations</li>
+<li>Security Roadmap</li>
+</ul>
+<br>
+<p><h3>7. User Manual</h3></p>
+<p><strong>File:</strong> <code>07_USER_MANUAL.md</code>  </p>
+<p><strong>Status:</strong> ⏳ Pending  </p>
+<p><strong>Pages:</strong> ~30 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>Getting Started Guide</li>
+<li>Account Registration & KYC</li>
+<li>Wallet Connection Instructions</li>
+<li>How to Buy Crypto (On-Ramp)</li>
+<li>How to Sell Crypto (Off-Ramp)</li>
+<li>How to Send Money Internationally</li>
+<li>How to Exchange Currencies</li>
+<li>Transaction History & Receipts</li>
+<li>Troubleshooting Common Issues</li>
+<li>FAQs</li>
+<li>Customer Support Contact</li>
+</ul>
+<br>
+<p><h3>8. Deployment Guide</h3></p>
+<p><strong>File:</strong> <code>08_DEPLOYMENT_GUIDE.md</code>  </p>
+<p><strong>Status:</strong> ⏳ Pending  </p>
+<p><strong>Pages:</strong> ~20 pages (estimated)  </p>
+<p><strong>Contents:</strong></p>
+<ul>
+<li>Prerequisites & System Requirements</li>
+<li>Environment Setup (Dev, Staging, Production)</li>
+<li>Hyperledger Fabric Network Deployment</li>
+<li>Solana Smart Contract Deployment</li>
+<li>Bridge Service Deployment</li>
+<li>Frontend Deployment</li>
+<li>Database Setup & Migration</li>
+<li>SSL Certificate Configuration</li>
+<li>Monitoring & Logging Setup</li>
+<li>Backup & Recovery Procedures</li>
+<li>Rollback Procedures</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>How to Generate PDF Reports</h2></p>
+<br>
+<p><h3>Prerequisites</h3></p>
+<p>Install required tools:</p>
+<p><pre><code>bash</p>
+<p><h1>Ubuntu/Debian</h1></p>
+<p>sudo apt-get update</p>
+<p>sudo apt-get install pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra</p>
+<br>
+<p><h1>macOS</h1></p>
+<p>brew install pandoc basictex</p>
+<br>
+<p><h1>Windows</h1></p>
+<p><h1>Download and install: https://pandoc.org/installing.html</h1></p>
+<p><h1>Download and install: https://miktex.org/download</h1></p>
+<p></code></pre></p>
+<br>
+<p><h3>Generate All Reports</h3></p>
+<p><pre><code>bash</p>
+<p><h1>Make script executable</h1></p>
+<p>chmod +x reports/generate_all_reports.sh</p>
+<br>
+<p><h1>Run generation script</h1></p>
+<p>./reports/generate_all_reports.sh</p>
+<p></code></pre></p>
+<br>
+<p><h3>Generate Individual Report</h3></p>
+<p><pre><code>bash</p>
+<p>pandoc reports/01_PRODUCT_REQUIREMENTS_DOCUMENT.md \</p>
+<p>    -o reports/pdf/01_PRODUCT_REQUIREMENTS_DOCUMENT.pdf \</p>
+<p>    --pdf-engine=pdflatex \</p>
+<p>    --variable geometry:margin=1in \</p>
+<p>    --variable fontsize=11pt \</p>
+<p>    --toc \</p>
+<p>    --number-sections</p>
+<p></code></pre></p>
+<br>
+<p>---</p>
+<br>
+<p><h2>Document Status Summary</h2></p>
+<br>
+<p>| Document | Status | Completion | Priority |</p>
+<p>|----------|--------|------------|----------|</p>
+<p>| PRD | ✅ Complete | 100% | High |</p>
+<p>| AML Report | ⏳ In Progress | 30% | High |</p>
+<p>| Technical Architecture | ⏳ Pending | 0% | High |</p>
+<p>| Workflow Documentation | ⏳ Pending | 0% | Medium |</p>
+<p>| API Documentation | ⏳ Pending | 0% | High |</p>
+<p>| Security Audit | ⏳ Pending | 0% | Medium |</p>
+<p>| User Manual | ⏳ Pending | 0% | Medium |</p>
+<p>| Deployment Guide | ⏳ Pending | 0% | High |</p>
+<br>
+<p>---</p>
+<br>
+<p><h2>Additional Documentation</h2></p>
+<br>
+<p><h3>Existing Reports (Already Available)</h3></p>
+<ul>
+<li><code>Fast-Secure-and-Global-NIVIXPE.pdf</code> - Marketing presentation</li>
+<li><code>NivixPe_Complete_Internship_Report_shubham.docx</code> - Internship report</li>
+<li><code>NivixPe_Evidence_Report.pdf</code> - Evidence documentation</li>
+<li><code>Rubric for Evaluation_Sem7_Sem8(2).xlsx</code> - Evaluation rubric</li>
+</ul>
+<br>
+<p><h3>Project Documentation (Markdown)</h3></p>
+<p>Located in <code>nivix-project/</code> folder:</p>
+<ul>
+<li><code>NIVIX_MASTER_DOCUMENTATION.md</code> - Comprehensive technical documentation</li>
+<li><code>COMPREHENSIVE_WORK_REPORT.md</code> - Development work summary</li>
+<li><code>README.md</code> - Quick start guide</li>
+<li><code>PRODUCTION_READINESS_CHECKLIST.md</code> - Production deployment checklist</li>
+<li><code>PRODUCTION_KEY_MANAGEMENT.md</code> - Key management guide</li>
+<li><code>AUTOMATED_ROUTING_SYSTEM.md</code> - Treasury routing documentation</li>
+<li><code>HOW_TO_GET_TRANSACTION_IDS.md</code> - Transaction tracking guide</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>Document Maintenance</h2></p>
+<br>
+<p><h3>Update Schedule</h3></p>
+<ul>
+<li><strong>PRD:</strong> Quarterly review (every 3 months)</li>
+<li><strong>AML Report:</strong> Annual review + regulatory updates</li>
+<li><strong>Technical Architecture:</strong> After major system changes</li>
+<li><strong>API Documentation:</strong> After each API version release</li>
+<li><strong>User Manual:</strong> Monthly updates based on user feedback</li>
+<li><strong>Security Audit:</strong> Quarterly security assessments</li>
+</ul>
+<br>
+<p><h3>Version Control</h3></p>
+<p>All documents follow semantic versioning:</p>
+<ul>
+<li><strong>Major version (X.0.0):</strong> Significant changes, restructuring</li>
+<li><strong>Minor version (1.X.0):</strong> New sections, feature additions</li>
+<li><strong>Patch version (1.0.X):</strong> Corrections, clarifications</li>
+</ul>
+<br>
+<p><h3>Document Owners</h3></p>
+<ul>
+<li><strong>PRD:</strong> Product Manager</li>
+<li><strong>AML Report:</strong> Compliance Officer</li>
+<li><strong>Technical Architecture:</strong> Technical Lead</li>
+<li><strong>API Documentation:</strong> Backend Team Lead</li>
+<li><strong>Security Audit:</strong> Security Officer</li>
+<li><strong>User Manual:</strong> Customer Success Manager</li>
+<li><strong>Deployment Guide:</strong> DevOps Engineer</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>Contact Information</h2></p>
+<br>
+<p><strong>For Documentation Queries:</strong></p>
+<ul>
+<li>Email: docs@nivixpe.com</li>
+<li>Slack: #documentation-team</li>
+<li>Project Manager: [Name]</li>
+</ul>
+<br>
+<p><strong>For Technical Support:</strong></p>
+<ul>
+<li>Email: support@nivixpe.com</li>
+<li>Developer Portal: https://docs.nivixpe.com</li>
+<li>GitHub Issues: https://github.com/nivixpe/nivix-project/issues</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><strong>Last Updated:</strong> March 30, 2026  </p>
+<p><strong>Next Review:</strong> June 30, 2026  </p>
+<p><strong>Document Owner:</strong> Documentation Team</p>
+<br>
+</body>
+</html>
