@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>02_AML_COMPLIANCE_REPORT</title>
+    <style>
+        @media print {
+            body { margin: 0.5in; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+    <p><h1>NIVIXPE - ANTI-MONEY LAUNDERING (AML) COMPLIANCE REPORT</h1></p>
+<br>
+<p><strong>Document Version:</strong> 1.0  </p>
+<p><strong>Date:</strong> March 30, 2026  </p>
+<p><strong>Company:</strong> NivixPe Private Limited  </p>
+<p><strong>Compliance Officer:</strong> [Name]  </p>
+<p><strong>Report Period:</strong> Development Phase  </p>
+<p><strong>Classification:</strong> Confidential</p>
+<br>
+<p>---</p>
+<br>
+<p><h2>EXECUTIVE SUMMARY</h2></p>
+<br>
+<p>This Anti-Money Laundering (AML) Compliance Report outlines NivixPe's comprehensive approach to preventing money laundering, terrorist financing, and other financial crimes. The report details our risk-based compliance framework, KYC procedures, transaction monitoring systems, and regulatory adherence strategies.</p>
+<br>
+<p><h3>Key Highlights</h3></p>
+<ul>
+<li><strong>Compliance Framework:</strong> Risk-based approach aligned with FATF recommendations</li>
+<li><strong>KYC System:</strong> Multi-tier verification using Hyperledger Fabric private ledger</li>
+<li><strong>Transaction Monitoring:</strong> Real-time screening and suspicious activity detection</li>
+<li><strong>Technology:</strong> Blockchain-based immutable audit trail</li>
+<li><strong>Status:</strong> Development phase with compliance-first architecture</li>
+</ul>
+<br>
+<p>---</p>
+<br>
+<p><h2>REGULATORY FRAMEWORK</h2></p>
+<br>
+<p><h3>Applicable Regulations</h3></p>
+<br>
+<p><h4>International Standards</h4></p>
+<ol>
+<li><strong>FATF Recommendations (2012-2023)</strong></li>
+<li>40 Recommendations on combating money laundering</li>
+<li>9 Special Recommendations on terrorist financing</li>
+<li>Risk-based approach to AML/CFT</li>
+</ul>
+<br>
+<ol>
+<li><strong>Basel Committee on Banking Supervision</strong></li>
+<li>Customer due diligence standards</li>
+<li>Enhanced due diligence for high-risk customers</li>
+<li>Ongoing monitoring requirements</li>
+</ul>
+<br>
+<p><h4>Regional Regulations</h4></p>
+<br>
+<p><strong>India:</strong></p>
+<ul>
+<li>Prevention of Money Laundering Act (PMLA), 2002</li>
+<li>PMLA Rules, 2005 (as amended)</li>
+<li>RBI Master Direction on KYC</li>
+<li>SEBI (KYC Registration Agency) Regulations, 2011</li>
+</ul>
+<br>
+<p><strong>United States:</strong></p>
+<ul>
+<li>Bank Secrecy Act (BSA)</li>
+<li>USA PATRIOT Act</li>
+<li>FinCEN regulations for virtual currency</li>
+<li>OFAC sanctions compliance</li>
+</ul>
+<br>
+<p><strong>European Union:</strong></p>
+<ul>
+<li>5th Anti-Money Laundering Directive (5AMLD)</li>
+<li>6th Anti-Money Laundering Directive (6AMLD)</li>
+<li>GDPR compliance for data protection</li>
+<li>MiCA (Markets in Crypto-Assets) Regulation</li>
+</ul>
+<br>
+<br>
+<br>
+<p>---</p>
+<br>
+<p><h2>RISK ASSESSMENT</h2></p>
+<br>
+<p><h3>Money Laundering Risk Factors</h3></p>
+<br>
+<p><h4>Customer Risk Factors</h4></p>
+<p><strong>High Risk:</strong></p>
+<ul>
+<li>Politically Exposed Persons (PEPs)</li>
+<li>Customers from high-risk jurisdictions (FATF blacklist/greylist)</li>
+<li>Customers with complex ownership structures</li>
+<li>Customers with unusual transaction patterns</li>
+</ul>
+<br>
+<p><strong>Medium Risk:</strong></p>
+<ul>
+<li>Customers from moderate-risk jurisdictions</li>
+<li>High-value transactions (>$10,000)</li>
+<li>Frequent cross-border transactions</li>
+<li>Cash-intensive businesses</li>
+</ul>
+<br>
+<p><strong>Low Risk:</strong></p>
+<ul>
+<li>Verified individual customers</li>
+<li>Small transaction amounts (<$1,000)</li>
+<li>Domestic transactions only</li>
+<li>Transparent source of funds</li>
+</ul>
+<br>
+<p><h4>Product/Service Risk Factors</h4></p>
+<p><strong>High Risk:</strong></p>
+<ul>
+<li>Anonymous transactions (not supported)</li>
+<li>High-value transfers (>$50,000)</li>
+<li>Rapid movement of funds</li>
+<li>Conversion to privacy coins (not supported)</li>
+</ul>
+<br>
+<p><strong>Medium Risk:</strong></p>
+<ul>
+<li>Cross-border remittances</li>
+<li>Currency exchange services</li>
+<li>Business accounts</li>
+<li>Bulk payments</li>
+</ul>
+<br>
+<p><strong>Low Risk:</strong></p>
+<ul>
+<li>Peer-to-peer transfers (verified users)</li>
+<li>Small remittances (<$1,000)</li>
+<li>Domestic transactions</li>
+<li>Transparent blockchain transactions</li>
+</ul>
+<br>
+<p><h4>Geographic Risk Factors</h4></p>
+<p><strong>High Risk Countries (FATF Blacklist/Greylist):</strong></p>
+<ul>
+<li>North Korea, Iran, Myanmar (blacklist)</li>
+<li>Countries under FATF monitoring</li>
+<li>Sanctioned jurisdictions (OFAC, UN, EU)</li>
+</ul>
+<br>
+<p><strong>Medium Risk:</strong></p>
+<ul>
+<li>Countries with weak AML frameworks</li>
+<li>High corruption perception index</li>
+<li>Limited financial transparency</li>
+</ul>
+<br>
+<p><strong>Low Risk:</strong></p>
+<ul>
+<li>FATF member countries with strong AML frameworks</li>
+<li>Countries with robust regulatory oversight</li>
+<li>Transparent financial systems</li>
+</ul>
+<br>
+<p><h3>Overall Risk Rating Matrix</h3></p>
+<br>
+<p>| Customer Risk | Product Risk | Geographic Risk | Overall Risk | Action Required |</p>
+<p>|---------------|--------------|-----------------|--------------|-----------------|</p>
+<p>| High | High | High | <strong>Critical</strong> | Decline/Enhanced DD |</p>
+<p>| High | High | Medium | <strong>High</strong> | Enhanced DD |</p>
+<p>| High | Medium | Low | <strong>Medium</strong> | Enhanced DD |</p>
+<p>| Medium | Medium | Medium | <strong>Medium</strong> | Standard DD |</p>
+<p>| Low | Low | Low | <strong>Low</strong> | Simplified DD |</p>
+<br>
+<br>
+</body>
+</html>

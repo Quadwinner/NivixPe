@@ -184,9 +184,10 @@ echo "🌉 Starting bridge service..."
 cd bridge-service
 mkdir -p logs
 
-# Set payment gateway environment variables (Real Razorpay Test Credentials)
-export RAZORPAY_KEY_ID="rzp_test_RIdOOohLUUFJhr"
-export RAZORPAY_KEY_SECRET="yKfmYVMY9NTrxW9sNj4N4VO2"
+# Razorpay credentials are loaded by dotenv from bridge-service/.env.
+# Clearing inherited values here avoids stale credentials causing Razorpay 401 auth failures.
+unset RAZORPAY_KEY_ID
+unset RAZORPAY_KEY_SECRET
 
 # Enable PayU payouts (Cashfree is disabled in code)
 export PAYU_MERCHANT_ID="527849c20b1e690147b48325b0818452fa360716274c769494db1dbc256c6158"
@@ -236,7 +237,6 @@ else
     echo "❌ Bridge service failed to start"
     echo "📝 Check logs: tail -20 bridge-service/logs/bridge.log"
 fi
-
 
 
 

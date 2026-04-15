@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -28,7 +28,7 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import {
   getAssociatedTokenAddress,
   createBurnInstruction,
-  TOKEN_PROGRAM_ID
+  getMint
 } from '@solana/spl-token';
 
 interface RecipientDetails {
@@ -70,6 +70,7 @@ interface ProcessingStep {
 }
 
 const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
+const DEFAULT_USD_MINT = process.env.REACT_APP_USD_MINT_ADDRESS || '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T';
 
 const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
   paymentData,
@@ -94,6 +95,9 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
   const [offrampOrderId, setOfframpOrderId] = useState<string | null>(null);
   const [isBurning, setIsBurning] = useState(false);
   const [mintTxHash, setMintTxHash] = useState<string | null>(null);
+  const [burnMintAddress, setBurnMintAddress] = useState<string>(DEFAULT_USD_MINT);
+  const [burnCryptoAmount, setBurnCryptoAmount] = useState<number | null>(null);
+  const burnInProgressRef = useRef(false);
 
   const [steps, setSteps] = useState<ProcessingStep[]>([
     {
@@ -233,6 +237,8 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         setBurnRequired(true);
         setOfframpOrderId(order.offrampOrderId);
         setMintTxHash(order.mintTransactionHash || order.transactionSignature);
+        setBurnMintAddress(order.cryptoTokenMint || order.receiveTokenMint || order.tokenMint || DEFAULT_USD_MINT);
+        setBurnCryptoAmount(order.receiveAmount || order.cryptoAmount || order.tokenAmount || null);
         updateStepToProcessing('burning_usdc');
         setCurrentStepIndex(2);
         newProgress = 35;
@@ -344,16 +350,20 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
   // Burn user's tokens (from PaymentApp logic)
   const burnUserTokens = async (): Promise<string | null> => {
     try {
+      if (burnInProgressRef.current) {
+        console.log('🔥 Burn request ignored because another burn is already in progress');
+        return null;
+      }
+
       if (!publicKey || !signTransaction) {
         throw new Error('Wallet not connected or cannot sign transactions');
       }
 
+      burnInProgressRef.current = true;
       setIsBurning(true);
       console.log(`🔥 Starting token burn for automated transfer`);
 
-      // Get token mint address for USD
-      const tokenMint = '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg'; // USD token mint
-      const mintPubkey = new PublicKey(tokenMint);
+      const mintPubkey = new PublicKey(burnMintAddress);
 
       // Get user's token account
       const userTokenAccount = await getAssociatedTokenAddress(
@@ -361,9 +371,21 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         publicKey
       );
 
-      // Convert amount to token units (6 decimals)
-      const tokenAmount = Math.floor(paymentData.amount * Math.pow(10, 6));
-      console.log(`🔥 Burning ${tokenAmount} token units (${paymentData.amount} USD)`);
+      // Read mint decimals and current balance from chain before creating burn transaction.
+      const mintInfo = await getMint(connection, mintPubkey);
+      // Use crypto receive amount from order (not fiat payment amount) to avoid burning wrong quantity.
+      const amountToBurn = burnCryptoAmount !== null ? burnCryptoAmount : paymentData.amount;
+      const tokenAmount = BigInt(Math.floor(amountToBurn * Math.pow(10, mintInfo.decimals)));
+      const tokenBalance = await connection.getTokenAccountBalance(userTokenAccount);
+      const availableAmount = BigInt(tokenBalance.value.amount);
+
+      if (availableAmount < tokenAmount) {
+        throw new Error(
+          `Insufficient token balance for burn. Required: ${tokenAmount.toString()} base units, available: ${availableAmount.toString()} base units`
+        );
+      }
+
+      console.log(`🔥 Burning ${tokenAmount.toString()} token units (${amountToBurn} tokens) from mint ${mintPubkey.toBase58()}`);
 
       // Create burn instruction
       const burnInstruction = createBurnInstruction(
@@ -373,26 +395,88 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         tokenAmount
       );
 
-      // Create transaction
-      const transaction = new Transaction().add(burnInstruction);
+      const signaturesBeforeBurn = new Set<string>(
+        (await connection.getSignaturesForAddress(publicKey, { limit: 20 }, 'confirmed'))
+          .map((item) => item.signature)
+      );
 
-      // Get recent blockhash
-      const blockhashInfo = await connection.getLatestBlockhash('confirmed');
-      transaction.recentBlockhash = blockhashInfo.blockhash;
-      transaction.lastValidBlockHeight = blockhashInfo.lastValidBlockHeight;
-      transaction.feePayer = publicKey;
+      const sendFreshBurnTransaction = async (): Promise<{
+        signature: string;
+        blockhash: string;
+        lastValidBlockHeight: number;
+      }> => {
+        const transaction = new Transaction().add(burnInstruction);
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
+        transaction.recentBlockhash = blockhash;
+        transaction.lastValidBlockHeight = lastValidBlockHeight;
+        transaction.feePayer = publicKey;
 
-      // Sign transaction
-      const signedTransaction = await signTransaction(transaction);
+        const signedTransaction = await signTransaction(transaction);
+        const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
+          skipPreflight: false,
+          preflightCommitment: 'confirmed'
+        });
 
-      // Send transaction
-      const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: 'confirmed'
-      });
+        return { signature, blockhash, lastValidBlockHeight };
+      };
 
-      // Confirm transaction
-      await connection.confirmTransaction(signature, 'confirmed');
+      let signature: string | null = null;
+      let confirmationContext: { blockhash: string; lastValidBlockHeight: number } | null = null;
+
+      try {
+        const sentTransaction = await sendFreshBurnTransaction();
+        signature = sentTransaction.signature;
+        confirmationContext = {
+          blockhash: sentTransaction.blockhash,
+          lastValidBlockHeight: sentTransaction.lastValidBlockHeight
+        };
+      } catch (sendError: any) {
+        const message = sendError?.message || String(sendError);
+        if (!message.includes('already been processed')) {
+          throw sendError;
+        }
+
+        console.warn('⚠️ Burn transaction already processed by network, attempting signature recovery');
+
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const recentSignatures = await connection.getSignaturesForAddress(publicKey, { limit: 20 }, 'confirmed');
+          const recoveredSignature = recentSignatures.find(
+            (item) => !signaturesBeforeBurn.has(item.signature)
+          )?.signature;
+
+          if (recoveredSignature) {
+            signature = recoveredSignature;
+            break;
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+        }
+
+        if (!signature) {
+          const fallbackSignature = (await connection.getSignaturesForAddress(publicKey, { limit: 1 }, 'confirmed'))[0]?.signature;
+          if (fallbackSignature) {
+            signature = fallbackSignature;
+          }
+        }
+      }
+
+      if (!signature) {
+        throw new Error('Burn transaction was already processed but signature could not be recovered. Please retry once.');
+      }
+
+      if (confirmationContext) {
+        const confirmation = await connection.confirmTransaction({
+          signature,
+          blockhash: confirmationContext.blockhash,
+          lastValidBlockHeight: confirmationContext.lastValidBlockHeight
+        }, 'confirmed');
+
+        if (confirmation.value.err) {
+          throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
+        }
+      } else {
+        await connection.confirmTransaction(signature, 'confirmed');
+      }
 
       console.log(`✅ Token burn successful! Transaction: ${signature}`);
 
@@ -401,11 +485,13 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
 
       return signature;
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Token burning failed:', error);
-      setError(`Token burning failed: ${error}`);
+      const message = error?.message || String(error);
+      setError(`Token burning failed: ${message}`);
       throw error;
     } finally {
+      burnInProgressRef.current = false;
       setIsBurning(false);
     }
   };
@@ -483,6 +569,8 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
           setBurnRequired(true);
           setOfframpOrderId(order.offrampOrderId || order.id);
           setMintTxHash(order.transactionSignature);
+          setBurnMintAddress(order.cryptoTokenMint || order.receiveTokenMint || order.tokenMint || DEFAULT_USD_MINT);
+          setBurnCryptoAmount(order.receiveAmount || order.cryptoAmount || order.tokenAmount || null);
           console.log('Automated transfer detected - user burn confirmation required');
         } else {
           console.log('Regular onramp flow - no burn required');

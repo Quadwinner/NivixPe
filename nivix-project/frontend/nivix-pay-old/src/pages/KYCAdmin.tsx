@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+
+const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import CloseIcon from '@mui/icons-material/Close';

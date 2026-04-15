@@ -14,7 +14,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import {
   getAssociatedTokenAddress,
-  createBurnInstruction
+  createBurnInstruction,
+  getMint
 } from '@solana/spl-token';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -338,13 +339,13 @@ const PaymentApp: React.FC = () => {
   // Off-ramp Functions
   const getCryptoTokenMint = (currency: string): string => {
     const tokenMints: { [key: string]: string } = {
-      'USD': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg',
-      'INR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE',
-      'EUR': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T',
-      'GBP': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh',
+      'USD': '7bBhRdeA8onCTZa3kBwWpQVhuQdVzhMgLEvDTrjwWX5T',
+      'INR': '4PmMiF3Lxv6dRGfB92xw7dv5SYWWPBCE6Y78Tdqb7mGg',
+      'EUR': '5PSU5Z4NNvHCP9qSRBmrp4oEt6NYGXxatLW2LY7sBFLE',
+      'GBP': '5gBytEK8J6p8ffqqB5jh82hme5udwvjd4gr4bFwwTgCJ',
       'JPY': '8VAakzh8wMEiyMp75coMorNDjUEMqwgHwvJjv7pUdVQh',
       'CAD': '5eiCbZorrM9BRxyr4iuDvuTmf3LeGjhBBmP8NuXaZz5Q',
-      'AUD': 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
+      'AUD': 'B9ASRwRngPPv6BpvVxXHawX4XEXfYHS1a4xJ5rEqHNjx'
     };
     return tokenMints[currency.toUpperCase()] || '';
   };
@@ -362,7 +363,16 @@ const PaymentApp: React.FC = () => {
 
       const mintPubkey = new PublicKey(tokenMint);
       const userTokenAccount = await getAssociatedTokenAddress(mintPubkey, publicKey);
-      const tokenAmount = Math.floor(amount * Math.pow(10, 6));
+      const mintInfo = await getMint(connection, mintPubkey);
+      const tokenAmount = BigInt(Math.floor(amount * Math.pow(10, mintInfo.decimals)));
+      const tokenBalance = await connection.getTokenAccountBalance(userTokenAccount);
+      const availableAmount = BigInt(tokenBalance.value.amount);
+
+      if (availableAmount < tokenAmount) {
+        throw new Error(
+          `Insufficient token balance for burn. Required ${tokenAmount.toString()} base units, available ${availableAmount.toString()}`
+        );
+      }
 
       const burnInstruction = createBurnInstruction(
         userTokenAccount,
@@ -378,7 +388,7 @@ const PaymentApp: React.FC = () => {
         tx.lastValidBlockHeight = lastValidBlockHeight;
         tx.feePayer = publicKey;
         const signed = await signTransaction(tx);
-        return await connection.sendRawTransaction(signed.serialize(), { skipPreflight: true });
+        return await connection.sendRawTransaction(signed.serialize(), { skipPreflight: false });
       };
 
       let signature: string | undefined = undefined;
