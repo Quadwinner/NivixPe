@@ -223,7 +223,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-accent-50/20 to-background">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto py-8 px-4">
         {/* KYC Warning */}
         {!kycStatus && (
@@ -259,7 +259,7 @@ const Dashboard: React.FC = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-accent to-accent-700 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <Card className="text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style={{ background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-navy-700))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90 mb-1">Total Balance</p>
@@ -275,7 +275,7 @@ const Dashboard: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <Card className="text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style={{ background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90 mb-1">Total Received</p>
@@ -289,7 +289,7 @@ const Dashboard: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <Card className="text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style={{ background: 'linear-gradient(135deg, var(--color-navy-500), var(--color-teal-500))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90 mb-1">Total Sent</p>
@@ -303,7 +303,7 @@ const Dashboard: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <Card className="text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" style={{ background: 'linear-gradient(135deg, var(--color-teal-600), var(--color-navy-600))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90 mb-1">Wallets</p>
@@ -319,19 +319,22 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Balance Summary Card */}
           <div className="lg:col-span-1">
-            <Card className="bg-white/90 backdrop-blur-sm border-accent/20 h-full shadow-xl">
+            <Card className="bg-white border-0 h-full shadow-xl" style={{ borderColor: 'rgba(12,112,117,0.2)' }}>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-text flex items-center gap-2">
-                  <AccountBalanceWalletIcon className="w-6 h-6 text-accent" />
+                <h2 className="text-xl font-bold flex items-center gap-2" style={{ color: 'var(--color-ink-900)' }}>
+                  <AccountBalanceWalletIcon className="w-6 h-6" style={{ color: 'var(--color-teal-600)' }} />
                   My Wallets
                 </h2>
                 <button
                   onClick={fetchData}
                   disabled={isLoading}
-                  className="p-2 rounded-xl hover:bg-accent/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                  className="p-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                  style={{ backgroundColor: isLoading ? 'transparent' : 'rgba(12,112,117,0.1)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(12,112,117,0.15)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(12,112,117,0.1)'}
                   aria-label="Refresh"
                 >
-                  <RefreshIcon className={`w-5 h-5 text-accent group-hover:rotate-180 transition-transform duration-500 ${isLoading ? 'animate-spin' : ''}`} />
+                  <RefreshIcon className={`w-5 h-5 group-hover:rotate-180 transition-transform duration-500 ${isLoading ? 'animate-spin' : ''}`} style={{ color: 'var(--color-teal-600)' }} />
                 </button>
               </div>
 
