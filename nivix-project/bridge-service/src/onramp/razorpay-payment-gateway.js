@@ -7,11 +7,19 @@ const fetch = require('node-fetch');
  */
 class RazorpayPaymentGateway {
     constructor() {
-        this.keyId = process.env.RAZORPAY_KEY_ID;
-        this.keySecret = process.env.RAZORPAY_KEY_SECRET;
+        this.environment = (process.env.RAZORPAY_ENV || '').trim().toLowerCase();
+        this.keyId = (process.env.RAZORPAY_KEY_ID || '').trim();
+        this.keySecret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
         
         if (!this.keyId || !this.keySecret) {
             console.warn('⚠️ Razorpay credentials not configured - on-ramp payments will be disabled');
+            this.enabled = false;
+            return;
+        }
+
+        const environmentValidationError = this.validateCredentialEnvironment();
+        if (environmentValidationError) {
+            console.error(`❌ ${environmentValidationError}`);
             this.enabled = false;
             return;
         }
@@ -19,8 +27,30 @@ class RazorpayPaymentGateway {
         this.enabled = true;
         
         console.log('🔑 Razorpay Payment Gateway initialized for on-ramp');
-        console.log('🔍 Key ID:', this.keyId);
-        console.log('🔍 Key Secret:', this.keySecret ? this.keySecret.substring(0, 8) + '...' : 'NOT SET');
+        console.log('🔍 Key ID:', this.maskCredential(this.keyId, 10));
+        console.log('🔍 Razorpay environment:', this.environment || 'not_set');
+    }
+
+    maskCredential(value, visibleChars = 6) {
+        if (!value) return 'NOT SET';
+        if (value.length <= visibleChars) return `${value}***`;
+        return `${value.substring(0, visibleChars)}...`;
+    }
+
+    validateCredentialEnvironment() {
+        if (!this.environment) {
+            return null;
+        }
+
+        if (this.environment === 'test' && !this.keyId.startsWith('rzp_test_')) {
+            return 'RAZORPAY_ENV is set to test but RAZORPAY_KEY_ID is not a test key (expected prefix: rzp_test_)';
+        }
+
+        if ((this.environment === 'live' || this.environment === 'production') && !this.keyId.startsWith('rzp_live_')) {
+            return 'RAZORPAY_ENV is set to live/production but RAZORPAY_KEY_ID is not a live key (expected prefix: rzp_live_)';
+        }
+
+        return null;
     }
 
     /**
@@ -190,6 +220,13 @@ class RazorpayPaymentGateway {
         
         if (!response.ok) {
             const errorText = await response.text();
+
+            if (response.status === 401) {
+                throw new Error(
+                    `Razorpay authentication failed (401). Verify RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET pair and RAZORPAY_ENV (${this.environment || 'not_set'}). Key ID: ${this.maskCredential(this.keyId, 10)}. Razorpay response: ${errorText}`
+                );
+            }
+
             throw new Error(`Razorpay API error (${response.status}): ${errorText}`);
         }
         
@@ -240,7 +277,6 @@ class RazorpayPaymentGateway {
 }
 
 module.exports = RazorpayPaymentGateway;
-
 
 
 
