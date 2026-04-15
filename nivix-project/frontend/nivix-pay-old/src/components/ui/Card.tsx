@@ -5,6 +5,7 @@ interface CardProps {
   className?: string;
   padding?: 'sm' | 'md' | 'lg' | 'none';
   variant?: 'default' | 'blockchain' | 'elevated';
+  style?: React.CSSProperties;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -12,6 +13,7 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   padding = 'md',
   variant = 'default',
+  style,
 }) => {
   const paddingClasses = {
     sm: 'p-4',
@@ -44,7 +46,7 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div 
       className={`${paddingClasses[padding]} ${className}`}
-      style={variantStyles[variant]}
+      style={{ ...variantStyles[variant], ...style }}
     >
       {children}
     </div>

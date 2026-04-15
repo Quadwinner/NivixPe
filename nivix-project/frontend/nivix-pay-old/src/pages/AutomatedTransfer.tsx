@@ -260,13 +260,16 @@ const AutomatedTransfer: React.FC = () => {
                     return (
                       <React.Fragment key={step.label}>
                         <div className="flex flex-col items-center flex-1 relative z-10">
-                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold transition-all duration-300 mb-3 ${
-                            isCompleted
-                              ? 'text-white shadow-lg scale-110'
-                              : isCurrent
-                              ? 'text-white ring-4 shadow-xl scale-110 animate-pulse'
-                              : 'bg-gray-100 text-gray-400 border-2 border-gray-200'
-                          }`} style={isCompleted ? { background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' } : isCurrent ? { background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))', ringColor: 'rgba(12,112,117,0.3)' } : {}}>
+                          <div 
+                            className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold transition-all duration-300 mb-3 ${
+                              isCompleted
+                                ? 'text-white shadow-lg scale-110'
+                                : isCurrent
+                                ? 'text-white shadow-xl scale-110 animate-pulse'
+                                : 'bg-gray-100 text-gray-400 border-2 border-gray-200'
+                            } ${isCurrent ? 'ring-4 ring-teal-500/30' : ''}`} 
+                            style={isCompleted ? { background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' } : isCurrent ? { background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))' } : {}}
+                          >
                             {isCompleted ? (
                               <CheckCircleIcon className="w-8 h-8" />
                             ) : (

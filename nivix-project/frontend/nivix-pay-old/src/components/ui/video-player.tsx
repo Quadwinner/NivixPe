@@ -149,7 +149,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
                   <Button
                     onClick={togglePlay}
                     variant="ghost"
-                    size="icon"
+                    size="sm"
                     className="text-white hover:bg-[#111111d1] hover:text-white"
                   >
                     {isPlaying ? (
@@ -169,7 +169,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
                     <Button
                       onClick={toggleMute}
                       variant="ghost"
-                      size="icon"
+                      size="sm"
                       className="text-white hover:bg-[#111111d1] hover:text-white"
                     >
                       {isMuted ? (
@@ -206,7 +206,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
                     <Button
                       onClick={() => setSpeed(speed)}
                       variant="ghost"
-                      size="icon"
+                      size="sm"
                       className={`text-white hover:bg-[#111111d1] hover:text-white ${
                         playbackSpeed === speed ? "bg-[#111111d1]" : ""
                       }`}
