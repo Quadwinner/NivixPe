@@ -96,6 +96,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
   const [isBurning, setIsBurning] = useState(false);
   const [mintTxHash, setMintTxHash] = useState<string | null>(null);
   const [burnMintAddress, setBurnMintAddress] = useState<string>(DEFAULT_USD_MINT);
+  const [burnCryptoAmount, setBurnCryptoAmount] = useState<number | null>(null);
 
   const [steps, setSteps] = useState<ProcessingStep[]>([
     {
@@ -236,6 +237,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         setOfframpOrderId(order.offrampOrderId);
         setMintTxHash(order.mintTransactionHash || order.transactionSignature);
         setBurnMintAddress(order.cryptoTokenMint || order.receiveTokenMint || order.tokenMint || DEFAULT_USD_MINT);
+        setBurnCryptoAmount(order.receiveAmount || order.cryptoAmount || order.tokenAmount || null);
         updateStepToProcessing('burning_usdc');
         setCurrentStepIndex(2);
         newProgress = 35;
@@ -364,7 +366,9 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
 
       // Read mint decimals and current balance from chain before creating burn transaction.
       const mintInfo = await getMint(connection, mintPubkey);
-      const tokenAmount = BigInt(Math.floor(paymentData.amount * Math.pow(10, mintInfo.decimals)));
+      // Use crypto receive amount from order (not fiat payment amount) to avoid burning wrong quantity.
+      const amountToBurn = burnCryptoAmount !== null ? burnCryptoAmount : paymentData.amount;
+      const tokenAmount = BigInt(Math.floor(amountToBurn * Math.pow(10, mintInfo.decimals)));
       const tokenBalance = await connection.getTokenAccountBalance(userTokenAccount);
       const availableAmount = BigInt(tokenBalance.value.amount);
 
@@ -374,7 +378,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
         );
       }
 
-      console.log(`🔥 Burning ${tokenAmount.toString()} token units (${paymentData.amount} USD) from mint ${mintPubkey.toBase58()}`);
+      console.log(`🔥 Burning ${tokenAmount.toString()} token units (${amountToBurn} tokens) from mint ${mintPubkey.toBase58()}`);
 
       // Create burn instruction
       const burnInstruction = createBurnInstruction(
@@ -495,6 +499,7 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
           setOfframpOrderId(order.offrampOrderId || order.id);
           setMintTxHash(order.transactionSignature);
           setBurnMintAddress(order.cryptoTokenMint || order.receiveTokenMint || order.tokenMint || DEFAULT_USD_MINT);
+          setBurnCryptoAmount(order.receiveAmount || order.cryptoAmount || order.tokenAmount || null);
           console.log('Automated transfer detected - user burn confirmation required');
         } else {
           console.log('Regular onramp flow - no burn required');
