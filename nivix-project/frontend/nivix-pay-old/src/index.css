@@ -296,7 +296,8 @@
     font-family: var(--font-body);
     font-size: 14px;
     transition: all 200ms ease;
-    height: 40px;
+    min-height: 46px;
+    height: auto;
   }
   
   .input::placeholder {

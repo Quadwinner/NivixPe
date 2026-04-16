@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,6 +11,8 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Badge } from '../components/ui/Badge';
+
+const BRIDGE_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002').replace(/\/$/, '');
 
 interface KYCRecord {
   userId: string;
@@ -383,28 +384,28 @@ const KYCAdmin: React.FC = () => {
             <h2 className="text-xl font-semibold text-text">Search KYC Record</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 items-end">
             <div className="md:col-span-3">
               <Input
-            label="Solana Address"
-            value={searchAddress}
-            onChange={(e) => setSearchAddress(e.target.value)}
+                label="Solana Address"
+                value={searchAddress}
+                onChange={(e) => setSearchAddress(e.target.value)}
                 placeholder="Enter Solana address"
-          />
+              />
             </div>
-          <Button
+            <Button
               variant="primary"
-            onClick={handleSearch}
-            disabled={loading}
-              className="flex items-center justify-center gap-2"
-          >
+              onClick={handleSearch}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 w-full h-[46px]"
+            >
               {loading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               ) : (
                 <SearchIcon className="w-5 h-5" />
               )}
-            Search
-          </Button>
+              Search
+            </Button>
           </div>
       
       {searchResult && (
@@ -573,16 +574,16 @@ const KYCAdmin: React.FC = () => {
             <h2 className="text-xl font-semibold text-text">Search KYC Records by Country</h2>
           </div>
       
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 items-end">
             <div className="md:col-span-3">
               <div>
                 <label className="block text-sm font-medium text-text mb-2">Country Code</label>
                 <select
-              value={countryFilter}
+                  value={countryFilter}
                   onChange={(e) => setCountryFilter(e.target.value)}
                   className="input"
-              required
-            >
+                  required
+                >
                   <option value="">Select Country</option>
                   <option value="US">United States (US)</option>
                   <option value="IN">India (IN)</option>
@@ -592,19 +593,19 @@ const KYCAdmin: React.FC = () => {
                 </select>
               </div>
             </div>
-          <Button
+            <Button
               variant="primary"
-            onClick={handleCountrySearch}
-            disabled={loading}
-              className="flex items-center justify-center gap-2"
-          >
+              onClick={handleCountrySearch}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 w-full h-[46px]"
+            >
               {loading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               ) : (
                 <SearchIcon className="w-5 h-5" />
               )}
-            Search
-          </Button>
+              Search
+            </Button>
           </div>
       
       {countryResults.length > 0 && (

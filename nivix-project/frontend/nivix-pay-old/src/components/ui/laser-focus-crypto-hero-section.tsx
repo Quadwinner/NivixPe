@@ -624,14 +624,13 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
 
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-bold font-display text-balance mb-6 text-white leading-tight">
-            Send money anywhere, <br/>
-            <span className="bg-gradient-to-r from-teal-300 to-teal-500 bg-clip-text text-transparent">instantly.</span>
+            Instant <br/>
+            <span className="bg-gradient-to-r from-teal-300 to-teal-500 bg-clip-text text-transparent">global flows.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-xl text-ink-300 text-balance mb-12 max-w-2xl leading-relaxed">
-            Track real-time prices, manage your portfolio, and transfer seamlessly — all in one fast, secure, and intuitive
-            cross-border platform
+            No delays. No hidden fees. Just instant global transfers backed by on-chain liquidity.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-4">
@@ -663,12 +662,15 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
             {/* Dashboard Header */}
             <div className="flex items-center justify-between p-6 border-b border-ink-800">
               <div className="flex items-center gap-8">
-                <span className="text-xl font-bold font-display text-white">Nivix<span className="text-teal-400">Pe</span> Markets </span>
+                <div>
+                  <div className="text-[10px] text-teal-400 font-display uppercase tracking-wider mb-0.5 opacity-80">Not a trading platform. A global money movement layer.</div>
+                  <span className="text-xl font-bold font-display text-white">Global Transfer Engine</span>
+                </div>
                 <div className="flex items-center gap-6">
-                  <span className="text-white font-medium text-sm">Trade</span>
-                  <span className="text-ink-400 text-sm">Portfolio</span>
+                  <span className="text-white font-medium text-sm">Transfers</span>
+                  <span className="text-ink-400 text-sm">Accounts</span>
                   <span className="text-ink-400 text-sm">Liquidity</span>
-                  <span className="text-ink-400 text-sm">Transaction History</span>
+                  <span className="text-ink-400 text-sm">History</span>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -678,77 +680,77 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
               </div>
             </div>
 
-            {/* Trading Interface */}
+            {/* Transfer Interface */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-              {/* Left Panel - Market Data */}
+              {/* Left Panel - Active Corridors */}
               <div className="lg:col-span-1 space-y-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-white">Favorites</span>
-                    <span className="text-sm text-ink-500">All Markets</span>
+                    <span className="text-sm font-semibold text-white">Active Corridors</span>
+                    <span className="text-sm text-ink-500">All Network</span>
                   </div>
                 </div>
 
-                {/* Featured Crypto */}
+                {/* Featured Corridor */}
                 <div className="bg-ink-800/50 rounded-xl p-4 border border-teal-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-sm">◎</span>
                     </div>
                     <div>
-                      <div className="text-white font-medium font-display">SOL/USDT</div>
+                      <div className="text-white font-medium font-display">USD → INR</div>
                       <div className="text-xs text-ink-400">Solana Network ⚡</div>
                     </div>
                   </div>
-                  <div className="text-2xl font-bold font-mono text-white mb-1">142.30</div>
-                  <div className="text-success text-sm font-body">+12.45 +9.58%</div>
+                  <div className="text-2xl font-bold font-mono text-white mb-1">83.45</div>
+                  <div className="text-success text-sm font-body">Status: Active</div>
                   <div className="grid grid-cols-4 gap-2 mt-3 text-xs text-ink-400 font-body">
                     <div>
-                      24h Change
+                      Transfer Time
                       <br />
-                      <span className="text-success">+9.58%</span>
+                      <span className="text-teal-300">~6s</span>
                     </div>
                     <div>
-                      24h High
+                      Rate
                       <br />
-                      <span className="text-white">149.00</span>
+                      <span className="text-white">83.45</span>
                     </div>
                     <div>
-                      24h Low
+                      Fee
                       <br />
-                      <span className="text-white">128.50</span>
+                      <span className="text-success">0.25%</span>
                     </div>
                     <div>
-                      24h Volume(SOL)
+                      24h Vol
                       <br />
-                      <span className="text-white">1.2M</span>
+                      <span className="text-white">$1.2M</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Crypto List */}
+                {/* Corridors List */}
                 <div className="space-y-2 font-body gap-1 flex flex-col">
                   {[
-                    { symbol: "BTC", name: "Bitcoin", price: "$68,130.00", change: "+4.60%", positive: true },
-                    { symbol: "USDC", name: "USD Coin", price: "$1.00", change: "+0.01%", positive: true },
-                    { symbol: "EUR", name: "Euro FX", price: "$1.08", change: "-0.12%", positive: false },
-                    { symbol: "INR", name: "Indian Rupee", price: "$0.012", change: "+0.05%", positive: true },
-                    { symbol: "XRP", name: "Ripple", price: "$0.6401", change: "+2.12%", positive: true },
-                  ].map((asset, i) => (
+                    { symbol: "USD → INR", rate: "83.45", time: "~6s", fee: "0.25%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
+                    { symbol: "EUR → USD", rate: "1.08", time: "~8s", fee: "0.20%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
+                    { symbol: "GBP → SGD", rate: "1.70", time: "~12s", fee: "0.35%", status: "Congested", dotColor: "bg-yellow-500", textColor: "text-yellow-500" },
+                    { symbol: "AED → INR", rate: "22.72", time: "~5s", fee: "0.15%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
+                    { symbol: "USDC → USD", rate: "1.00", time: "~2s", fee: "0.05%", status: "Limited", dotColor: "bg-error", textColor: "text-error" },
+                  ].map((corridor, i) => (
                     <div key={i} className="flex items-center justify-between py-2 px-3 hover:bg-ink-800/50 rounded-lg cursor-pointer transition-colors">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-2 h-2 rounded-full ${asset.positive ? "bg-success" : "bg-error"}`}
+                          className={`w-2 h-2 rounded-full ${corridor.dotColor}`}
                         ></div>
                         <div>
-                          <div className="text-white text-sm font-medium font-display">{asset.symbol}</div>
-                          <div className="text-ink-400 text-xs">{asset.name}</div>
+                          <div className="text-white text-sm font-medium font-display">{corridor.symbol}</div>
+                          <div className="text-ink-400 text-xs">Rate: {corridor.rate} | Fee: {corridor.fee}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-white text-sm font-mono">{asset.price}</div>
-                        <div className={`text-xs ${asset.positive ? "text-success" : "text-error"}`}>
-                          {asset.change}
+                        <div className="text-white text-sm font-mono">{corridor.time}</div>
+                        <div className={`text-xs ${corridor.textColor}`}>
+                          {corridor.status}
                         </div>
                       </div>
                     </div>
@@ -756,12 +758,12 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
                 </div>
               </div>
 
-              {/* Center Panel - Chart */}
+              {/* Center Panel - Transfer Volume Flow */}
               <div className="lg:col-span-1">
                 <div className="bg-ink-800/50 rounded-xl p-4 h-80 flex flex-col">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
-                      <span className="text-white font-medium font-display">SOL/USDC</span>
+                      <span className="text-white font-medium font-display">Transfer Volume Flow</span>
                       <div className="flex gap-2 text-xs font-mono">
                         <button className="text-ink-400 hover:text-white transition-colors">15m</button>
                         <button className="text-white bg-navy-600 px-2 py-1 rounded">1H</button>
@@ -772,73 +774,65 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
                     </div>
                   </div>
 
-                  {/* Simplified Chart Visualization */}
-                  <div className="relative flex-1 bg-ink-950/50 rounded-lg overflow-hidden border border-ink-800">
+                  <div className="text-xs text-ink-400 mb-2 font-body">Real-time global transfer activity</div>
+
+                  {/* Flow Visualization */}
+                  <div className="relative flex-1 bg-ink-950/50 rounded-lg overflow-hidden border border-ink-800 mt-2">
                     <div className="absolute inset-0 flex items-end justify-center">
                       <div className="flex items-end gap-[2px] h-full w-full px-4 pb-2">
                         {Array.from({ length: 45 }, (_, i) => {
-                          const height = Math.random() * 70 + 10
-                          const isGreen = Math.random() > 0.4
+                          const height = Math.random() * 60 + 20
                           return (
                             <div
                               key={i}
-                              className={`w-full ${isGreen ? "bg-teal-500" : "bg-error"} opacity-80 rounded-t-sm`}
+                              className="w-full bg-teal-500 opacity-80 rounded-t-sm"
                               style={{ height: `${height}%` }}
                             />
                           )
                         })}
                       </div>
                     </div>
-                    <div className="absolute top-4 left-4 text-white text-lg font-bold font-mono">142.30</div>
+                    <div className="absolute top-4 left-4 text-white text-lg font-bold font-mono">$1.2M transferred in last 1h</div>
                   </div>
                 </div>
               </div>
 
-              {/* Right Panel - Order Book */}
+              {/* Right Panel - Available Liquidity Routes */}
               <div className="lg:col-span-1">
                 <div className="bg-ink-800/50 rounded-xl p-4 h-full flex flex-col">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-white font-medium font-display">Liquidity Depth</span>
-                    <div className="flex gap-3">
-                      <button className="text-success text-sm font-medium hover:text-green-400 transition-colors">Buy</button>
-                      <button className="text-error text-sm font-medium hover:text-red-400 transition-colors">Sell</button>
-                    </div>
+                    <span className="text-white font-medium font-display">Available Liquidity Routes</span>
                   </div>
 
-                  <div className="space-y-1 text-xs font-mono flex-1 flex flex-col justify-between">
-                    <div className="grid grid-cols-3 gap-2 text-ink-500 mb-2 border-b border-ink-800 pb-2">
-                      <span>Price(USDC)</span>
-                      <span className="text-right">Amount(SOL)</span>
-                      <span className="text-right">Total</span>
+                  <div className="space-y-1 text-xs font-mono flex-1 flex flex-col">
+                    <div className="grid grid-cols-4 gap-2 text-ink-500 mb-2 border-b border-ink-800 pb-2">
+                      <span>Route</span>
+                      <span className="text-right">Rate</span>
+                      <span className="text-right">Fee</span>
+                      <span className="text-right">Speed</span>
                     </div>
 
-                    {/* Sell Orders */}
-                    <div className="space-y-1.5 flex-1 content-end pb-2">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <div key={`sell-${i}`} className="grid grid-cols-3 gap-2 text-error relative">
-                         <div className="absolute right-0 top-0 bottom-0 bg-error/10" style={{ width: `${Math.random() * 60 + 10}%` }}></div>
-                        <span className="relative z-10">142.3{5 + i}</span>
-                        <span className="relative z-10 text-right text-ink-300">{(Math.random() * 10).toFixed(2)}</span>
-                        <span className="relative z-10 text-right text-ink-400">{(Math.random() * 1000).toFixed(2)}</span>
-                      </div>
-                    )).reverse()}
-                    </div>
-
-                    {/* Current Price */}
-                    <div className="py-3 text-center border-y border-ink-700 bg-ink-900/30">
-                      <span className="text-teal-400 font-bold text-lg">142.30</span>
-                    </div>
-
-                    {/* Buy Orders */}
-                    <div className="space-y-1.5 flex-1 pt-2">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <div key={`buy-${i}`} className="grid grid-cols-3 gap-2 text-success relative">
-                        <div className="absolute right-0 top-0 bottom-0 bg-success/10" style={{ width: `${Math.random() * 60 + 10}%` }}></div>
-                        <span className="relative z-10">142.2{9 - i}</span>
-                        <span className="relative z-10 text-right text-ink-300">{(Math.random() * 20).toFixed(2)}</span>
-                        <span className="relative z-10 text-right text-ink-400">{(Math.random() * 2000).toFixed(2)}</span>
-                      </div>
-                    ))}
+                    <div className="space-y-3 flex-1 pt-2">
+                      {[
+                        { route: "USD → INR", rate: "83.45", fee: "0.25%", speed: "6s", highlight: "Best Rate" },
+                        { route: "USD → EUR", rate: "0.92", fee: "0.30%", speed: "4s", highlight: "Fastest" },
+                        { route: "EUR → USD", rate: "1.08", fee: "0.15%", speed: "8s", highlight: "Lowest Fee" },
+                        { route: "GBP → SGD", rate: "1.70", fee: "0.35%", speed: "12s" },
+                        { route: "AED → INR", rate: "22.72", fee: "0.15%", speed: "5s" },
+                        { route: "USDC → USD", rate: "1.00", fee: "0.05%", speed: "2s" },
+                      ].map((r, i) => (
+                        <div key={`route-${i}`} className="grid grid-cols-4 gap-2 py-3 items-center text-white border-b border-ink-800/50 last:border-0 relative">
+                          <span className="relative z-10 truncate font-display" title={r.route}>{r.route}</span>
+                          <span className="relative z-10 text-right text-success">{r.rate}</span>
+                          <span className="relative z-10 text-right text-ink-300">{r.fee}</span>
+                          <span className="relative z-10 text-right text-ink-400">{r.speed}</span>
+                          {r.highlight && (
+                             <div className="absolute -top-2.5 left-0 text-[9px] font-display uppercase tracking-wider text-teal-300 bg-teal-500/20 px-1.5 py-0.5 rounded border border-teal-500/30">
+                               {r.highlight}
+                             </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

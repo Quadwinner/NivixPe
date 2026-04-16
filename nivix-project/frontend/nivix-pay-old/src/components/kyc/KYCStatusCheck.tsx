@@ -328,14 +328,27 @@ const KYCStatusCheck: React.FC<KYCStatusCheckProps> = ({
             {/* Required Documents */}
             <div className="mb-6 p-6 bg-gray-50 rounded-xl border border-gray-200 text-left max-w-md mx-auto">
               <h4 className="text-sm font-semibold text-gray-900 mb-3">Required Documents:</h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {[
-                  { icon: '🆔', text: 'Government-issued Photo ID (Passport, Driver\'s License)' },
-                  { icon: '🏠', text: 'Proof of Address (Utility Bill, Bank Statement)' },
-                  { icon: '📸', text: 'Selfie for identity verification' }
+                  { icon: (
+                      <svg className="w-5 h-5 text-gray-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                      </svg>
+                    ), text: 'Government-issued Photo ID (Passport, Driver\'s License)' },
+                  { icon: (
+                      <svg className="w-5 h-5 text-gray-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                    ), text: 'Proof of Address (Utility Bill, Bank Statement)' },
+                  { icon: (
+                      <svg className="w-5 h-5 text-gray-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    ), text: 'Selfie for identity verification' }
                 ].map((item, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <span className="text-xl flex-shrink-0">{item.icon}</span>
+                    <span className="flex-shrink-0">{item.icon}</span>
                     <p className="text-sm text-gray-700">{item.text}</p>
                   </div>
                 ))}
@@ -347,7 +360,7 @@ const KYCStatusCheck: React.FC<KYCStatusCheckProps> = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleCompleteKYC}
-              className="w-full max-w-md bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full max-w-md mx-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -403,7 +416,7 @@ const KYCStatusCheck: React.FC<KYCStatusCheckProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex items-start gap-3"
+              className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex items-start gap-3 max-w-md mx-auto"
             >
               <svg className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
