@@ -162,9 +162,21 @@
   }
 
   html, body, #root {
-    @apply h-full overflow-x-hidden;
+    @apply h-full;
     background-color: #FFFFFF;
   }
+
+  html {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
 
   body {
     @apply m-0 antialiased;

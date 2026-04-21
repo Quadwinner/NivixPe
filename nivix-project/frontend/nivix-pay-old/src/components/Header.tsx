@@ -11,15 +11,19 @@ import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
+// BETA: 4 publicly accessible pages
 const navItems = [
   { label: 'Home', path: '/', icon: HomeIcon },
-  { label: 'Automated Transfer', path: '/automated-transfer', icon: AutorenewIcon },
-  { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHorizIcon },
-  { label: 'Profile', path: '/profile', icon: PersonIcon },
   { label: 'KYC Verification', path: '/kyc', icon: VerifiedUserIcon },
-  { label: 'KYC Admin', path: '/kyc-admin', icon: AdminPanelSettingsIcon },
-  { label: 'Admin Dashboard', path: '/admin-dashboard', icon: DashboardIcon },
+  { label: 'Transfer Funds', path: '/automated-transfer', icon: AutorenewIcon },
+  { label: 'Profile', path: '/profile', icon: PersonIcon },
 ];
+
+// POST-BETA nav items (re-enable after beta phase):
+// { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHorizIcon },
+// { label: 'KYC Admin', path: '/kyc-admin', icon: AdminPanelSettingsIcon },
+// { label: 'Admin Dashboard', path: '/admin-dashboard', icon: DashboardIcon },
+
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -92,14 +96,15 @@ const Header: React.FC = () => {
             <WalletMultiButton />
           </div>
 
-          {/* Mobile Menu Toggle + Wallet Button */}
-          <div className="lg:hidden flex items-center gap-2">
-            <div className="flex-shrink-0">
+          {/* Mobile: compact wallet button + hamburger */}
+          <div className="lg:hidden flex items-center gap-1">
+            {/* Scaled-down wallet button for mobile */}
+            <div style={{ transform: 'scale(0.78)', transformOrigin: 'right center' }} className="flex-shrink-0">
               <WalletMultiButton />
             </div>
             <button
               onClick={handleDrawerToggle}
-              className="p-2 rounded-lg transition-colors"
+              className="p-2 rounded-lg transition-colors flex-shrink-0"
               style={{ color: 'var(--color-ink-700)' }}
               aria-label="Toggle menu"
               type="button"

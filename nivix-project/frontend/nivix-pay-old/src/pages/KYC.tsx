@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { submitKYC } from '../services/apiService';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { Badge } from '../components/ui/Badge';
 
 const steps = [
   'Personal Information',
@@ -19,8 +14,8 @@ const steps = [
 
 const KYC: React.FC = () => {
   const navigate = useNavigate();
-  const { connected, publicKey } = useWallet();
   const [activeStep, setActiveStep] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -42,7 +37,6 @@ const KYC: React.FC = () => {
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [kycStatus, setKycStatus] = useState('pending');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
@@ -116,35 +110,12 @@ const KYC: React.FC = () => {
   const handleSubmit = async () => {
     if (validateStep()) {
       setIsSubmitting(true);
-      try {
-        const walletAddress = publicKey?.toString() || '';
-        if (!walletAddress) {
-          alert('Please connect your wallet first');
-          setIsSubmitting(false);
-          return;
-        }
-        
-        const userId = `user_${walletAddress.substring(0, 8)}`;
-        const kycData = {
-          userId: userId,
-          solanaAddress: walletAddress,
-          fullName: `${formData.firstName} ${formData.lastName}`,
-          countryCode: formData.country,
-          idDocuments: [formData.documentType]
-        };
-        
-        const result = await submitKYC(kycData);
-        if (result.success) {
-          setActiveStep(4);
-          setKycStatus('pending');
-        } else {
-          alert(`KYC submission failed: ${result.message || 'Unknown error'}`);
-        }
-      } catch (error: any) {
-        alert(`Error submitting KYC data: ${error?.message || 'Unknown error'}`);
-      } finally {
+      // UI-only submission — no backend call during beta.
+      // Show success state after a brief delay to simulate processing.
+      setTimeout(() => {
         setIsSubmitting(false);
-      }
+        setSubmitted(true);
+      }, 1200);
     }
   };
 
@@ -425,8 +396,8 @@ const KYC: React.FC = () => {
             
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl mb-6">
               <p className="text-sm text-blue-800">
-              Your KYC information will be securely stored on the Hyperledger Fabric private blockchain.
-              Only authorized validators will be able to verify your identity.
+                Your KYC information will be securely stored and reviewed by our compliance team.
+                Only authorized validators will be able to verify your identity.
               </p>
             </div>
             
@@ -477,45 +448,35 @@ const KYC: React.FC = () => {
   const renderSuccess = () => (
     <div className="text-center py-12">
       <div className="mb-6">
-        <CheckCircleIcon className="w-16 h-16 text-green-600 mx-auto" />
+        <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-navy-600))' }}>
+          <CheckCircleIcon style={{ fontSize: '2.5rem', color: 'white' }} />
+        </div>
       </div>
-      <h2 className="text-2xl font-semibold text-text mb-4">KYC Verification Successful!</h2>
-      <p className="text-text-muted mb-6">
-        Your identity has been verified. You now have full access to the Nivix Protocol.
+      <h2 className="text-2xl font-display font-bold mb-3" style={{ color: 'var(--color-ink-900)' }}>
+        Submitted for Review
+      </h2>
+      <p className="font-body mb-2" style={{ color: 'var(--color-ink-500)' }}>
+        Your KYC details have been received. Our compliance team will review your submission.
       </p>
-      <Button variant="primary" onClick={() => navigate('/')}>
-        Go to Dashboard
-      </Button>
+      <p className="text-sm font-body mb-8" style={{ color: 'var(--color-ink-400)' }}>
+        You'll be notified once verification is complete. This typically takes 1-2 business days.
+      </p>
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: 'rgba(12,112,117,0.08)', borderColor: 'rgba(12,112,117,0.2)', color: 'var(--color-teal-600)' }}>
+        <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-ping inline-block" />
+        Under Review
+      </div>
+      <div className="block">
+        <Button variant="primary" onClick={() => navigate('/')}>
+          Back to Home
+        </Button>
+      </div>
     </div>
   );
 
-  if (!connected) {
-    return (
-      <div className="max-w-2xl mx-auto py-12">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-text mb-4">KYC Verification</h1>
-          <p className="text-lg text-text-muted mb-8">
-            Connect your wallet to complete the KYC verification process
-          </p>
-          
-          <Card className="max-w-md mx-auto bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold text-text mb-2">Connect Wallet</h2>
-              <p className="text-sm text-text-muted mb-6">
-                Connect your Solana wallet to verify your identity
-              </p>
-                  <WalletMultiButton />
-            </div>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <div className="max-w-4xl mx-auto py-8">
       <Card>
-        {kycStatus === 'approved' ? (
+        {submitted ? (
           renderSuccess()
         ) : (
           <>
