@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { ArrowRight, Search, Bell, Settings } from "lucide-react"
 
@@ -588,7 +588,31 @@ export const LaserFlow: React.FC<LaserFlowProps> = ({
   return <div ref={mountRef} className={`w-full h-full relative ${className || ""}`} style={style} />
 }
 
-export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?: () => void; onSeeHowItWorks?: () => void }) {
+export function LaserHero({ onMakeTransfer, onSeeHowItWorks, onOpenWaitlist }: { onMakeTransfer?: () => void; onSeeHowItWorks?: () => void; onOpenWaitlist?: () => void }) {
+  const [usdInr, setUsdInr] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [rateLoading, setRateLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRate = async () => {
+      try {
+        const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        const data = await res.json();
+        if (active && data && data.rates && data.rates.INR) {
+          setUsdInr(parseFloat(data.rates.INR.toFixed(2)));
+        }
+      } catch (e) {
+        // silently fail — keeps last known rate
+      } finally {
+        if (active) setRateLoading(false);
+      }
+    };
+    fetchRate();
+    const interval = setInterval(fetchRate, 60000); // refresh every 60s
+    return () => { active = false; clearInterval(interval); };
+  }, []);
+
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-ink-950 w-full font-body">
       <div className="absolute inset-0 z-0">
@@ -619,39 +643,33 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
         <div className="xl:max-w-7xl max-w-6xl w-full mx-auto lg:px-0 px-6 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ink-800/50 backdrop-blur-sm border border-teal-500/30 mb-8">
             <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-            <span className="text-xs text-teal-300 font-display tracking-tight font-semibold uppercase">Live on Solana Mainnet</span>
+            <span className="text-xs text-teal-300 font-display tracking-tight font-semibold uppercase">Instant Global Transfers</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-bold font-display text-balance mb-6 text-white leading-tight">
             Instant <br/>
-            <span className="bg-gradient-to-r from-teal-300 to-teal-500 bg-clip-text text-transparent">global flows.</span>
+            <span className="bg-gradient-to-r from-teal-300 to-teal-500 bg-clip-text text-transparent">Global Flows.</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl text-ink-300 text-balance mb-12 max-w-2xl leading-relaxed">
-            No delays. No hidden fees. Just instant global transfers backed by on-chain liquidity.
+          <p className="text-xl text-ink-300 text-balance mb-6 max-w-2xl leading-relaxed">
+            No delays. No hidden fees. Just instant global transfers powered by enterprise-grade infrastructure.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-4">
-            <button 
-              onClick={onMakeTransfer}
+            <button
+              onClick={onOpenWaitlist}
               className="bg-navy-600 text-white hover:bg-navy-500 px-8 py-4 text-base font-display font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:-translate-y-1 shadow-premium"
             >
-              Make a Transfer
+              Join the Waitlist
               <ArrowRight className="w-5 h-5" />
             </button>
 
-            <button 
-              onClick={onSeeHowItWorks}
-              className="border-2 border-ink-600 bg-transparent hover:bg-white/10 text-ink-200 px-8 py-4 text-base font-display font-semibold rounded-xl transition-all duration-300 hover:text-white"
-            >
-              See How It Works
-            </button>
           </div>
           
           <p className="text-sm text-gray-400 font-body mb-16">
-            Connect wallet → transact in under 10 seconds.
+            Beta launching Q1 2026 — Be first in line.
           </p>
         </div>
       </div>
@@ -663,7 +681,7 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
             <div className="flex items-center justify-between p-6 border-b border-ink-800">
               <div className="flex items-center gap-8">
                 <div>
-                  <div className="text-[10px] text-teal-400 font-display uppercase tracking-wider mb-0.5 opacity-80">Not a trading platform. A global money movement layer.</div>
+                  <div className="text-[10px] text-teal-400 font-display uppercase tracking-wider mb-0.5 opacity-80">A global money movement layer.</div>
                   <span className="text-xl font-bold font-display text-white">Global Transfer Engine</span>
                 </div>
                 <div className="flex items-center gap-6">
@@ -695,35 +713,43 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
                 <div className="bg-ink-800/50 rounded-xl p-4 border border-teal-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">◎</span>
+                      <span className="text-white font-bold text-sm">$</span>
                     </div>
                     <div>
                       <div className="text-white font-medium font-display">USD → INR</div>
-                      <div className="text-xs text-ink-400">Solana Network ⚡</div>
+                      <div className="text-xs text-ink-400">Enterprise Network ⚡</div>
                     </div>
                   </div>
-                  <div className="text-2xl font-bold font-mono text-white mb-1">83.45</div>
-                  <div className="text-success text-sm font-body">Status: Active</div>
+                  <div className="text-2xl font-bold font-mono text-white mb-1">
+                    {usdInr ? (
+                      <span>{usdInr}</span>
+                    ) : '—'}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-success text-sm font-body">Status: Active</span>
+                    {usdInr && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-teal-400">
+                        <span className="w-1 h-1 rounded-full bg-teal-400 animate-pulse inline-block" />
+                        Live
+                      </span>
+                    )}
+                  </div>
                   <div className="grid grid-cols-4 gap-2 mt-3 text-xs text-ink-400 font-body">
                     <div>
-                      Transfer Time
-                      <br />
-                      <span className="text-teal-300">~6s</span>
+                      <div className="mb-0.5 opacity-70">Transfer Time</div>
+                      <div className="text-ink-200">~6s</div>
                     </div>
                     <div>
-                      Rate
-                      <br />
-                      <span className="text-white">83.45</span>
+                      <div className="mb-0.5 opacity-70">Rate</div>
+                      <div className="text-ink-200">{usdInr ?? '—'}</div>
                     </div>
                     <div>
-                      Fee
-                      <br />
-                      <span className="text-success">0.25%</span>
+                      <div className="mb-0.5 opacity-70">Fee</div>
+                      <div className="text-success">0.25%</div>
                     </div>
                     <div>
-                      24h Vol
-                      <br />
-                      <span className="text-white">$1.2M</span>
+                      <div className="mb-0.5 opacity-70">24h Vol</div>
+                      <div className="text-ink-200">$1.2M</div>
                     </div>
                   </div>
                 </div>
@@ -731,7 +757,7 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
                 {/* Corridors List */}
                 <div className="space-y-2 font-body gap-1 flex flex-col">
                   {[
-                    { symbol: "USD → INR", rate: "83.45", time: "~6s", fee: "0.25%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
+                    { symbol: "USD → INR", rate: usdInr ? String(usdInr) : "83.45", time: "~6s", fee: "0.25%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
                     { symbol: "EUR → USD", rate: "1.08", time: "~8s", fee: "0.20%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
                     { symbol: "GBP → SGD", rate: "1.70", time: "~12s", fee: "0.35%", status: "Congested", dotColor: "bg-yellow-500", textColor: "text-yellow-500" },
                     { symbol: "AED → INR", rate: "22.72", time: "~5s", fee: "0.15%", status: "Active", dotColor: "bg-success", textColor: "text-success" },
@@ -792,10 +818,10 @@ export function LaserHero({ onMakeTransfer, onSeeHowItWorks }: { onMakeTransfer?
                         })}
                       </div>
                     </div>
-                    <div className="absolute top-4 left-4 text-white text-lg font-bold font-mono">$1.2M transferred in last 1h</div>
                   </div>
                 </div>
               </div>
+
 
               {/* Right Panel - Available Liquidity Routes */}
               <div className="lg:col-span-1">

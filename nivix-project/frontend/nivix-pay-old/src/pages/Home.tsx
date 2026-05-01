@@ -1,14 +1,14 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LaserHero } from '../components/ui/laser-focus-crypto-hero-section';
 import { GlowCard } from '../components/ui/spotlight-card';
 import CookieConsent from '../components/CookieConsent';
-import VideoPlayer from '../components/ui/video-player';
+import WaitlistModal from '../components/WaitlistModal';
 
 const Home: React.FC = () => {
-  const navigate = useNavigate();
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+
+  const openWaitlist = () => setWaitlistOpen(true);
 
   const scrollToHowItWorks = () => {
     const element = document.getElementById('how-it-works');
@@ -19,11 +19,12 @@ const Home: React.FC = () => {
 
   return (
     <div className="overflow-hidden min-h-screen bg-white">
+      <WaitlistModal isOpen={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
       {/* 
         NEW LASER FOCUS HERO SECTION
         This replaces the old gradient hero while matching the NivixPe colour system perfectly
       */}
-      <LaserHero onMakeTransfer={() => navigate('/automated-transfer')} onSeeHowItWorks={scrollToHowItWorks} />
+      <LaserHero onMakeTransfer={openWaitlist} onSeeHowItWorks={scrollToHowItWorks} onOpenWaitlist={openWaitlist} />
 
       {/* Beta Launch Banner — teal brand strip */}
       <div className="relative z-20 overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--color-navy-700), var(--color-navy-600), var(--color-teal-600))' }}>
@@ -54,7 +55,7 @@ const Home: React.FC = () => {
             
             {/* CTA Button */}
             <button
-              onClick={() => navigate('/automated-transfer')}
+              onClick={openWaitlist}
               className="px-6 py-3 font-display font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2"
               style={{ backgroundColor: 'white', color: 'var(--color-teal-600)' }}
             >
@@ -115,7 +116,7 @@ const Home: React.FC = () => {
               >
                 <div className="text-xs font-display uppercase tracking-widest mb-2" style={{ color: 'var(--color-ink-500)' }}>Settlement Time</div>
                 <div className="font-mono text-2xl md:text-3xl font-bold mb-1" style={{ color: 'var(--color-teal-600)' }}>&lt; 10s</div>
-                <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>on Solana</div>
+                <div className="text-xs" style={{ color: 'var(--color-ink-400)' }}>enterprise infrastructure</div>
               </GlowCard>
             </motion.div>
             <motion.div 
@@ -180,7 +181,7 @@ const Home: React.FC = () => {
               <span className="font-black" style={{ color: '#FF6B6B' }}>broken</span>.
             </h2>
             <p className="text-lg font-body mb-8 leading-relaxed max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>
-              We combined the security of banks with the speed of Solana to create the perfect global transfer system.
+              We combined the security of banks with the speed of modern payment infrastructure to create the perfect global transfer system.
             </p>
             {/* Beta Highlight */}
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border-2 shadow-[0_0_20px_rgba(20,184,166,0.3)] backdrop-blur-md" style={{ backgroundColor: 'rgba(20,184,166,0.15)', borderColor: 'rgba(20,184,166,0.5)' }}>
@@ -312,7 +313,7 @@ const Home: React.FC = () => {
                   {item.type === 'positive' && (
                     <>
                       <button
-                        onClick={() => navigate('/automated-transfer')}
+                        onClick={openWaitlist}
                         className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-400 text-white font-display font-bold rounded-xl hover:shadow-[0_0_30px_rgba(20,184,166,0.4)] transition-all duration-300 flex items-center justify-center gap-2 group"
                       >
                         Join Beta Waitlist
@@ -427,7 +428,7 @@ const Home: React.FC = () => {
                         <h4 className="text-lg font-display font-bold mb-2 leading-tight group-hover:text-teal-600 transition-colors" style={{ color: 'var(--color-ink-900)' }}>{item.title}</h4>
                         <p className="font-body text-sm leading-relaxed mb-3" style={{ color: 'var(--color-ink-500)' }}>{item.desc}</p>
                         <button
-                          onClick={() => navigate('/automated-transfer')}
+                          onClick={openWaitlist}
                           className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors group/btn"
                           style={{ color: 'var(--color-teal-600)' }}
                         >
@@ -460,7 +461,7 @@ const Home: React.FC = () => {
                 <div className="border-b border-white/10 bg-gradient-to-r from-teal-500/10 to-transparent px-8 py-6 flex items-center justify-between">
                   <div>
                     <div className="font-display font-bold text-white text-lg mb-1">Recent Activity</div>
-                    <div className="text-xs text-gray-300">Real-time blockchain transactions</div>
+                    <div className="text-xs text-gray-300">Real-time payment activity</div>
                   </div>
                   <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-400/70"></div>
@@ -498,19 +499,16 @@ const Home: React.FC = () => {
                         </div>
                         <div>
                           <div className="font-display font-bold text-white text-base mb-1 group-hover:text-teal-300 transition-colors">{tx.name}</div>
-                          <div className="font-body text-xs text-gray-400">{tx.time} · On-chain</div>
+                          <div className="font-body text-xs text-gray-400">{tx.time} · Instant</div>
                         </div>
                       </div>
                       <div className="text-right">
                         <div className={`font-mono font-bold text-lg mb-1 ${tx.type === 'Received' ? 'text-teal-400' : 'text-white'}`}>{tx.amount}</div>
-                        <a
-                          href="https://explorer.solana.com/?cluster=mainnet-beta"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-mono text-[10px] text-teal-400/70 hover:text-teal-300 transition-colors"
+                        <span
+                          className="font-mono text-[10px] text-teal-400/70 cursor-default"
                         >
                           {tx.hash}
-                        </a>
+                        </span>
                       </div>
                     </motion.div>
                   ))}
@@ -520,7 +518,7 @@ const Home: React.FC = () => {
                 <div className="bg-gradient-to-r from-teal-500/10 to-transparent px-8 py-5 flex items-center justify-between border-t border-white/10">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
-                    <span className="font-body text-xs text-gray-300">Powered by Solana</span>
+                    <span className="font-body text-xs text-gray-300">Powered by enterprise-grade infrastructure</span>
                   </div>
                   <div className="font-display text-xs font-bold text-teal-400 flex items-center gap-2">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -631,7 +629,7 @@ const Home: React.FC = () => {
               <svg className="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span className="font-display text-xs font-bold tracking-wider uppercase" style={{ color: 'var(--color-teal-400)' }}>Dual-Chain Architecture</span>
+              <span className="font-display text-xs font-bold tracking-wider uppercase" style={{ color: 'var(--color-teal-400)' }}>Dual-Layer Architecture</span>
             </motion.div>
             
             <motion.h2 
@@ -642,8 +640,8 @@ const Home: React.FC = () => {
               className="text-[36px] md:text-[50px] font-display font-bold mb-6 tracking-[-0.03em] leading-[1.1]"
               style={{ color: 'white' }}
             >
-              Institutional <span className="font-black" style={{ color: 'var(--color-teal-400)' }}>Trust</span>.<br/>
-              Crypto <span className="font-black" style={{ color: 'var(--color-teal-300)' }}>Velocity</span>.
+              Built on <span className="font-black" style={{ color: 'var(--color-teal-400)' }}>Trust</span>.<br/>
+              Powered by <span className="font-black" style={{ color: 'var(--color-teal-300)' }}>Speed</span>.
             </motion.h2>
             
             <motion.p 
@@ -654,7 +652,7 @@ const Home: React.FC = () => {
               className="text-lg font-body max-w-2xl mx-auto leading-relaxed"
               style={{ color: 'rgba(255,255,255,0.7)' }}
             >
-              NivixPe bridges fiat banking compliance with decentralised finance infrastructure.
+              NivixPe bridges fiat banking compliance with enterprise payment infrastructure for global transfers.
             </motion.p>
           </div>
 
@@ -676,23 +674,22 @@ const Home: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Title */}
-                <h3 className="text-2xl font-display font-bold mb-4" style={{ color: 'white' }}>
-                  Solana Engine
+                           <h3 className="text-2xl font-display font-bold mb-4" style={{ color: 'white' }}>
+                  Transfer Engine
                 </h3>
 
                 {/* Description */}
                 <p className="font-body text-base leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                  All value transfers occur on the <a href="https://solana.com" target="_blank" rel="noopener noreferrer" className="text-teal-300 hover:text-teal-200 transition-colors font-semibold border-b border-teal-400/30 hover:border-teal-300">Solana</a> blockchain ensuring sub-2-second finality and fees under a fraction of a cent. Smart contracts automate routing instantly.
+                  All value transfers occur on enterprise-grade settlement infrastructure ensuring sub-2-second finality and fees under a fraction of a cent. Smart routing automates payments instantly.
                 </p>
 
                 {/* Features */}
                 <div className="space-y-4">
                   {[
                     { text: 'India-UAE Trade Corridor (Beta Q1 2026)', link: null },
-                    { text: 'Up to 65,000 TPS', link: 'https://solana.com/news/solana-network-performance-report', linkText: 'Solana network' },
-                    { text: 'Programmable escrow contracts', link: null },
-                    { text: 'Transparent public ledger', link: null }
+                    { text: 'Up to 65,000 TPS throughput', link: null },
+                    { text: 'Programmable escrow & routing', link: null },
+                    { text: 'Transparent transaction history', link: null }
                   ].map((feature, idx) => (
                     <div key={idx} className="flex items-start gap-3 group/item">
                       <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: 'rgba(12,112,117,0.2)', border: '1px solid rgba(12,112,117,0.35)' }}>
@@ -702,7 +699,7 @@ const Home: React.FC = () => {
                       </div>
                       {feature.link ? (
                         <a href={feature.link} target="_blank" rel="noopener noreferrer" className="font-body text-sm hover:underline transition-colors block" style={{ color: 'var(--color-teal-300)' }}>
-                          {feature.text} ({feature.linkText})
+                          {feature.text}
                         </a>
                       ) : (
                         <span className="font-body text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{feature.text}</span>
@@ -713,7 +710,7 @@ const Home: React.FC = () => {
               </GlowCard>
             </motion.div>
 
-            {/* Hyperledger Card */}
+            {/* Identity & Compliance Card */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -733,12 +730,12 @@ const Home: React.FC = () => {
 
                 {/* Title */}
                 <h3 className="text-2xl font-display font-bold mb-4" style={{ color: 'white' }}>
-                  Hyperledger Identity
+                  Identity & Compliance Layer
                 </h3>
 
                 {/* Description */}
                 <p className="font-body text-base leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                  Identity and KYC data is never exposed to the public blockchain. It resides on a permissioned <a href="https://www.hyperledger.org/projects/fabric" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline transition-colors" style={{ color: 'var(--color-navy-600)' }}>Hyperledger Fabric</a> network ensuring complete privacy and regulatory compliance.
+                  Identity and KYC data is never exposed publicly. It resides on a permissioned, institutional-grade private network ensuring complete privacy and regulatory compliance.
                 </p>
 
                 {/* Features */}
@@ -833,7 +830,7 @@ const Home: React.FC = () => {
                   className="text-xl font-body mb-12 max-w-2xl mx-auto leading-relaxed"
                   style={{ color: 'var(--color-ink-300)' }}
                 >
-                  Join our <span className="font-bold" style={{ color: 'var(--color-teal-300)' }}>India-UAE beta</span> launching <span className="font-bold" style={{ color: 'var(--color-teal-400)' }}>Q1 2026</span>. Connect your Solana wallet and be among the first to experience instant cross-border transfers.
+                  Join our <span className="font-bold" style={{ color: 'var(--color-teal-300)' }}>India-UAE beta</span> launching <span className="font-bold" style={{ color: 'var(--color-teal-400)' }}>Q1 2026</span>. Be among the first to experience instant cross-border transfers with zero SWIFT delays.
                 </motion.p>
                 
                 <motion.div 
@@ -843,7 +840,16 @@ const Home: React.FC = () => {
                   transition={{ delay: 0.3 }}
                   className="flex justify-center mb-10"
                 >
-                  <WalletMultiButton className="!bg-gradient-to-r !from-teal-500 !to-teal-400 hover:!from-teal-400 hover:!to-teal-300 !text-white !font-display !font-bold !px-12 !py-6 !h-auto !rounded-2xl !text-lg !shadow-[0_0_40px_rgba(20,184,166,0.3)] hover:!shadow-[0_0_60px_rgba(20,184,166,0.5)] transition-all duration-300 transform hover:scale-105" />
+                  <button
+                    onClick={openWaitlist}
+                    className="px-12 py-5 rounded-2xl text-lg font-display font-bold text-white shadow-[0_0_40px_rgba(20,184,166,0.3)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)] transition-all duration-300 transform hover:scale-105 flex items-center gap-3"
+                    style={{ background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-400))' }}
+                  >
+                    Secure My Spot
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </button>
                 </motion.div>
                 
                 {/* Beta Perks */}
@@ -885,15 +891,7 @@ const Home: React.FC = () => {
                   transition={{ delay: 0.4 }}
                   className="mb-12"
                 >
-                  <span className="text-base text-gray-300">New to crypto wallets? </span>
-                  <a
-                    href="https://phantom.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-base text-teal-300 hover:text-teal-200 font-semibold transition-colors border-b border-teal-400/30 hover:border-teal-300"
-                  >
-                    Get Phantom Wallet →
-                  </a>
+                  <p className="text-base text-gray-300">Get priority access when we launch. <button onClick={openWaitlist} className="text-teal-300 hover:text-teal-200 font-semibold transition-colors border-b border-teal-400/30 hover:border-teal-300 bg-transparent">Join the waitlist →</button></p>
                   <div className="mt-3 text-sm" style={{ color: 'var(--color-ink-400)' }}>
                     <span className="inline-flex items-center gap-1">
                       <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -904,6 +902,7 @@ const Home: React.FC = () => {
                   </div>
                 </motion.div>
                 
+
                 {/* Trust badges */}
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}

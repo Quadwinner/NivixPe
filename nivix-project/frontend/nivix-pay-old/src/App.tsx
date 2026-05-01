@@ -151,22 +151,28 @@ function App() {
                   <Header />
                   <main className="flex-1 w-full">
                     <Routes>
+                      {/* ── ACTIVE ROUTES (Beta) ── */}
                       <Route path="/" element={<Home />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/send" element={<Send />} />
-                      <Route path="/receive" element={<Receive />} />
-                      <Route path="/liquidity-pools" element={<LiquidityPools />} />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/kyc" element={<KYC />} />
-                      <Route path="/kyc-admin" element={<KYCAdmin />} />
                       <Route path="/automated-transfer" element={<AutomatedTransfer />} />
-                      <Route path="/offramp-testing" element={<OfframpTesting />} />
-                      <Route path="/comprehensive-testing" element={<ComprehensiveTesting />} />
-                      <Route path="/payment-app" element={<PaymentApp />} />
-                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                      <Route path="/complete-offramp" element={<CompleteOffRamp />} />
-                      <Route path="/cashfree-test" element={<CashfreeTestPage />} />
-                      <Route path="/simple-payout" element={<SimplePayout />} />
+
+                      {/* ── BETA-DISABLED ROUTES ── redirect to Home until post-beta launch ── */}
+                      {/* Files are preserved; simply re-add routes below after beta phase */}
+                      <Route path="/dashboard" element={<Home />} />
+                      <Route path="/send" element={<Home />} />
+                      <Route path="/receive" element={<Home />} />
+                      <Route path="/liquidity-pools" element={<Home />} />
+                      <Route path="/kyc-admin" element={<Home />} />
+                      <Route path="/offramp-testing" element={<Home />} />
+                      <Route path="/comprehensive-testing" element={<Home />} />
+                      <Route path="/payment-app" element={<Home />} />
+                      <Route path="/admin-dashboard" element={<Home />} />
+                      <Route path="/complete-offramp" element={<Home />} />
+                      <Route path="/cashfree-test" element={<Home />} />
+                      <Route path="/simple-payout" element={<Home />} />
+
+
                     </Routes>
                   </main>
                   <Footer />
