@@ -87,7 +87,7 @@ const KYCAdmin: React.FC = () => {
     setSearchResult(null);
     
     try {
-      const blockchainResponse = await fetch('http://localhost:3002/api/fabric/query', {
+      const blockchainResponse = await fetch(`${BRIDGE_URL}/api/fabric/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -155,7 +155,7 @@ const KYCAdmin: React.FC = () => {
     setError(null);
     
     try {
-      const blockchainResponse = await fetch('http://localhost:3002/api/fabric/invoke', {
+      const blockchainResponse = await fetch(`${BRIDGE_URL}/api/fabric/invoke`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -204,7 +204,7 @@ const KYCAdmin: React.FC = () => {
     setError(null);
     
     try {
-      const blockchainResponse = await fetch('http://localhost:3002/api/fabric/invoke', {
+      const blockchainResponse = await fetch(`${BRIDGE_URL}/api/fabric/invoke`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -251,7 +251,7 @@ const KYCAdmin: React.FC = () => {
     setError(null);
     
     try {
-      const blockchainResponse = await fetch('http://localhost:3002/api/fabric/query', {
+      const blockchainResponse = await fetch(`${BRIDGE_URL}/api/fabric/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
