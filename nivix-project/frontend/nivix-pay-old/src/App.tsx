@@ -159,12 +159,12 @@ function App() {
                       <Route path="/dashboard" element={<Home />} />
                       <Route path="/send" element={<Home />} />
                       <Route path="/receive" element={<Home />} />
-                      <Route path="/liquidity-pools" element={<Home />} />
-                      <Route path="/kyc-admin" element={<Home />} />
+                      <Route path="/liquidity-pools" element={<LiquidityPools />} />
+                      <Route path="/kyc-admin" element={<KYCAdmin />} />
                       <Route path="/offramp-testing" element={<Home />} />
                       <Route path="/comprehensive-testing" element={<Home />} />
                       <Route path="/payment-app" element={<Home />} />
-                      <Route path="/admin-dashboard" element={<Home />} />
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
                       <Route path="/complete-offramp" element={<Home />} />
                       <Route path="/cashfree-test" element={<Home />} />
                       <Route path="/simple-payout" element={<Home />} />
