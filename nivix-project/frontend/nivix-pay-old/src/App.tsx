@@ -12,8 +12,12 @@ import {
 } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import { ProcessingProvider } from './contexts/ProcessingContext';
+import '@solana/wallet-adapter-react-ui/styles.css';
 
-// Import pages — lazy loaded to reduce initial bundle size
+// Pages — lazy loaded to reduce initial bundle size
 const Home = React.lazy(() => import('./pages/Home'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const Send = React.lazy(() => import('./pages/Send'));
@@ -30,14 +34,6 @@ const CompleteOffRamp = React.lazy(() => import('./pages/CompleteOffRamp'));
 const CashfreeTestPage = React.lazy(() => import('./pages/CashfreeTestPage'));
 const SimplePayout = React.lazy(() => import('./pages/SimplePayout'));
 const AutomatedTransfer = React.lazy(() => import('./pages/AutomatedTransfer'));
-import Header from './components/Header';
-import Footer from './components/Footer';
-
-// Import contexts
-import { ProcessingProvider } from './contexts/ProcessingContext';
-
-// Import wallet adapter styles
-import '@solana/wallet-adapter-react-ui/styles.css';
 
 /* ════════════════════════════════════════════
    NIVIXPE MUI THEME — Design System v1.0
