@@ -13,23 +13,23 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 
-// Import pages
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Send from './pages/Send';
-import Receive from './pages/Receive';
-import LiquidityPools from './pages/LiquidityPools';
-import Profile from './pages/Profile';
-import KYC from './pages/KYC';
-import KYCAdmin from './pages/KYCAdmin';
-import OfframpTesting from './pages/OfframpTesting';
-import ComprehensiveTesting from './pages/ComprehensiveTesting';
-import PaymentApp from './pages/PaymentApp';
-import AdminDashboard from './pages/AdminDashboard';
-import CompleteOffRamp from './pages/CompleteOffRamp';
-import CashfreeTestPage from './pages/CashfreeTestPage';
-import SimplePayout from './pages/SimplePayout';
-import AutomatedTransfer from './pages/AutomatedTransfer';
+// Import pages — lazy loaded to reduce initial bundle size
+const Home = React.lazy(() => import('./pages/Home'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const Send = React.lazy(() => import('./pages/Send'));
+const Receive = React.lazy(() => import('./pages/Receive'));
+const LiquidityPools = React.lazy(() => import('./pages/LiquidityPools'));
+const Profile = React.lazy(() => import('./pages/Profile'));
+const KYC = React.lazy(() => import('./pages/KYC'));
+const KYCAdmin = React.lazy(() => import('./pages/KYCAdmin'));
+const OfframpTesting = React.lazy(() => import('./pages/OfframpTesting'));
+const ComprehensiveTesting = React.lazy(() => import('./pages/ComprehensiveTesting'));
+const PaymentApp = React.lazy(() => import('./pages/PaymentApp'));
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const CompleteOffRamp = React.lazy(() => import('./pages/CompleteOffRamp'));
+const CashfreeTestPage = React.lazy(() => import('./pages/CashfreeTestPage'));
+const SimplePayout = React.lazy(() => import('./pages/SimplePayout'));
+const AutomatedTransfer = React.lazy(() => import('./pages/AutomatedTransfer'));
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -150,6 +150,7 @@ function App() {
                 <div className="app min-h-screen flex flex-col">
                   <Header />
                   <main className="flex-1 w-full">
+                    <React.Suspense fallback={<div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'60vh',fontSize:'1.2rem',color:'#0A4174'}}>Loading...</div>}>
                     <Routes>
                       {/* ── ACTIVE ROUTES (Beta) ── */}
                       <Route path="/" element={<Home />} />
@@ -174,6 +175,7 @@ function App() {
 
 
                     </Routes>
+                    </React.Suspense>
                   </main>
                   <Footer />
                 </div>
