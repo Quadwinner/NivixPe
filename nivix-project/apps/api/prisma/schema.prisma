@@ -30,6 +30,12 @@ enum KycStatus {
   review
 }
 
+enum Role {
+  user
+  compliance
+  admin
+}
+
 model User {
   id           String     @id @default(uuid())
   type         UserType
@@ -38,6 +44,7 @@ model User {
   phone        String?
   country      String     @db.Char(2)
   status       UserStatus @default(pending)
+  role         Role       @default(user)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   kyc          KycRecord?

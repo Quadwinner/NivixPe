@@ -2,13 +2,18 @@ import express from 'express';
 import { pinoHttp } from 'pino-http';
 import { config } from './config';
 import { healthRouter } from './routes/health';
+import { authRouter } from './routes/auth';
+import { kycRouter, kycWebhookRouter } from './routes/kyc';
 
 const app = express();
 app.use(express.json());
 app.use(pinoHttp());
 
-// Phase 1 routes mount here. KYC + auth routers land in WS-B.
-app.use('/api/v1', healthRouter);
+const API = '/api/v1';
+app.use(API, healthRouter);
+app.use(API, authRouter);
+app.use(API, kycRouter);
+app.use(API, kycWebhookRouter);
 
 app.use((_req, res) => res.status(404).json({ error: 'not_found' }));
 

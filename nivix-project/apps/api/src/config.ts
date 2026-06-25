@@ -22,6 +22,11 @@ export const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '15m',
   secretsProvider: (process.env.SECRETS_PROVIDER ?? 'env') as 'env' | 'aws',
   localMasterKey: process.env.LOCAL_MASTER_KEY ?? '',
+  kycVendor: process.env.KYC_VENDOR ?? 'mock',
+  kyc: {
+    apiToken: process.env.KYC_API_TOKEN ?? '',
+    webhookSecret: process.env.KYC_WEBHOOK_SECRET ?? '',
+  },
   fabric: {
     peerEndpoint: process.env.FABRIC_GATEWAY_PEER_ENDPOINT ?? 'localhost:7051',
     mspId: process.env.FABRIC_MSP_ID ?? 'Org1MSP',
