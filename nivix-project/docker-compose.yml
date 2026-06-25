@@ -1,0 +1,41 @@
+name: nivix
+
+# Local-first infra for Phase 1. Mirrors the AWS targets (RDS / ElastiCache)
+# so the only thing that changes on migration is the connection string.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nivix-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nivix
+      POSTGRES_PASSWORD: nivix_local_dev
+      POSTGRES_DB: nivix
+    ports:
+      - "5432:5432"
+    volumes:
+      - nivix_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nivix"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: nivix-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - nivix_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nivix_pgdata:
+  nivix_redisdata:

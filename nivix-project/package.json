@@ -1,0 +1,25 @@
+{
+  "name": "nivix",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Nivix cross-border payment platform — Phase 1: identity + Hyperledger compliance backbone",
+  "workspaces": [
+    "packages/*",
+    "apps/api",
+    "apps/worker"
+  ],
+  "scripts": {
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "dev:api": "npm run dev -w @nivix/api",
+    "dev:worker": "npm run dev -w @nivix/worker",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:migrate": "prisma migrate dev --schema apps/api/prisma/schema.prisma",
+    "db:generate": "prisma generate --schema apps/api/prisma/schema.prisma"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

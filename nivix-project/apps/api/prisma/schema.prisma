@@ -1,0 +1,73 @@
+// Phase 1 schema: identity + the Postgres MIRROR of the Hyperledger Fabric
+// compliance ledger. Fabric is the source of truth; these tables are for fast reads.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  individual
+  business
+}
+
+enum UserStatus {
+  pending
+  active
+  suspended
+  closed
+}
+
+enum KycStatus {
+  not_started
+  pending
+  approved
+  rejected
+  review
+}
+
+model User {
+  id           String     @id @default(uuid())
+  type         UserType
+  email        String     @unique
+  passwordHash String
+  phone        String?
+  country      String     @db.Char(2)
+  status       UserStatus @default(pending)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  kyc          KycRecord?
+}
+
+// Mirror of the on-Fabric KYC record (Fabric = source of truth).
+model KycRecord {
+  id           String    @id @default(uuid())
+  userId       String    @unique
+  user         User      @relation(fields: [userId], references: [id])
+  vendor       String?
+  vendorRef    String?
+  status       KycStatus @default(not_started)
+  riskScore    Int?
+  piiEncrypted Bytes? // AES-256-GCM blob (LocalKeyEncryptor now, KMS later)
+  fabricTxRef  String? // pointer to the authoritative record on Fabric
+  verifiedAt   DateTime?
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// Mirror of Fabric audit events for fast querying.
+model AuditLog {
+  seq         BigInt   @id @default(autoincrement())
+  actor       String
+  action      String
+  entity      String
+  entityId    String
+  dataJson    Json
+  fabricTxRef String?
+  createdAt   DateTime @default(now())
+}

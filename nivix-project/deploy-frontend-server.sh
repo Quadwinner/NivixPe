@@ -5,7 +5,7 @@ echo "🚀 Deploying Frontend to Server"
 echo "================================"
 
 PROJECT_ROOT="/root/blockchain solana/nivix-project"
-FRONTEND_DIR="$PROJECT_ROOT/frontend/nivix-pay-old"
+FRONTEND_DIR="$PROJECT_ROOT/apps/web"
 BUILD_DIR="$FRONTEND_DIR/build"
 NGINX_DIR="/var/www/nivix-frontend"
 

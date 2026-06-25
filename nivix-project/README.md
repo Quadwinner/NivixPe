@@ -1,106 +1,42 @@
-# Nivix Project - Solana Liquidity Pool System
+# Nivix Platform
 
-A comprehensive blockchain system integrating Solana liquidity pools with Hyperledger Fabric KYC compliance.
+Cross-border payment platform (GIFT City IFSC / IFSCA). **All documentation lives in [`docs/`](./docs/)** — start with [`docs/README.md`](./docs/README.md), the [PRD](./docs/NIVIX_TECHNICAL_PRD.md), and the [Phase 1 plan](./docs/PHASE_1_DEVELOPMENT_PLAN.md).
 
-## 🚀 Quick Start
+This README is the **local-dev quick-start only**.
 
-### Start the System
+## Phase 1 — local development (no AWS needed)
+
 ```bash
-./start-nivix.sh
+# 1. Start Postgres + Redis
+npm run infra:up
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure env (already created for local dev; regenerate the key for any shared env)
+cp .env.example .env        # if you don't have .env yet
+#   then set LOCAL_MASTER_KEY = $(openssl rand -base64 32)
+
+# 4. Generate Prisma client + run migrations
+npm run db:generate
+npm run db:migrate
+
+# 5. Run the API and worker (separate terminals)
+npm run dev:api             # http://localhost:3002/api/v1/health
+npm run dev:worker
 ```
 
-### Stop the System
-```bash
-./stop-nivix.sh
-```
+The Hyperledger Fabric compliance ledger runs from `fabric-samples/test-network` (Org1 + Org2) — see Phase 1 plan **WS-C**.
 
-## 📊 System Components
+## Monorepo structure
+- `apps/api` — REST API (Express + TypeScript, Prisma)
+- `apps/worker` — async jobs (BullMQ) incl. Fabric writes
+- `packages/shared` — shared types & Zod schemas
+- `fabric-samples/` — Hyperledger Fabric network (compliance ledger)
+- `docs/` — all documentation
 
-- **Hyperledger Fabric**: KYC/AML compliance ledger
-- **Solana**: Public liquidity pools and token operations
-- **Bridge Service**: REST API connecting frontend to blockchain layers
-- **React Frontend**: User interface for pool management and KYC
-
-## 🔧 Manual Commands
-
-### Chaincode Operations
-```bash
-# Store KYC data
-/tmp/fabric-invoke.sh "StoreKYC" '["user_id","solana_address","Full Name","true","2025-09-08T05:00:00Z","3","USA"]' "invoke"
-
-# Query KYC status
-/tmp/fabric-invoke.sh "GetKYCStatus" '["solana_address"]' "query"
-```
-
-### Bridge Service
-```bash
-# Health check
-curl http://localhost:3002/health
-
-# List pools
-curl http://localhost:3002/api/pools
-
-# Submit KYC
-curl -X POST http://localhost:3002/api/kyc/submit \
-  -H "Content-Type: application/json" \
-  -d '{
-    "solanaAddress": "TestAddress123",
-    "fullName": "Test User",
-    "email": "test@example.com",
-    "phone": "+1234567890",
-    "dateOfBirth": "1990-01-01",
-    "nationality": "USA",
-    "documentType": "passport",
-    "documentNumber": "TEST123456"
-  }'
-```
-
-## 📁 Project Structure
-
-```
-nivix-project/
-├── start-nivix.sh          # Main startup script
-├── stop-nivix.sh           # Cleanup script
-├── bridge-service/         # Node.js bridge service
-│   ├── src/               # Bridge service source code
-│   ├── fabric-invoke.sh   # Chaincode invocation script
-│   └── logs/              # Service logs
-├── frontend/nivix-pay/    # React frontend
-├── fabric-samples/        # Hyperledger Fabric network
-│   └── test-network/      # Network configuration
-├── solana/               # Solana program
-└── REPORTS/              # Documentation
-```
-
-## 🏗️ Architecture
-
-1. **Frontend (React)** → Bridge Service REST API
-2. **Bridge Service** → Solana RPC + Hyperledger Fabric
-3. **Hyperledger Fabric** → KYC/AML compliance data
-4. **Solana** → Liquidity pools and token operations
-
-## 📝 Logs
-
-- Bridge Service: `tail -f bridge-service/logs/bridge.log`
-- Fabric Network: Check Docker containers with `docker ps`
-
-## 🎯 Key Features
-
-- ✅ Multi-currency liquidity pools (EUR, USD, INR, GBP, JPY, CAD, AUD)
-- ✅ KYC/AML compliance integration
-- ✅ Pool persistence across restarts
-- ✅ Real-time token metadata
-- ✅ Cross-chain transaction bridging
-
-## 🔗 Endpoints
-
-- Bridge Service: http://localhost:3002
-- Health Check: http://localhost:3002/health
-- API Documentation: http://localhost:3002/api/
-
-## 🛠️ Troubleshooting
-
-If issues occur:
-1. Run `./stop-nivix.sh` to clean up
-2. Run `./start-nivix.sh` to restart
-3. Check logs in `bridge-service/logs/bridge.log`
+## Hosting note
+Built **local-first**. All hosting dependencies sit behind interfaces
+(`SecretsProvider`, `Encryptor`, connection strings, Fabric connection profile),
+so migrating to AWS (Managed Blockchain / RDS / ElastiCache / Secrets Manager / KMS)
+when the account is verified is a **config change, not a rewrite**.
