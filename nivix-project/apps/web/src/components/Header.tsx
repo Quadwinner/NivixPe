@@ -11,17 +11,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-// BETA: 4 publicly accessible pages
+// Enabled tabs (incl. Automated Transfer + KYC Admin re-enabled for testing)
 const navItems = [
   { label: 'Home', path: '/', icon: HomeIcon },
   { label: 'KYC Verification', path: '/kyc', icon: VerifiedUserIcon },
-  { label: 'Transfer Funds', path: '/automated-transfer', icon: AutorenewIcon },
+  { label: 'Automated Transfer', path: '/automated-transfer', icon: AutorenewIcon },
+  { label: 'KYC Admin', path: '/kyc-admin', icon: AdminPanelSettingsIcon },
   { label: 'Profile', path: '/profile', icon: PersonIcon },
 ];
 
 // POST-BETA nav items (re-enable after beta phase):
 // { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHorizIcon },
-// { label: 'KYC Admin', path: '/kyc-admin', icon: AdminPanelSettingsIcon },
 // { label: 'Admin Dashboard', path: '/admin-dashboard', icon: DashboardIcon },
 
 
