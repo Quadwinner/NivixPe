@@ -1,5 +1,6 @@
 import { prisma } from '../db';
 import { createEncryptor } from '../providers/encryptor';
+import { fabricQueue } from '../queue';
 import type { KycVendorResult } from './provider';
 
 const encryptor = createEncryptor();
@@ -46,8 +47,22 @@ export async function applyVendorResult(
     },
   });
 
-  // WS-C hook: enqueue a write of this compliance record to the multi-org Hyperledger
-  // Fabric ledger (and set rec.fabricTxRef). Until then, Postgres is the working store.
+  // WS-C: on approval, enqueue a write of this compliance record to the multi-org
+  // Hyperledger Fabric ledger. The worker writes it and sets rec.fabricTxRef.
+  if (result.status === 'approved') {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    await fabricQueue.add(
+      'store-kyc',
+      {
+        userId,
+        fullName: user?.email ?? userId,
+        kycVerified: true,
+        riskScore: result.riskScore,
+        countryCode: user?.country ?? 'XX',
+      },
+      { attempts: 5, backoff: { type: 'exponential', delay: 2000 }, removeOnComplete: true },
+    );
+  }
   return rec;
 }
 

@@ -1,15 +1,11 @@
-import { config as loadEnv } from 'dotenv';
-import * as path from 'node:path';
-import { Queue, Worker, type ConnectionOptions } from 'bullmq';
+import { config } from './config'; // loads root .env
+import { Worker, type ConnectionOptions } from 'bullmq';
+import { prisma } from './db';
+import { storeKycOnFabric } from './fabric/kyc';
+import { closeGateway } from './fabric/gateway';
 
-// Load the monorepo root .env (worker runs from apps/worker).
-loadEnv({ path: path.resolve(__dirname, '../../../.env') });
-loadEnv();
-
-// Pass plain connection options (not an ioredis instance) so BullMQ uses its own
-// bundled ioredis — avoids dual-version type clashes.
 function redisConnection(): ConnectionOptions {
-  const url = new URL(process.env.REDIS_URL ?? 'redis://localhost:6379');
+  const url = new URL(config.redisUrl);
   return {
     host: url.hostname,
     port: url.port ? parseInt(url.port, 10) : 6379,
@@ -18,22 +14,35 @@ function redisConnection(): ConnectionOptions {
   };
 }
 
-const connection = redisConnection();
-
-// Phase 1: the 'fabric-writes' queue carries KYC/compliance records to Hyperledger
-// Fabric (with retry), then mirrors the result to Postgres. Implemented in WS-C.
-export const fabricQueue = new Queue('fabric-writes', { connection });
-
+// Processes 'fabric-writes': writes compliance records to Hyperledger, then mirrors
+// the resulting tx id into Postgres. BullMQ retries handle transient Fabric failures.
 const worker = new Worker(
   'fabric-writes',
   async (job) => {
-    // WS-C: record on Fabric (dual-org endorsement) -> mirror to Postgres.
-    console.log(`[worker] processing ${job.name} #${job.id}`);
+    if (job.name === 'store-kyc') {
+      const { userId, fullName, kycVerified, riskScore, countryCode } = job.data;
+      const txId = await storeKycOnFabric({ userId, fullName, kycVerified, riskScore, countryCode });
+      await prisma.kycRecord.update({ where: { userId }, data: { fabricTxRef: txId } });
+      console.log(`[worker] KYC ${userId} recorded on Fabric: ${txId}`);
+      return { txId };
+    }
+    console.warn(`[worker] unknown job: ${job.name}`);
+    return null;
   },
-  { connection },
+  { connection: redisConnection() },
 );
 
 worker.on('ready', () => console.log('[nivix-worker] ready (queue: fabric-writes)'));
+worker.on('completed', (job) => console.log(`[worker] job ${job.id} (${job.name}) completed`));
 worker.on('failed', (job, err) =>
   console.error(`[worker] job ${job?.id} failed: ${err.message}`),
 );
+
+async function shutdown() {
+  await worker.close();
+  closeGateway();
+  await prisma.$disconnect();
+  process.exit(0);
+}
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
