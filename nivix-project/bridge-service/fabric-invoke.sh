@@ -69,6 +69,9 @@ export PEER0_ORG2_CA="$NETWORK_DIR/organizations/peerOrganizations/org2.example.
 if [ "$OPERATION" = "query" ]; then
     "$PEER_BIN" chaincode query -C mychannel -n nivix-kyc -c "{\"function\":\"$FUNCTION_NAME\",\"Args\":$ARGS}"
 else
+    # --waitForEvent blocks until the transaction is actually committed to the
+    # ledger. Without it the CLI returns on endorsement (~90ms) and any read
+    # issued straight after a write races the block commit and sees no record.
     "$PEER_BIN" chaincode invoke \
         -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com \
@@ -80,5 +83,6 @@ else
         --tlsRootCertFiles "$PEER0_ORG1_CA" \
         --peerAddresses localhost:9051 \
         --tlsRootCertFiles "$PEER0_ORG2_CA" \
+        --waitForEvent \
         -c "{\"function\":\"$FUNCTION_NAME\",\"Args\":$ARGS}"
 fi

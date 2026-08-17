@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -607,15 +609,51 @@ func (s *SmartContract) GetTransactionsByAddress(ctx contractapi.TransactionCont
 	return transactions, nil
 }
 
-// Main function starts the chaincode
+// Main function starts the chaincode.
+//
+// Two run modes are supported:
+//
+//   - Chaincode-as-a-service (CCaaS): when CHAINCODE_SERVER_ADDRESS is set, the
+//     chaincode runs as a long-lived gRPC server in its own container and the
+//     peer dials it. This avoids the peer-side Docker image build, which fails
+//     against Docker Engine 29+ because the peer speaks a Docker API version
+//     the daemon no longer accepts.
+//   - Legacy peer-managed mode: when the variable is absent, the peer launches
+//     and manages this process as before.
 func main() {
 	chaincode, err := contractapi.NewChaincode(&SmartContract{})
 	if err != nil {
 		fmt.Printf("Error creating KYC chaincode: %v\n", err)
+		os.Exit(1)
+	}
+
+	if address := os.Getenv("CHAINCODE_SERVER_ADDRESS"); address != "" {
+		ccid := os.Getenv("CHAINCODE_ID")
+		if ccid == "" {
+			ccid = os.Getenv("CORE_CHAINCODE_ID_NAME")
+		}
+		if ccid == "" {
+			fmt.Println("CHAINCODE_SERVER_ADDRESS is set but neither CHAINCODE_ID nor CORE_CHAINCODE_ID_NAME is provided")
+			os.Exit(1)
+		}
+
+		server := &shim.ChaincodeServer{
+			CCID:     ccid,
+			Address:  address,
+			CC:       chaincode,
+			TLSProps: shim.TLSProperties{Disabled: true},
+		}
+
+		fmt.Printf("Starting KYC chaincode server on %s with ccid %s\n", address, ccid)
+		if err := server.Start(); err != nil {
+			fmt.Printf("Error starting KYC chaincode server: %v\n", err)
+			os.Exit(1)
+		}
 		return
 	}
 
 	if err := chaincode.Start(); err != nil {
 		fmt.Printf("Error starting KYC chaincode: %v\n", err)
+		os.Exit(1)
 	}
-} 
+}

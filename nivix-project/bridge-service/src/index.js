@@ -194,6 +194,10 @@ async function storeKYCData(kycData) {
         // Also store in our persistent file storage as backup
         storeKYC(kycData.solanaAddress, kycData);
         
+        // The record is genuinely on the ledger on this path.
+        result.onChain = true;
+        result.storage = 'hyperledger';
+        
         // Log the submission in the KYC log file
         try {
           const logEntry = `${new Date().toISOString()} - KYC submission for ${kycData.solanaAddress} (${kycData.fullName})\n`;
@@ -251,11 +255,18 @@ async function storeKYCData(kycData) {
       }
     }, 5000); // Try again after 5 seconds
     
+    // The record exists locally but NOT on the ledger. This must be reported
+    // honestly: the KYC admin screen reads the ledger only, so a record in this
+    // state is invisible there and callers need to know it is not yet on-chain.
     return {
       success: true,
+      onChain: false,
+      storage: 'local-fallback',
       verification_id: `kyc_${kycData.userId}`,
       status: 'pending',
-      message: 'KYC data stored persistently due to Hyperledger error. Will retry submission.'
+      warning: 'NOT_ON_CHAIN',
+      message: 'KYC data saved locally but NOT written to Hyperledger Fabric. ' +
+        'It will not appear in the KYC admin ledger search until the retry succeeds.'
     };
   } catch (error) {
     console.error('Unhandled error in storeKYCData:', error);
