@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nivix — Full Flow: Mint, Treasury, Burn &amp; Payout</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1a2233;
+    font-size: 10.8pt;
+    line-height: 1.55;
+    margin: 0;
+  }
+  h1, h2, h3, h4 { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #0f2b46; }
+  h1 { font-size: 19pt; border-bottom: 3px solid #1b6f5c; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 14pt; color: #0f2b46; margin-top: 26px; border-left: 5px solid #1b6f5c; padding-left: 10px; }
+  h3 { font-size: 11.8pt; color: #17405e; margin-top: 18px; }
+  p { margin: 8px 0; }
+  .section { page-break-before: always; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px 0; font-size: 9.6pt; }
+  th, td { border: 1px solid #cdd7e1; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #0f2b46; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #f4f7fa; }
+  .tag { display: inline-block; background: #eaf3f0; color: #1b6f5c; border: 1px solid #1b6f5c; border-radius: 3px; padding: 1px 8px; font-size: 8.5pt; font-weight: 600; letter-spacing: .3px; }
+  .tag.dead { background: #fdeef0; color: #a3324a; border-color: #a3324a; }
+  .tag.real { background: #eaf3f0; color: #1b6f5c; border-color: #1b6f5c; }
+  .callout {
+    background: #f4f8f7; border-left: 4px solid #1b6f5c; padding: 10px 14px; margin: 14px 0; border-radius: 3px; font-size: 10.2pt;
+  }
+  .callout.warn { background: #fdf6ec; border-left-color: #b8860b; }
+  .callout.fix { background: #eef5fb; border-left-color: #1c5d8f; }
+  .callout.crit { background: #fdeef0; border-left-color: #a3324a; }
+  .callout b.label { color: #1b6f5c; }
+  .warn b.label { color: #b8860b; }
+  .fix b.label { color: #1c5d8f; }
+  .crit b.label { color: #a3324a; }
+  pre.flow {
+    background: #0f2b46; color: #d9e6f0; padding: 14px 16px; border-radius: 6px;
+    font-family: "Courier New", monospace; font-size: 8.6pt; line-height: 1.5; overflow-x: auto; white-space: pre;
+  }
+  .flowbox {
+    display: flex; align-items: stretch; gap: 6px; margin: 16px 0; font-size: 9pt; flex-wrap: wrap;
+  }
+  .flowbox .step {
+    flex: 1; min-width: 100px; background: #fff; border: 1.5px solid #1b6f5c; border-radius: 6px;
+    padding: 10px 8px; text-align: center; position: relative;
+  }
+  .flowbox .step.fake { border-color: #b8860b; background: #fdf9f0; }
+  .flowbox .step.skip { border-color: #9aa5af; background: #f4f6f7; color: #66707a; }
+  .flowbox .step.real { border-color: #1b6f5c; background: #eaf3f0; }
+  .flowbox .step .n { display:block; font-weight:700; color:#1b6f5c; font-size: 8.5pt; margin-bottom:3px;}
+  .flowbox .step.fake .n { color: #b8860b; }
+  .flowbox .step.skip .n { color: #66707a; }
+  .flowbox .arrow { align-self: center; font-size: 16pt; color: #1b6f5c; font-weight: 700; }
+  .kv-list { margin: 10px 0; padding-left: 0; list-style: none; }
+  .kv-list li { padding: 4px 0 4px 0; border-bottom: 1px dotted #cdd7e1; }
+  .kv-list b { color: #0f2b46; }
+  .cover {
+    height: 257mm; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 0 6mm;
+  }
+  .cover .tagline { color: #1b6f5c; font-weight: 700; letter-spacing: 2px; font-size: 11pt; text-transform: uppercase; margin-bottom: 18px; }
+  .cover h1 { border: none; font-size: 28pt; margin: 0 0 6px 0; line-height: 1.25; }
+  .cover .sub { font-size: 13.5pt; color: #3a4a5c; margin-bottom: 40px; }
+  .cover .meta { font-size: 10pt; color: #55636f; line-height: 1.9; border-top: 1px solid #cdd7e1; padding-top: 14px; margin-top: 30px; }
+  .cover .meta b { color: #0f2b46; }
+  .confbar { margin-top: 60px; background: #0f2b46; color: #fff; padding: 8px 14px; font-size: 9pt; border-radius: 4px; display: inline-block; letter-spacing: .5px;}
+  .toc-list { list-style: none; padding: 0; font-size: 11pt; }
+  .toc-list li { padding: 7px 0; border-bottom: 1px dotted #cdd7e1; display: flex; justify-content: space-between; }
+  .toc-list .num { color: #1b6f5c; font-weight: 700; margin-right: 10px; }
+  .badge-row { display:flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 18px 0; }
+  .badge { background:#eaf3f0; border:1px solid #1b6f5c; color:#0f2b46; font-size:8.6pt; padding:4px 10px; border-radius: 12px; }
+  .stepcard {
+    border: 1px solid #cdd7e1; border-left: 5px solid #1b6f5c; border-radius: 5px; padding: 10px 14px; margin: 10px 0;
+  }
+  .stepcard.burn { border-left-color: #a3324a; }
+  .stepcard.payout { border-left-color: #1c5d8f; }
+  .stepcard .stepnum { display:inline-block; background:#1b6f5c; color:#fff; border-radius:50%; width:22px; height:22px; text-align:center; line-height:22px; font-size:9.5pt; font-weight:700; margin-right:8px;}
+  .stepcard.burn .stepnum { background:#a3324a; }
+  .stepcard.payout .stepnum { background:#1c5d8f; }
+  .stepcard .stepwho { font-size: 8.5pt; color: #667; text-transform: uppercase; letter-spacing: .4px; margin-top: 4px; }
+  footer.pagefoot { font-size: 8pt; color: #8494a3; text-align: center; margin-top: 30px; }
+  .glossary dt { font-weight: 700; color: #0f2b46; margin-top: 8px; }
+  .glossary dd { margin: 2px 0 0 0; color: #33414d; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="tagline">Technical Walkthrough — Current Code</div>
+  <h1>Full Flow: Mint,<br>Treasury, Burn &amp; Payout</h1>
+  <div class="sub">Exactly what happens, step by step, from a sender's payment to a recipient's payout — as the code runs today</div>
+  <div class="badge-row">
+    <span class="badge">Mint</span>
+    <span class="badge">Treasury (real vs. dormant)</span>
+    <span class="badge">Burn</span>
+    <span class="badge">Payout</span>
+  </div>
+  <div class="meta">
+    <div><b>Company:</b> NivixPe Private Limited</div>
+    <div><b>Scope:</b> Current (legacy) bridge-service implementation — not the Phase 2 target design</div>
+    <div><b>Date:</b> August 2026</div>
+  </div>
+  <div class="confbar">FOR INTERNAL / TECHNICAL DISCUSSION</div>
+</div>
+
+<!-- TOC -->
+<div class="section">
+<h1>Contents</h1>
+<ul class="toc-list">
+  <li><span><span class="num">1.</span>The Core Idea, in One Sentence</span></li>
+  <li><span><span class="num">2.</span>Who's Involved</span></li>
+  <li><span><span class="num">3.</span>Part One — Mint (Fiat In &rarr; Token Created)</span></li>
+  <li><span><span class="num">4.</span>Part Two — The Treasury Checkpoint</span></li>
+  <li><span><span class="num">5.</span>Part Three — Burn (Token Destroyed)</span></li>
+  <li><span><span class="num">6.</span>Part Four — Payout (Real Fiat Out)</span></li>
+  <li><span><span class="num">7.</span>The Full Flow, Start to Finish</span></li>
+  <li><span><span class="num">8.</span>Today vs. Target — Avoiding the Mix-Up</span></li>
+  <li><span><span class="num">9.</span>Gaps Worth Knowing About</span></li>
+  <li><span><span class="num">A.</span>Appendix — Glossary</span></li>
+</ul>
+</div>
+
+<!-- 1. CORE IDEA -->
+<div class="section">
+<h1>1. The Core Idea, in One Sentence</h1>
+<div class="callout">
+  <b class="label">The token is not currency, and the "treasury" is not one thing.</b> The token minted and burned in the middle of a transfer is just a temporary receipt — it exists for a few seconds and represents nothing once destroyed. Separately, there are <b>two different things called "treasury"</b> in this system, and only one of them holds real money. This document walks through the whole transaction so both points are unmistakable.
+</div>
+<table>
+<tr><th>Stage</th><th>What happens</th><th>Real money involved?</th></tr>
+<tr><td>1. Mint</td><td>Backend creates brand-new tokens from nothing, places them in the sender's wallet</td><td>No — the tokens are fabricated</td></tr>
+<tr><td>2. Treasury checkpoint</td><td>An on-chain "treasury" module exists to track balances of these tokens — but it is not used in a real transaction</td><td>No — this step is effectively skipped</td></tr>
+<tr><td>3. Burn</td><td>The user's own wallet destroys those tokens</td><td>No — same fabricated tokens, now gone</td></tr>
+<tr><td>4. Payout</td><td>Nivix pays the recipient from a real, pre-funded balance sitting inside its payment gateway account</td><td><b>Yes — this is where real money actually moves</b></td></tr>
+</table>
+<p>Sections 3&ndash;6 walk through each stage in detail; Section 7 puts all twelve steps into one continuous diagram.</p>
+</div>
+
+<!-- 2. WHO'S INVOLVED -->
+<div class="section">
+<h1>2. Who's Involved</h1>
+<table>
+<tr><th>Party</th><th>Role</th></tr>
+<tr><td><b>Sender</b></td><td>Pays real fiat money (e.g. INR) into the system</td></tr>
+<tr><td><b>Payment gateway</b> (Razorpay / Cashfree — collection)</td><td>Collects the sender's payment into Nivix's bank account; confirms via webhook. INR only.</td></tr>
+<tr><td><b>Nivix backend</b> (bridge-service)</td><td>Calculates token amounts, mints, verifies burns, triggers payout</td></tr>
+<tr><td><b>On-chain treasury wallet</b></td><td>A Solana keypair with unlimited mint authority over 7 currency-named tokens; also tracked by a dormant balance/threshold module (Section 4)</td></tr>
+<tr><td><b>User's Solana wallet</b> (Phantom, etc.)</td><td>Receives minted tokens; later signs the burn</td></tr>
+<tr><td><b>Solana network</b></td><td>Records mint and burn as public transactions (~2 seconds each)</td></tr>
+<tr><td><b>Cashfree/RazorpayX payout balance</b></td><td>A <b>real fiat balance</b> Nivix pre-funds by ordinary bank transfer — this is what actually pays recipients</td></tr>
+<tr><td><b>Recipient</b></td><td>Receives real fiat money out of the system</td></tr>
+</table>
+</div>
+
+<!-- 3. MINT -->
+<div class="section">
+<h1>3. Part One — Mint (Fiat In &rarr; Token Created)</h1>
+
+<div class="stepcard">
+  <span class="stepnum">1</span><b>Sender pays.</b> They enter an amount (e.g. &#8377;8,300) and confirm.
+  <div class="stepwho">Sender &middot; instant</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">2</span><b>Payment gateway collects it.</b> Razorpay/Cashfree takes &#8377;8,300 into Nivix's own bank account. INR only — hardcoded.
+  <div class="stepwho">Razorpay / Cashfree &middot; instant</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">3</span><b>Webhook confirms payment.</b> Gateway notifies Nivix's backend: "&#8377;8,300 received."
+  <div class="stepwho">Payment gateway &rarr; backend &middot; seconds</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">4</span><b>Backend calculates token amount.</b> Using an exchange rate (e.g. &#8377;83 = 1 unit), it decides: mint 100.
+  <div class="stepwho">Nivix backend &middot; instant</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">5</span><b>Backend mints.</b> A <code>MintTo</code> instruction creates 100 new tokens directly in the user's wallet, signed by the treasury's private key — the only key allowed to create units of this token.
+  <div class="stepwho">Nivix backend + treasury key &middot; ~2 seconds</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">6</span><b>Confirmed on-chain.</b> Total supply of that token permanently increases by 100. Nothing backs this on-chain — trust is entirely internal bookkeeping.
+  <div class="stepwho">Solana network &middot; ~2 seconds</div>
+</div>
+
+<p><b>State after step 6:</b> &#8377;8,300 sits in Nivix's bank account (real). 100 tokens sit in the user's wallet (fabricated). Nothing has reached a recipient.</p>
+</div>
+
+<!-- 4. TREASURY CHECKPOINT -->
+<div class="section">
+<h1>4. Part Two — The Treasury Checkpoint</h1>
+<p>This is the step that causes the most confusion, because the word "treasury" refers to two unrelated things in this codebase.</p>
+
+<h3>4.1 Two things, same name</h3>
+<table>
+<tr><th></th><th>On-chain "treasury"</th><th>Real fiat balance</th></tr>
+<tr><td><b>What it is</b></td><td>A Solana wallet + 7 token accounts, tracked by a module (<code>treasury-manager.js</code>) with balance thresholds and an auto-rebalance design</td><td>Nivix's actual balance sitting inside its Cashfree / RazorpayX payout account</td></tr>
+<tr><td><b>Holds real money?</b></td><td>No</td><td><b>Yes</b> — real rupees, put there by ordinary bank transfer, ahead of time</td></tr>
+<tr><td><b>Used in a real transaction?</b></td><td><span class="tag dead">No — dormant</span></td><td><span class="tag real">Yes — this is what pays the recipient</span></td></tr>
+</table>
+
+<div class="callout crit">
+  <b class="label">Straight from the running code:</b> the moment a payout succeeds through the payment gateway, the backend logs and executes exactly this:
+  <pre class="flow">"💡 Skipping treasury manager — payout already completed via provider"</pre>
+  The balance-check, threshold, and auto-rebalance logic in <code>treasury-manager.js</code> is never invoked on this path. It is real, correctly-written code — it is simply disconnected from every transaction that has actually happened.
+</div>
+
+<h3>4.2 Even if it were called, it couldn't do much yet</h3>
+<p>The configuration file meant to hold this module's thresholds and corridor routing (<code>treasury-config.json</code>) is effectively empty — no thresholds, no corridors defined. So even the fallback path that <i>would</i> call this module would immediately fail with "No configuration found," rather than actually rebalance anything.</p>
+
+<h3>4.3 What this means for the transaction in progress</h3>
+<div class="callout">
+  <b class="label">In the live flow, this checkpoint is a no-op.</b> Nothing changes here — no balance check happens, no threshold is evaluated, no rebalance is triggered. The 100 tokens simply continue sitting in the user's wallet, unaffected, until the next step.
+</div>
+</div>
+
+<!-- 5. BURN -->
+<div class="section">
+<h1>5. Part Three — Burn (Token Destroyed)</h1>
+
+<div class="stepcard burn">
+  <span class="stepnum">7</span><b>User initiates withdrawal.</b> They choose a recipient and confirm. Their own wallet signs a <code>Burn</code> instruction for the 100 tokens.
+  <div class="stepwho">User's own wallet &middot; instant</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">8</span><b>Burn confirms on-chain.</b> The 100 tokens are permanently destroyed. Total supply drops back down by exactly the amount minted in step 6.
+  <div class="stepwho">Solana network &middot; ~2 seconds</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">9</span><b>Backend verifies the burn.</b> The frontend sends the burn's transaction signature to the backend, which checks Solana directly to confirm it really happened.
+  <div class="stepwho">Nivix backend &middot; seconds</div>
+</div>
+
+<div class="callout">
+  <b class="label">Why the user signs this, not the backend:</b> the SPL Token standard requires the token account's owner to authorize destroying their own balance. Only the treasury can <i>create</i> tokens; only the holder can <i>destroy</i> their own. That split is a property of the token standard itself, not a Nivix design choice.
+</div>
+</div>
+
+<!-- 6. PAYOUT -->
+<div class="section">
+<h1>6. Part Four — Payout (Real Fiat Out)</h1>
+
+<div class="stepcard payout">
+  <span class="stepnum">10</span><b>Backend calls the payout provider directly.</b> Once the burn is verified, it calls Cashfree: "pay &#8377;8,282 (after fees) to this recipient's bank account." This draws down the <b>real fiat balance</b> from Section 4.1 — not anything on-chain.
+  <div class="stepwho">Nivix backend &rarr; Cashfree &middot; seconds</div>
+</div>
+<div class="stepcard payout">
+  <span class="stepnum">11</span><b>Recipient is paid.</b> Cashfree either wires it directly to a bank account, or sends a claim-link the recipient redeems to a bank account or UPI.
+  <div class="stepwho">Cashfree &middot; minutes&ndash;hours</div>
+</div>
+<div class="stepcard payout">
+  <span class="stepnum">12</span><b>Confirmation shown.</b> Both sender and recipient see a completed transaction with a receipt in the app.
+  <div class="stepwho">Nivix app &middot; instant</div>
+</div>
+
+<div class="callout warn">
+  <b class="label">The uncomfortable part, stated plainly:</b> this real fiat balance is refilled manually by Nivix via ordinary bank transfer and is not tracked anywhere in this codebase. Nothing here checks it before a payout, warns if it's getting low, or reconciles it against how many tokens have been minted. If it ran dry, the payout call would simply fail at step 10 with no earlier warning.
+</div>
+</div>
+
+<!-- 7. FULL FLOW -->
+<div class="section">
+<h1>7. The Full Flow, Start to Finish</h1>
+
+<div class="flowbox">
+  <div class="step"><span class="n">① SENDER PAYS</span>&#8377;8,300 real INR</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step fake"><span class="n">⑤ MINT</span>100 tokens from nothing</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step skip"><span class="n">TREASURY</span>checkpoint &mdash; skipped, no-op</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step fake"><span class="n">⑧ BURN</span>100 tokens destroyed</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step real"><span class="n">⑩ PAYOUT</span>real balance drawn down</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">⑪ RECIPIENT PAID</span>&#8377;8,282 real INR</div>
+</div>
+
+<pre class="flow">₹8,300 IN     100 tokens     "TREASURY"        100 tokens     REAL CASHFREE      ₹8,282 OUT
+(real money)  MINTED         CHECKPOINT        BURNED         BALANCE DRAWN      (real money)
+          ──►  (fabricated,  ──►  (dormant,  ──►  (destroyed, ──► DOWN         ──►
+               backed by          skipped —        supply           (the ONLY
+               nothing)           no balance       drops)           real-money
+                                  check runs)                       step)
+
+Timeline:  Payment (instant) → webhook (sec) → mint (~2s) → [treasury: no-op]
+           → user withdraws → burn (~2s) → verify (sec) → payout (min–hrs)</pre>
+
+<table>
+<tr><th>Step</th><th>Stage</th><th>Real money moves?</th></tr>
+<tr><td>1&ndash;2</td><td>Sender pays, gateway collects</td><td>Yes — into Nivix's collection account</td></tr>
+<tr><td>3&ndash;6</td><td>Mint</td><td>No — fabricated tokens only</td></tr>
+<tr><td>Checkpoint</td><td>Treasury (dormant)</td><td>No — never invoked</td></tr>
+<tr><td>7&ndash;9</td><td>Burn</td><td>No — same fabricated tokens, now destroyed</td></tr>
+<tr><td>10&ndash;12</td><td>Payout</td><td><b>Yes — the real Cashfree balance, drawn down</b></td></tr>
+</table>
+</div>
+
+<!-- 8. TODAY VS TARGET -->
+<div class="section">
+<h1>8. Today vs. Target — Avoiding the Mix-Up</h1>
+<p>An earlier investor-facing document describes a <b>different, not-yet-built system</b> — a real USDC treasury that mint/burn actually draws from and refills, with genuine threshold-based rebalancing. That is the Phase 2 target design. It is easy to read the two documents side by side and think they contradict each other; they don't — they describe different points in time.</p>
+<table>
+<tr><th></th><th>Today (this document)</th><th>Target (Phase 2, not started)</th></tr>
+<tr><td>Token</td><td>7 self-minted tokens, no real backing</td><td>Real Circle USDC</td></tr>
+<tr><td>Treasury</td><td>Two disconnected things sharing one name (Section 4.1) — only one holds real money, and it's untracked in code</td><td>One real, on-chain USDC pool — the actual source and destination of every transfer</td></tr>
+<tr><td>Rebalancing</td><td>Logic exists in code but is never invoked; config is empty</td><td>Genuinely automatic — threshold-triggered top-ups, wired into every payout</td></tr>
+<tr><td>Reserve proof</td><td>None — trust is internal bookkeeping</td><td>Publicly attested 1:1 reserves (Circle), audited monthly</td></tr>
+</table>
+<div class="callout fix">
+  <b class="label">Same shape, real asset:</b> the 12-step flow in Section 7 doesn't change conceptually under the target design. What changes is step 5 ("mint from nothing" becomes "release already-funded, real USDC") and the treasury checkpoint (from a disconnected no-op to the actual, tracked source of the payout). Steps 1&ndash;2 and 10&ndash;12 — the fiat legs — stay exactly as they are; they just connect to one trustworthy asset instead of a dormant on-chain ledger and an untracked bank balance.
+</div>
+</div>
+
+<!-- 9. GAPS -->
+<div class="section">
+<h1>9. Gaps Worth Knowing About</h1>
+<table>
+<tr><th>Gap</th><th>Detail</th></tr>
+<tr><td>Two "treasuries," one real</td><td>The on-chain treasury module and the real Cashfree balance are entirely separate; only the second one actually moves money, and it's the one with no tracking or alerting</td></tr>
+<tr><td>Real balance is untracked</td><td>The fiat balance that funds every payout is refilled manually and checked nowhere in code — no low-balance warning exists before a payout attempt fails</td></tr>
+<tr><td>Dormant rebalance logic</td><td><code>treasury-manager.js</code> implements threshold checks and auto-rebalancing correctly, but is never called by the real payout path, and its config file is empty regardless</td></tr>
+<tr><td>Single point of trust for minting</td><td>One private key has unlimited mint authority over all 7 tokens — compromise of that key means unlimited fabricated tokens</td></tr>
+<tr><td>No reserve proof</td><td>Nothing on-chain shows that minted tokens ever corresponded to real fiat received</td></tr>
+<tr><td>Payout and mint/burn are only loosely linked</td><td>The burn is verified before payout is triggered, but the amount reconciliation between "tokens burned" and "fiat paid out" happens in application logic, not by any enforced on-chain or ledger constraint</td></tr>
+</table>
+</div>
+
+<!-- APPENDIX -->
+<div class="section">
+<h1>Appendix — Glossary</h1>
+<dl class="glossary">
+<dt>SPL Token</dt><dd>Solana's standard for creating custom tokens — anyone can create one; whoever holds the "mint authority" key can create new units of it.</dd>
+<dt>Mint authority</dt><dd>The private key authorized to create new units of a token. Here, one treasury key holds mint authority over all 7 currency-named tokens.</dd>
+<dt>Mint (verb)</dt><dd>Creating new tokens and assigning them to a wallet. Increases total supply.</dd>
+<dt>Burn</dt><dd>Permanently destroying tokens from a wallet. Decreases total supply. Must be authorized by the token account's owner.</dd>
+<dt>On-chain treasury (this system)</dt><dd>A Solana wallet and set of token accounts tracked by dormant balance/threshold code — not the source of any real payout today.</dd>
+<dt>Real fiat balance</dt><dd>The actual money sitting in Nivix's Cashfree/RazorpayX account, manually pre-funded, which funds every real payout — untracked in this codebase.</dd>
+<dt>USDC</dt><dd>A real, regulated stablecoin issued by Circle, redeemable 1:1 for US dollars — the asset intended to replace the fabricated tokens and the untracked fiat balance alike, in the target design.</dd>
+</dl>
+<footer class="pagefoot">Nivix — Full Flow: Mint, Treasury, Burn &amp; Payout · For internal / technical discussion · August 2026</footer>
+</div>
+
+</body>
+</html>

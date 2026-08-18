@@ -13,7 +13,8 @@ All Nivix documentation lives in this folder. **Start with the three authoritati
 | **[PRODUCTION_ROADMAP.md](./PRODUCTION_ROADMAP.md)** | 🛣️ **START HERE** — the 8-milestone path to production, current status, and the immediate next task. |
 | **[NIVIX_TECHNICAL_PRD.md](./NIVIX_TECHNICAL_PRD.md)** | The current build spec — architecture, data model, APIs, and the step-by-step epics E0→E12. **The source of truth for building.** |
 | **[IFSC_LEGAL_AND_BUILD_PLAN.md](./IFSC_LEGAL_AND_BUILD_PLAN.md)** | The current legal pathway — GIFT City IFSC / IFSCA FinTech Sandbox, phased legal+dev roadmap. |
-| **[PHASE_1_DEVELOPMENT_PLAN.md](./PHASE_1_DEVELOPMENT_PLAN.md)** | The detailed ~6-week build plan for Phase 1 (foundation + identity/KYC + multi-org Hyperledger). **Start building here.** |
+| **[PHASE_1_DEVELOPMENT_PLAN.md](./PHASE_1_DEVELOPMENT_PLAN.md)** | The detailed ~6-week build plan for Phase 1 (foundation + identity/KYC + multi-org Hyperledger). |
+| **[M2_USDC_SETTLEMENT_PLAN.md](./M2_USDC_SETTLEMENT_PLAN.md)** | ▶️ **NEXT TASK** — detailed plan for USDC settlement on Solana (M2). |
 | **[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)** | The canonical directory layout — new monorepo vs shared infra vs legacy POC, plus migration steps. |
 | **[NIVIX_MASTER_DOCUMENTATION.md](./NIVIX_MASTER_DOCUMENTATION.md)** | Consolidated reference. ⚠️ Describes the older POC architecture (self-minted token, simulated treasury) — superseded by the PRD on architecture, but useful as a full reference. |
 

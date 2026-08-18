@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nivix — Legally-Structured Architecture Blueprint</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1a2233;
+    font-size: 10.6pt;
+    line-height: 1.55;
+    margin: 0;
+  }
+  h1, h2, h3, h4 { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #0f2b46; }
+  h1 { font-size: 18.5pt; border-bottom: 3px solid #1b6f5c; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 13.5pt; color: #0f2b46; margin-top: 24px; border-left: 5px solid #1b6f5c; padding-left: 10px; }
+  h3 { font-size: 11.5pt; color: #17405e; margin-top: 16px; }
+  p { margin: 8px 0; }
+  .section { page-break-before: always; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px 0; font-size: 9.4pt; }
+  th, td { border: 1px solid #cdd7e1; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #0f2b46; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #f4f7fa; }
+  .tag { display: inline-block; background: #eaf3f0; color: #1b6f5c; border: 1px solid #1b6f5c; border-radius: 3px; padding: 1px 8px; font-size: 8.3pt; font-weight: 600; letter-spacing: .3px; }
+  .tag.verify { background: #fdf6ec; color: #8a6417; border-color: #b8860b; }
+  .tag.crit { background: #fdeef0; color: #a3324a; border-color: #a3324a; }
+  .callout {
+    background: #f4f8f7; border-left: 4px solid #1b6f5c; padding: 10px 14px; margin: 14px 0; border-radius: 3px; font-size: 10pt;
+  }
+  .callout.warn { background: #fdf6ec; border-left-color: #b8860b; }
+  .callout.fix { background: #eef5fb; border-left-color: #1c5d8f; }
+  .callout.crit { background: #fdeef0; border-left-color: #a3324a; }
+  .callout b.label { color: #1b6f5c; }
+  .warn b.label { color: #b8860b; }
+  .fix b.label { color: #1c5d8f; }
+  .crit b.label { color: #a3324a; }
+  pre.flow {
+    background: #0f2b46; color: #d9e6f0; padding: 14px 16px; border-radius: 6px;
+    font-family: "Courier New", monospace; font-size: 8.6pt; line-height: 1.5; overflow-x: auto; white-space: pre;
+  }
+  .flowbox {
+    display: flex; align-items: stretch; gap: 6px; margin: 16px 0; font-size: 8.8pt; flex-wrap: wrap;
+  }
+  .flowbox .step {
+    flex: 1; min-width: 110px; background: #fff; border: 1.5px solid #1b6f5c; border-radius: 6px;
+    padding: 10px 8px; text-align: center; position: relative;
+  }
+  .flowbox .step .n { display:block; font-weight:700; color:#1b6f5c; font-size: 8.3pt; margin-bottom:3px;}
+  .flowbox .arrow { align-self: center; font-size: 15pt; color: #1b6f5c; font-weight: 700; }
+  .numlist { margin: 10px 0; padding-left: 0; list-style: none; counter-reset: item; }
+  .numlist li { padding: 6px 0 6px 32px; position: relative; border-bottom: 1px dotted #cdd7e1; }
+  .numlist li:before {
+    counter-increment: item; content: counter(item);
+    position: absolute; left: 0; top: 5px; width: 20px; height: 20px; border-radius: 50%;
+    background: #a3324a; color: #fff; font-size: 9pt; font-weight: 700; text-align: center; line-height: 20px;
+  }
+  .cover {
+    height: 257mm; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 0 6mm;
+  }
+  .cover .tagline { color: #1b6f5c; font-weight: 700; letter-spacing: 2px; font-size: 10.5pt; text-transform: uppercase; margin-bottom: 18px; }
+  .cover h1 { border: none; font-size: 27pt; margin: 0 0 6px 0; line-height: 1.25; }
+  .cover .sub { font-size: 13pt; color: #3a4a5c; margin-bottom: 28px; }
+  .cover .disclaimer {
+    background: #fdeef0; border: 1px solid #a3324a; border-radius: 5px; padding: 12px 16px; font-size: 9.5pt;
+    color: #7a2438; max-width: 480px; margin-bottom: 20px;
+  }
+  .cover .meta { font-size: 9.5pt; color: #55636f; line-height: 1.9; border-top: 1px solid #cdd7e1; padding-top: 14px; margin-top: 10px; }
+  .cover .meta b { color: #0f2b46; }
+  .confbar { margin-top: 20px; background: #0f2b46; color: #fff; padding: 8px 14px; font-size: 9pt; border-radius: 4px; display: inline-block; letter-spacing: .5px;}
+  .toc-list { list-style: none; padding: 0; font-size: 10.8pt; }
+  .toc-list li { padding: 7px 0; border-bottom: 1px dotted #cdd7e1; display: flex; justify-content: space-between; }
+  .toc-list .num { color: #1b6f5c; font-weight: 700; margin-right: 10px; }
+  .badge-row { display:flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 18px 0; }
+  .badge { background:#eaf3f0; border:1px solid #1b6f5c; color:#0f2b46; font-size:8.4pt; padding:4px 10px; border-radius: 12px; }
+  footer.pagefoot { font-size: 8pt; color: #8494a3; text-align: center; margin-top: 30px; }
+  .glossary dt { font-weight: 700; color: #0f2b46; margin-top: 8px; }
+  .glossary dd { margin: 2px 0 0 0; color: #33414d; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="tagline">Legal &amp; Architecture Blueprint</div>
+  <h1>The Legally-Structured Architecture</h1>
+  <div class="sub">What the law actually permits — built from FEMA/RBI boundaries, the IFSCA sandbox pathway, and destination-country stablecoin law</div>
+  <div class="disclaimer">
+    <b>This is a design blueprint, not a regulatory approval.</b> No regulator — not RBI, not IFSCA, not any US/EU authority — has reviewed this specific design. Every jurisdiction-specific conclusion here must be confirmed by qualified counsel before it is built or shown to anyone as "compliant." See Section 1.
+  </div>
+  <div class="badge-row">
+    <span class="badge">No self-issued tokens</span>
+    <span class="badge">Stablecoin never touches customers</span>
+    <span class="badge">Partner-first licensing</span>
+  </div>
+  <div class="meta">
+    <div><b>Company:</b> NivixPe Private Limited</div>
+    <div><b>Scope:</b> Ground-up legal architecture — ignores current code, starts from what the law permits</div>
+    <div><b>Date:</b> August 2026</div>
+  </div>
+  <div class="confbar">FOR LEGAL REVIEW — CONFIRM ALL [VERIFY] ITEMS WITH COUNSEL</div>
+</div>
+
+<!-- TOC -->
+<div class="section">
+<h1>Contents</h1>
+<ul class="toc-list">
+  <li><span><span class="num">1.</span>What This Document Is — and Isn't</span></li>
+  <li><span><span class="num">2.</span>The Legal Defects Being Removed</span></li>
+  <li><span><span class="num">3.</span>The One Rule That Fixes Most of It</span></li>
+  <li><span><span class="num">4.</span>The Architecture — Three Legs, One Diagram</span></li>
+  <li><span><span class="num">5.</span>Legal Basis — Leg A: India Collection</span></li>
+  <li><span><span class="num">6.</span>Legal Basis — Leg B: Treasury &amp; Custody</span></li>
+  <li><span><span class="num">7.</span>Legal Basis — Leg C: Destination Country &amp; Licensing</span></li>
+  <li><span><span class="num">8.</span>Non-Negotiable Rules</span></li>
+  <li><span><span class="num">9.</span>Phased Rollout Aligned to Legal Milestones</span></li>
+  <li><span><span class="num">10.</span>Open Questions for Counsel — Consolidated</span></li>
+  <li><span><span class="num">A.</span>Appendix — Glossary</span></li>
+  <li><span><span class="num">B.</span>Appendix — Confidence &amp; Sources Note</span></li>
+</ul>
+</div>
+
+<!-- 1. WHAT THIS IS -->
+<div class="section">
+<h1>1. What This Document Is — and Isn't</h1>
+
+<div class="callout crit">
+  <b class="label">Not a regulatory approval.</b> This document reflects general legal principles — FEMA/RBI's treatment of crypto, the GIFT City IFSCA sandbox pathway already chosen for this project, and the US GENIUS Act stablecoin framework — applied to a system design. It has not been reviewed by RBI, IFSCA, FinCEN, or any other authority. Treat every jurisdiction-specific conclusion below as a starting hypothesis for your lawyer to confirm, not a finding.
+</div>
+
+<div class="callout warn">
+  <b class="label">Some specifics could not be verified live.</b> Web verification of current regulations was unavailable when this document was prepared. Anywhere marked <span class="tag verify">VERIFY</span> must be checked against current primary sources — RBI/IFSCA circulars, FinCEN guidance, or your lawyer's own research — before being relied upon. Section 10 consolidates every such item into one list.
+</div>
+
+<h3>What this document IS</h3>
+<ul>
+  <li>A blueprint showing which legal defect gets removed by which architectural choice, so engineering, legal, and the investor conversation describe the same target shape</li>
+  <li>Built consistent with decisions already locked for this project: GIFT City IFSC / IFSCA sandbox as the legal home, Hyperledger Fabric (multi-org) as the compliance/audit ledger, and real Circle USDC — never a self-issued token — as the settlement asset</li>
+  <li>Written from scratch, ignoring the current prototype's implementation entirely — this is what the law permits, not a patch on existing code</li>
+</ul>
+</div>
+
+<!-- 2. DEFECTS REMOVED -->
+<div class="section">
+<h1>2. The Legal Defects Being Removed</h1>
+<p>Before describing the target architecture, it's worth being explicit about which specific patterns it eliminates and why each one matters to a regulator.</p>
+<table>
+<tr><th>Pattern</th><th>Why it's a legal problem</th><th>Who reacts</th></tr>
+<tr><td>Self-issued tokens labeled as a real currency (e.g. "USD-token," "INR-token") with no backing</td><td>Functions as an unbacked stored-value / e-money-like instrument; separately risks misrepresentation if labeled as a real currency it isn't redeemable for</td><td>Every regulator reviewed — RBI, IFSCA, FinCEN, EU authorities</td></tr>
+<tr><td>Customer wallet holds or burns crypto directly</td><td>Attaches full retail virtual-digital-asset regulatory exposure — KYC/AML, travel-rule, VDA registration — directly to the customer relationship</td><td>Highest-scrutiny category, everywhere</td></tr>
+<tr><td>Customer fiat used to fund a crypto purchase for outward transfer, with no defined institutional structure in between</td><td>Risks being characterized as an LRS violation — purchasing virtual digital assets is an explicitly barred purpose for outward remittance under FEMA</td><td>RBI / FEMA, directly</td></tr>
+<tr><td>Treasury private key stored as a plaintext file, no custody controls</td><td>Fails the safeguarding-of-customer-funds expectation attached to essentially every money-transmission license</td><td>Any money-transmission regulator</td></tr>
+<tr><td>No entity in the chain actually holds a license covering the cross-border money movement itself</td><td>Unlicensed money transmission — a core offense, not a technicality</td><td>Every jurisdiction in the corridor</td></tr>
+</table>
+</div>
+
+<!-- 3. THE ONE RULE -->
+<div class="section">
+<h1>3. The One Rule That Fixes Most of It</h1>
+<div class="callout">
+  <b class="label">Stablecoins never touch a customer.</b> Not bought, not held, not burned. Customers only ever see fiat — they pay fiat in, and a recipient receives fiat out. Any stablecoin in the system exists purely as Nivix's own internal treasury tool, moved only between Nivix's own custody and a licensed partner's custody.
+</div>
+<p>This single rule does most of the legal work in this document:</p>
+<ul>
+  <li>It removes retail crypto custody entirely — the single highest-scrutiny risk category in row 2 of Section 2 — because there is no customer-held asset to regulate.</li>
+  <li>It removes the self-issued-token problem structurally (row 1) — there's no token for a customer to receive, so there's nothing to mislabel as a currency.</li>
+  <li>It reframes the customer's payment as a domestic transaction for a service, not a crypto purchase (row 3) — though the precise legal weight of that reframing for India specifically still needs confirmation; see Section 5.</li>
+</ul>
+</div>
+
+<!-- 4. ARCHITECTURE -->
+<div class="section">
+<h1>4. The Architecture — Three Legs, One Diagram</h1>
+
+<div class="flowbox">
+  <div class="step"><span class="n">SENDER</span>Pays fiat (e.g. INR)</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">LEG A — COLLECTION</span>Licensed domestic partner, fiat only</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">LEG B — TREASURY</span>Nivix's own custodied USDC</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">LEG C — CONVERSION + PAYOUT</span>Licensed destination partner</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">RECIPIENT</span>Receives fiat</div>
+</div>
+
+<pre class="flow">Sender (fiat)
+   │
+   ▼
+Licensed collection partner — domestic, fiat only (Leg A)
+   │
+   ▼
+Nivix treasury — real USDC, institutionally custodied (Leg B)
+   │
+   ▼
+Licensed conversion + payout partner — destination country (Leg C)
+   │
+   ▼
+Recipient (fiat)
+
+Hyperledger Fabric (multi-org) records KYC/compliance events at
+every hop — unchanged from the decision already locked for this
+project. This document does not revisit that choice.</pre>
+
+<table>
+<tr><th>Leg</th><th>Function</th><th>Who performs it</th><th>What crosses this boundary</th></tr>
+<tr><td><b>A — Collection</b></td><td>Take the sender's fiat, confirm payment</td><td>Licensed domestic Payment Aggregator / PSP partner</td><td>Fiat only</td></tr>
+<tr><td><b>B — Treasury</b></td><td>Hold and move Nivix's own pre-funded USDC</td><td>Nivix, via institutional custody</td><td>USDC — Nivix's own asset, never customer-owned</td></tr>
+<tr><td><b>C — Conversion + payout</b></td><td>Convert USDC to destination fiat, pay the named recipient</td><td>Licensed conversion/payout partner in the destination country</td><td>Fiat only reaches the recipient; USDC only ever touches the partner's own regulated system</td></tr>
+</table>
+</div>
+
+<!-- 5. LEG A -->
+<div class="section">
+<h1>5. Legal Basis — Leg A: India Collection</h1>
+
+<h3>5.1 The regulatory reality, plainly</h3>
+<ul>
+  <li>RBI does not recognize crypto or stablecoins as legal tender or as a permitted remittance instrument.</li>
+  <li>FEMA's Liberalized Remittance Scheme (LRS) explicitly excludes purchasing virtual digital assets as a permitted purpose for outward remittance.</li>
+  <li>Any entity dealing in virtual digital assets must register with FIU-IND as a reporting entity under PMLA — this is an anti-money-laundering obligation, not a license to run a VDA remittance business.</li>
+</ul>
+
+<h3>5.2 What this architecture deliberately does NOT do</h3>
+<div class="callout">
+  It does not let a mainland Indian customer's remittance instruction convert into crypto. The customer pays a licensed domestic partner in INR for a payment service — a domestic transaction. Whatever happens next (Nivix's own treasury operations, Leg B) is Nivix managing its own working capital, using its own money, to fulfil that service abroad.
+</div>
+
+<h3>5.3 Why this still needs sign-off — the single most important open question <span class="tag verify">VERIFY</span></h3>
+<p>The pattern "customer pays for a service domestically; the provider separately settles internationally using its own assets" is an established one in payments — it is roughly how many money transfer operators net-settle across borders without physically moving the customer's own currency. But whether Nivix's specific structure satisfies this in substance is not something this document can certify:</p>
+<ul>
+  <li>Does an IFSC-based entity receiving a mainland customer's payment through a domestic collection partner actually get FEMA's "non-resident jurisdiction" treatment for this specific flow, or does it still require the collection leg itself to hold a specific RBI-recognized cross-border remittance authorization?</li>
+  <li>Candidate categories worth researching with counsel: status as an Authorised Dealer, or authorization under RBI's Payment Aggregator&ndash;Cross Border framework <span class="tag verify">VERIFY exact current name/requirements</span>.</li>
+</ul>
+<div class="callout warn">
+  This is exactly what the "confirm IFSCA sandbox scope with the lawyer" item already flagged for this project in earlier planning. This document does not resolve that question — the rest of this architecture depends on its answer.
+</div>
+</div>
+
+<!-- 6. LEG B -->
+<div class="section">
+<h1>6. Legal Basis — Leg B: Treasury &amp; Custody</h1>
+<p>Once fiat has been collected domestically for a service (Leg A), Nivix's treasury is Nivix's own money — the same as any company's working capital. The relevant legal question shifts from "is this remittance" to "is this money safeguarded properly":</p>
+<table>
+<tr><th>Requirement</th><th>Why it matters</th></tr>
+<tr><td>Funds purchased through a regulated, KYB'd channel (a licensed exchange, or an institutional product like Circle Mint) — never self-minted</td><td>Establishes that the USDC in the treasury is real and traceable to a legitimate purchase, not fabricated</td></tr>
+<tr><td>Institutional-grade custody — multisig or MPC, not a single private key on a laptop or in a plaintext file</td><td>A single-key treasury fails the safeguarding expectation attached to money-transmission licensing, and is a straightforward operational risk regardless of licensing status</td></tr>
+<tr><td>Customer funds still in transit held in a segregated account, not commingled with Nivix's general operating capital</td><td>Close to a universal requirement under money-transmission safeguarding rules, and good practice even where not strictly mandated <span class="tag verify">VERIFY specific requirement under the applicable license</span></td></tr>
+</table>
+</div>
+
+<!-- 7. LEG C -->
+<div class="section">
+<h1>7. Legal Basis — Leg C: Destination Country &amp; Licensing Strategy</h1>
+
+<h3>7.1 Why USDC specifically</h3>
+<p>In the US, the GENIUS Act <span class="tag verify">VERIFY current status/requirements</span> established a federal framework for "payment stablecoins" — issuers must hold 1:1 reserves in cash and short-term Treasuries, and undergo regular audits. This is what makes Circle's USDC a compliant settlement asset to route through, as opposed to an unregulated token — the same distinction that rules out any self-issued asset in this design.</p>
+
+<h3>7.2 Money transmission is separate from the choice of asset</h3>
+<p>Regardless of which stablecoin is used: moving money for other people, across a border, for a fee, is money transmission — regulated state-by-state in the US (Money Transmitter Licenses) and federally (FinCEN MSB registration), with equivalent categories in the EU and elsewhere.</p>
+
+<h3>7.3 Chosen strategy: partner-first</h3>
+<div class="callout fix">
+  Rather than Nivix obtaining its own Money Transmitter Licenses — realistically a lengthy, high-cost process for an early-stage company <span class="tag verify">VERIFY current timeline/cost</span> — Nivix contracts with a partner that already holds the relevant licenses to perform the USDC-to-fiat conversion and the payout to the named recipient. The partner's license covers the regulated act in that jurisdiction; Nivix's role is technology, orchestration, and its own treasury.
+</div>
+
+<h3>7.4 What this strategy does not eliminate <span class="tag verify">VERIFY</span></h3>
+<p>Partnering shifts risk; it does not remove the need for legal review. Confirm specifically that the chosen partner's license scope covers <i>receiving USDC from Nivix's treasury and paying a named third-party recipient</i> — not merely processing payments on behalf of the partner's own direct merchants. License scope varies materially by provider and must be checked against Nivix's exact use case before any contract is signed.</p>
+</div>
+
+<!-- 8. NON-NEGOTIABLE RULES -->
+<div class="section">
+<h1>8. Non-Negotiable Rules</h1>
+<p>These hold regardless of jurisdiction, corridor, or which specific partners are chosen. None of them should ever be reversed for convenience.</p>
+<ol class="numlist">
+  <li>No self-issued token labeled as, or standing in for, a real currency.</li>
+  <li>No customer wallet holds, buys, or burns any crypto asset, at any point in the flow.</li>
+  <li>No funding of stablecoin purchases with LRS or other outward-remittance-restricted money.</li>
+  <li>No treasury private key without multisig or MPC and institutional custody.</li>
+  <li>No commingling of customer funds still in transit with Nivix's own operating capital.</li>
+  <li>No cross-border leg performed by any entity — Nivix or a partner — without a confirmed, current license or authorization covering that specific act, in that specific jurisdiction.</li>
+</ol>
+</div>
+
+<!-- 9. PHASED ROLLOUT -->
+<div class="section">
+<h1>9. Phased Rollout Aligned to Legal Milestones</h1>
+<table>
+<tr><th>Phase</th><th>Focus</th></tr>
+<tr><td><b>Phase 0 — Legal foundation</b> (parallel to any engineering)</td><td>Confirm the Leg A characterization question (Section 5.3) with counsel; select and contract one destination-country conversion+payout partner and confirm license scope (Section 7.4); open Circle Mint KYB for treasury funding; stand up institutional custody (multisig/MPC)</td></tr>
+<tr><td><b>Phase 1 — Single-corridor MVP</b></td><td>Build only the three-leg flow in Section 4 — no multi-currency dropdown, no self-minted tokens, no customer-held crypto; full KYC gate, Fabric-recorded (multi-org, already locked); capped to sandbox limits</td></tr>
+<tr><td><b>Phase 2 — Scale within the sandbox</b></td><td>Add corridors via additional or broader destination partners; push toward higher sandbox tiers as milestones are met</td></tr>
+<tr><td><b>Phase 3 — Exit the sandbox</b></td><td>Revisit obtaining Nivix's own licenses once volume justifies the cost — partner-first is the starting strategy, not necessarily the permanent one</td></tr>
+</table>
+</div>
+
+<!-- 10. OPEN QUESTIONS -->
+<div class="section">
+<h1>10. Open Questions for Counsel — Consolidated</h1>
+<p>Every item marked <span class="tag verify">VERIFY</span> throughout this document, gathered in one place. None of the architecture in Sections 3&ndash;4 should be treated as final until these are answered.</p>
+<ol class="numlist">
+  <li>Does Nivix's IFSC-entity-plus-domestic-collection-partner structure satisfy FEMA's non-resident treatment of IFSC for this specific flow, or does the India collection leg need its own specific cross-border authorization — e.g. an Authorised Dealer category, or authorization under RBI's Payment Aggregator&ndash;Cross Border framework? <i>(Section 5.3)</i></li>
+  <li>Current IFSCA sandbox transaction/customer caps, and whether the destination partner must be named in the sandbox application. <i>(Section 5)</i></li>
+  <li>Current status and specific requirements of the US GENIUS Act stablecoin framework, and whether it affects the choice of stablecoin issuer. <i>(Section 7.1)</i></li>
+  <li>Whether the chosen destination-country partner's license scope covers paying named third-party recipients on Nivix's behalf, not just processing the partner's own direct merchant transactions. <i>(Section 7.4)</i></li>
+  <li>Segregation/safeguarding requirements specific to the sandbox terms and to the destination-country partner relationship. <i>(Section 6)</i></li>
+  <li>Current realistic cost and timeline for Nivix's own Money Transmitter Licenses, to validate the "partner-first, license later" assumption in Phase 3. <i>(Section 9)</i></li>
+</ol>
+</div>
+
+<!-- APPENDIX A -->
+<div class="section">
+<h1>Appendix A — Glossary</h1>
+<dl class="glossary">
+<dt>FEMA</dt><dd>Foreign Exchange Management Act — India's core law governing cross-border currency transactions.</dd>
+<dt>LRS</dt><dd>Liberalized Remittance Scheme — the FEMA facility allowing resident individuals to remit money abroad for permitted purposes; explicitly excludes purchasing virtual digital assets.</dd>
+<dt>FIU-IND</dt><dd>Financial Intelligence Unit-India — the body virtual-digital-asset businesses must register with as reporting entities under PMLA.</dd>
+<dt>PMLA</dt><dd>Prevention of Money Laundering Act — India's core anti-money-laundering law.</dd>
+<dt>IFSC / IFSCA</dt><dd>International Financial Services Centre (GIFT City, Gujarat) and its regulator, the International Financial Services Centres Authority — treated as a non-resident jurisdiction for FEMA purposes.</dd>
+<dt>VDA</dt><dd>Virtual Digital Asset — India's regulatory term covering cryptocurrencies and similar tokens.</dd>
+<dt>MTL</dt><dd>Money Transmitter License — required state-by-state in the US to legally move money on behalf of others.</dd>
+<dt>MSB</dt><dd>Money Services Business — the FinCEN federal registration category covering money transmitters in the US.</dd>
+<dt>GENIUS Act</dt><dd>US federal legislation establishing a regulatory framework for "payment stablecoins," requiring 1:1 reserve backing and regular audits.</dd>
+<dt>Multisig / MPC custody</dt><dd>Custody models requiring multiple independent approvals (multisig) or distributed key computation (MPC) to move funds — the alternative to a single private key controlling an entire treasury.</dd>
+<dt>Payment Aggregator&ndash;Cross Border</dt><dd>A candidate RBI regulatory category for entities facilitating cross-border payments; exact current name and requirements flagged for verification in this document.</dd>
+</dl>
+</div>
+
+<!-- APPENDIX B -->
+<div class="section">
+<h1>Appendix B — Confidence &amp; Sources Note</h1>
+<p>This document mixes two kinds of claims, and it's worth being clear about the difference:</p>
+<table>
+<tr><th>Category</th><th>Examples</th><th>Confidence</th></tr>
+<tr><td>Established, longstanding regulatory principles</td><td>RBI's non-recognition of crypto as legal tender; LRS's exclusion of crypto purchases; the requirement for VDA businesses to register with FIU-IND; the existence and core 1:1-reserve requirement of the GENIUS Act; the general requirement for money-transmission licensing in the US/EU</td><td>Reasonably reliable — long-standing, widely reported</td></tr>
+<tr><td>Fast-moving or case-specific items</td><td>Current IFSCA sandbox caps; exact current name/requirements of any RBI cross-border payment aggregator framework; current licensing costs/timelines; whether a specific partner's license scope covers this exact use case</td><td>Not verified live in this session — every such item is marked <span class="tag verify">VERIFY</span> and listed in Section 10</td></tr>
+</table>
+<div class="callout crit">
+  <b class="label">Bottom line:</b> this document is a legal-architecture hypothesis, built to remove the specific, well-understood defects in a naive design (Section 2). It is a starting point for your lawyer's review — not a substitute for it.
+</div>
+<footer class="pagefoot">Nivix — Legally-Structured Architecture Blueprint · For legal review, not a regulatory approval · August 2026</footer>
+</div>
+
+</body>
+</html>

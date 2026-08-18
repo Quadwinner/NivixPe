@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nivix — How Minting &amp; Burning Actually Works</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1a2233;
+    font-size: 10.8pt;
+    line-height: 1.55;
+    margin: 0;
+  }
+  h1, h2, h3, h4 { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #0f2b46; }
+  h1 { font-size: 19pt; border-bottom: 3px solid #1b6f5c; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 14pt; color: #0f2b46; margin-top: 26px; border-left: 5px solid #1b6f5c; padding-left: 10px; }
+  h3 { font-size: 11.8pt; color: #17405e; margin-top: 18px; }
+  p { margin: 8px 0; }
+  .section { page-break-before: always; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px 0; font-size: 9.6pt; }
+  th, td { border: 1px solid #cdd7e1; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #0f2b46; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #f4f7fa; }
+  .tag { display: inline-block; background: #eaf3f0; color: #1b6f5c; border: 1px solid #1b6f5c; border-radius: 3px; padding: 1px 8px; font-size: 8.5pt; font-weight: 600; letter-spacing: .3px; }
+  .tag.dead { background: #fdeef0; color: #a3324a; border-color: #a3324a; }
+  .callout {
+    background: #f4f8f7; border-left: 4px solid #1b6f5c; padding: 10px 14px; margin: 14px 0; border-radius: 3px; font-size: 10.2pt;
+  }
+  .callout.warn { background: #fdf6ec; border-left-color: #b8860b; }
+  .callout.fix { background: #eef5fb; border-left-color: #1c5d8f; }
+  .callout b.label { color: #1b6f5c; }
+  .warn b.label { color: #b8860b; }
+  .fix b.label { color: #1c5d8f; }
+  pre.flow {
+    background: #0f2b46; color: #d9e6f0; padding: 14px 16px; border-radius: 6px;
+    font-family: "Courier New", monospace; font-size: 8.8pt; line-height: 1.5; overflow-x: auto; white-space: pre;
+  }
+  .flowbox {
+    display: flex; align-items: stretch; gap: 6px; margin: 16px 0; font-size: 9pt; flex-wrap: wrap;
+  }
+  .flowbox .step {
+    flex: 1; min-width: 105px; background: #fff; border: 1.5px solid #1b6f5c; border-radius: 6px;
+    padding: 10px 8px; text-align: center; position: relative;
+  }
+  .flowbox .step.fake { border-color: #b8860b; background: #fdf9f0; }
+  .flowbox .step .n { display:block; font-weight:700; color:#1b6f5c; font-size: 8.5pt; margin-bottom:3px;}
+  .flowbox .step.fake .n { color: #b8860b; }
+  .flowbox .arrow { align-self: center; font-size: 16pt; color: #1b6f5c; font-weight: 700; }
+  .kv-list { margin: 10px 0; padding-left: 0; list-style: none; }
+  .kv-list li { padding: 4px 0 4px 0; border-bottom: 1px dotted #cdd7e1; }
+  .kv-list b { color: #0f2b46; }
+  .cover {
+    height: 257mm; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 0 6mm;
+  }
+  .cover .tagline { color: #1b6f5c; font-weight: 700; letter-spacing: 2px; font-size: 11pt; text-transform: uppercase; margin-bottom: 18px; }
+  .cover h1 { border: none; font-size: 30pt; margin: 0 0 6px 0; line-height: 1.2; }
+  .cover .sub { font-size: 14pt; color: #3a4a5c; margin-bottom: 40px; }
+  .cover .meta { font-size: 10pt; color: #55636f; line-height: 1.9; border-top: 1px solid #cdd7e1; padding-top: 14px; margin-top: 30px; }
+  .cover .meta b { color: #0f2b46; }
+  .confbar { margin-top: 60px; background: #0f2b46; color: #fff; padding: 8px 14px; font-size: 9pt; border-radius: 4px; display: inline-block; letter-spacing: .5px;}
+  .toc-list { list-style: none; padding: 0; font-size: 11pt; }
+  .toc-list li { padding: 7px 0; border-bottom: 1px dotted #cdd7e1; display: flex; justify-content: space-between; }
+  .toc-list .num { color: #1b6f5c; font-weight: 700; margin-right: 10px; }
+  .badge-row { display:flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 18px 0; }
+  .badge { background:#eaf3f0; border:1px solid #1b6f5c; color:#0f2b46; font-size:8.6pt; padding:4px 10px; border-radius: 12px; }
+  .stepcard {
+    border: 1px solid #cdd7e1; border-left: 5px solid #1b6f5c; border-radius: 5px; padding: 10px 14px; margin: 10px 0;
+  }
+  .stepcard.burn { border-left-color: #a3324a; }
+  .stepcard .stepnum { display:inline-block; background:#1b6f5c; color:#fff; border-radius:50%; width:22px; height:22px; text-align:center; line-height:22px; font-size:9.5pt; font-weight:700; margin-right:8px;}
+  .stepcard.burn .stepnum { background:#a3324a; }
+  .stepcard .stepwho { font-size: 8.5pt; color: #667; text-transform: uppercase; letter-spacing: .4px; margin-top: 4px; }
+  footer.pagefoot { font-size: 8pt; color: #8494a3; text-align: center; margin-top: 30px; }
+  .glossary dt { font-weight: 700; color: #0f2b46; margin-top: 8px; }
+  .glossary dd { margin: 2px 0 0 0; color: #33414d; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="tagline">Technical Walkthrough</div>
+  <h1>How Minting &amp; Burning<br>Actually Works</h1>
+  <div class="sub">A step-by-step explanation of the on-ramp / off-ramp token flow, as currently built</div>
+  <div class="badge-row">
+    <span class="badge">Solana SPL tokens</span>
+    <span class="badge">Mint on fiat-in</span>
+    <span class="badge">Burn on fiat-out</span>
+  </div>
+  <div class="meta">
+    <div><b>Company:</b> NivixPe Private Limited</div>
+    <div><b>Scope:</b> Current (legacy) bridge-service implementation</div>
+    <div><b>Date:</b> August 2026</div>
+  </div>
+  <div class="confbar">FOR INTERNAL / TECHNICAL DISCUSSION</div>
+</div>
+
+<!-- TOC -->
+<div class="section">
+<h1>Contents</h1>
+<ul class="toc-list">
+  <li><span><span class="num">1.</span>The Core Idea, in One Sentence</span></li>
+  <li><span><span class="num">2.</span>Who's Involved</span></li>
+  <li><span><span class="num">3.</span>Mint Side — Fiat In &rarr; Token Created</span></li>
+  <li><span><span class="num">4.</span>Burn Side — Token Destroyed &rarr; Fiat Out</span></li>
+  <li><span><span class="num">5.</span>The Full Flow, Start to Finish</span></li>
+  <li><span><span class="num">6.</span>What the "USD Token" Actually Means Today</span></li>
+  <li><span><span class="num">7.</span>Current Gaps — What's Not Really Wired Up</span></li>
+  <li><span><span class="num">8.</span>Where This Is Headed</span></li>
+  <li><span><span class="num">A.</span>Appendix — Glossary</span></li>
+</ul>
+</div>
+
+<!-- 1. CORE IDEA -->
+<div class="section">
+<h1>1. The Core Idea, in One Sentence</h1>
+<div class="callout">
+  <b class="label">The token is not currency.</b> It's a temporary receipt that exists only for the few seconds between "fiat went in" and "fiat came out." Nobody is meant to hold it, save it, or spend it like money — it's just the on-chain hop in the middle of a transaction that starts and ends in real bank money.
+</div>
+<p>Two operations make up the whole lifecycle of that receipt:</p>
+<table>
+<tr><th>Operation</th><th>What it means</th><th>Who triggers it</th></tr>
+<tr><td><b>Mint</b></td><td>Create brand-new tokens out of nothing and place them in a wallet</td><td>Nivix's backend (it holds the "mint authority" key)</td></tr>
+<tr><td><b>Burn</b></td><td>Permanently destroy tokens, removing them from supply forever</td><td>The wallet owner (only they can authorize destroying their own balance)</td></tr>
+</table>
+<p>Every transaction does exactly one mint and one burn, in sequence, for the same amount. Supply goes up when fiat comes in; supply comes back down when fiat goes out. If the system is working correctly, total tokens in existence at any moment should represent money that is "in transit" — already collected from a sender, not yet paid to a recipient.</p>
+</div>
+
+<!-- 2. WHO'S INVOLVED -->
+<div class="section">
+<h1>2. Who's Involved</h1>
+<table>
+<tr><th>Party</th><th>Role in this flow</th></tr>
+<tr><td><b>Sender</b></td><td>Pays real fiat money (e.g. INR) into the system</td></tr>
+<tr><td><b>Payment gateway</b> (Razorpay / Cashfree)</td><td>Actually collects the sender's payment into Nivix's bank account; confirms via webhook. <i>Only handles INR today.</i></td></tr>
+<tr><td><b>Nivix backend</b> (bridge-service)</td><td>Decides how many tokens to mint, builds and signs the mint transaction, later verifies the burn and triggers payout</td></tr>
+<tr><td><b>Treasury wallet</b></td><td>A single Solana keypair that holds "mint authority" over all 7 currency-named tokens — it can create unlimited units of any of them</td></tr>
+<tr><td><b>User's Solana wallet</b> (Phantom, etc.)</td><td>Receives the minted tokens; later signs the burn instruction to destroy them</td></tr>
+<tr><td><b>Solana network</b></td><td>Records the mint and the burn as public, verifiable transactions (~2 seconds each)</td></tr>
+<tr><td><b>Payout provider</b> (Cashfree Payouts)</td><td>Pays the recipient real fiat after the burn is verified. <i>Only handles INR payout today.</i></td></tr>
+<tr><td><b>Recipient</b></td><td>Receives real fiat money out of the system</td></tr>
+</table>
+</div>
+
+<!-- 3. MINT SIDE -->
+<div class="section">
+<h1>3. Mint Side — Fiat In &rarr; Token Created</h1>
+
+<div class="stepcard">
+  <span class="stepnum">1</span><b>Sender pays.</b> They enter an amount (e.g. &#8377;8,300) in the app and confirm payment.
+  <div class="stepwho">Sender &middot; instant</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">2</span><b>Payment gateway collects it.</b> Razorpay/Cashfree takes the &#8377;8,300 into Nivix's own bank account. This step only accepts INR — hardcoded in the payment gateway integration.
+  <div class="stepwho">Razorpay / Cashfree &middot; instant</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">3</span><b>Webhook confirms payment.</b> The gateway notifies Nivix's backend: "&#8377;8,300 received for order #123."
+  <div class="stepwho">Payment gateway &rarr; Nivix backend &middot; seconds</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">4</span><b>Backend calculates the token amount.</b> Using an exchange rate (e.g. &#8377;83 = 1 unit), it decides how many tokens to create — say, 100.
+  <div class="stepwho">Nivix backend &middot; instant</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">5</span><b>Backend mints the tokens.</b> It builds a Solana transaction containing a <code>MintTo</code> instruction, creates the user's token account if needed, and signs it with the treasury's private key — the only key allowed to create new units of this token.
+  <div class="stepwho">Nivix backend + treasury key &middot; ~2 seconds</div>
+</div>
+<div class="stepcard">
+  <span class="stepnum">6</span><b>Transaction confirms.</b> The user's wallet now shows 100 tokens that did not exist a moment ago. Total supply of that token has permanently increased by 100.
+  <div class="stepwho">Solana network &middot; ~2 seconds</div>
+</div>
+
+<div class="callout warn">
+  <b class="label">Worth being direct about:</b> "minting" here means creating value from nothing, authorized by a single private key. Nothing on-chain proves that real fiat backing exists to match what gets minted — that trust currently depends entirely on Nivix's internal bookkeeping being correct and the treasury key never being misused or compromised.
+</div>
+
+<p><b>State after step 6:</b> &#8377;8,300 sits in Nivix's bank account (real money). 100 tokens sit in the user's Solana wallet (created by Nivix, backed by nothing on-chain). Nothing has reached a recipient yet.</p>
+</div>
+
+<!-- 4. BURN SIDE -->
+<div class="section">
+<h1>4. Burn Side — Token Destroyed &rarr; Fiat Out</h1>
+
+<div class="stepcard burn">
+  <span class="stepnum">7</span><b>User initiates withdrawal.</b> They choose a recipient and confirm the transfer. Their own wallet (Phantom) signs a <code>Burn</code> instruction for those 100 tokens.
+  <div class="stepwho">User's own wallet &middot; instant</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">8</span><b>Burn confirms on-chain.</b> The 100 tokens are permanently destroyed. Total supply drops back down by exactly the amount minted in step 6.
+  <div class="stepwho">Solana network &middot; ~2 seconds</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">9</span><b>Backend verifies the burn.</b> The frontend sends the burn's transaction signature to Nivix's backend, which checks Solana directly to confirm the burn actually happened and wasn't faked.
+  <div class="stepwho">Nivix backend &middot; seconds</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">10</span><b>Backend triggers the payout.</b> Once verified, it calls the payout provider: "pay &#8377;8,282 (after fees) to this recipient's bank account."
+  <div class="stepwho">Nivix backend &rarr; Cashfree &middot; seconds</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">11</span><b>Recipient is paid.</b> Cashfree either wires the amount directly to a bank account, or sends a claim-link the recipient redeems to their bank account or UPI.
+  <div class="stepwho">Cashfree &middot; minutes&ndash;hours</div>
+</div>
+<div class="stepcard burn">
+  <span class="stepnum">12</span><b>Confirmation shown.</b> Both sender and recipient see a completed transaction with a receipt in the app.
+  <div class="stepwho">Nivix app &middot; instant</div>
+</div>
+
+<div class="callout">
+  <b class="label">Why the burn is signed by the user, not the backend:</b> the SPL Token program requires the token account's owner to authorize destroying their own balance. Only the treasury can <i>create</i> tokens (mint authority); only the holder can <i>destroy</i> their own tokens. That asymmetry is a property of the SPL Token standard itself, not a Nivix design choice.
+</div>
+</div>
+
+<!-- 5. FULL FLOW -->
+<div class="section">
+<h1>5. The Full Flow, Start to Finish</h1>
+
+<div class="flowbox">
+  <div class="step"><span class="n">① SENDER PAYS</span>&#8377;8,300 real INR</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step fake"><span class="n">⑤ MINT</span>100 tokens created from nothing</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step fake"><span class="n">⑧ BURN</span>100 tokens destroyed</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">⑪ RECIPIENT PAID</span>&#8377;8,282 real INR</div>
+</div>
+
+<pre class="flow">₹8,300 IN                100 tokens              100 tokens               ₹8,282 OUT
+(real money)     ──►    MINTED               ──►  BURNED             ──►   (real money)
+                    (backend-created,              (destroyed,
+                     backed by nothing              supply drops
+                     on-chain — trust is             back down)
+                     Nivix's bookkeeping)
+
+Timeline:  Payment (instant) → webhook (seconds) → mint (~2 sec)
+           → user withdraws → burn (~2 sec) → verify (seconds) → payout (minutes-hours)</pre>
+
+<p>The token exists for only a few seconds, mid-transaction — a bridge between two fiat events, never something a user is meant to sit on or accumulate.</p>
+</div>
+
+<!-- 6. WHAT USD TOKEN MEANS -->
+<div class="section">
+<h1>6. What the "USD Token" Actually Means Today</h1>
+
+<p>The system has <b>7 separate tokens</b>, one labeled per currency (USD, EUR, INR, GBP, JPY, CAD, AUD). This is the part that causes the most confusion, so it's worth being precise:</p>
+
+<div class="callout warn">
+  <b class="label">These are not real currencies on-chain.</b> They are ordinary SPL tokens that Nivix's own code created and named after currencies. Nothing backs them. The treasury wallet is the mint authority for all seven — it can create unlimited units of any of them, of any currency label, at zero cost, with no proof of matching real-world reserves.
+</div>
+
+<h3>6.1 What was actually tested</h3>
+<p>In the transaction demonstrated so far, <b>both sender and recipient were in India.</b> The flow was:</p>
+<pre class="flow">Real ₹ IN  →  mint "USD"-labeled tokens  →  burn them  →  real ₹ OUT
+(India)         (misleadingly named)                        (India)</pre>
+<p>No dollars were involved anywhere. No money crossed a border. The token happened to be named "USD" because that's the default destination-currency slot the code fills in — not because any US-side rail exists.</p>
+
+<h3>6.2 The other 6 tokens</h3>
+<table>
+<tr><th>Token</th><th>Payment rail behind it</th><th>Status</th></tr>
+<tr><td>USD</td><td>None (domestic INR-only bridge, mislabeled)</td><td><span class="tag">Only one exercised in testing</span></td></tr>
+<tr><td>INR, EUR, GBP, JPY, CAD, AUD</td><td>None — no collection or payout integration exists for any of them</td><td><span class="tag dead">Unused / decorative</span></td></tr>
+</table>
+<p>These six exist only as mint addresses in a configuration file and as options in a frontend dropdown. Selecting them in the UI does not fail loudly — it just has nothing real behind it.</p>
+</div>
+
+<!-- 7. GAPS -->
+<div class="section">
+<h1>7. Current Gaps — What's Not Really Wired Up</h1>
+<table>
+<tr><th>Gap</th><th>Detail</th></tr>
+<tr><td>Payment collection is INR-only</td><td>The Razorpay integration explicitly rejects any currency other than INR</td></tr>
+<tr><td>Payout is India-only</td><td>Cashfree/RazorpayX/PayU/Instamojo are all domestic Indian payout rails — none can reach a foreign bank account</td></tr>
+<tr><td>No reserve proof</td><td>Nothing on-chain shows that minted tokens are backed by real fiat sitting in Nivix's account — this depends entirely on internal bookkeeping being correct</td></tr>
+<tr><td>Single point of trust</td><td>One private key (the treasury keypair) has unlimited mint authority over all 7 tokens — if it's compromised, unlimited fake tokens can be created</td></tr>
+<tr><td>Server-side burn path is broken</td><td>A fallback path exists for the backend to burn on a user's behalf, but it signs with the wrong key and would be rejected on-chain if actually invoked — in practice, burns only work because the user's own wallet signs client-side</td></tr>
+<tr><td>Dead UI pages</td><td>Two frontend pages (<code>PaymentApp</code>, <code>ComprehensiveTesting</code>) implement a full multi-currency picker but their routes silently redirect elsewhere — unreachable in the running app</td></tr>
+</table>
+</div>
+
+<!-- 8. WHERE HEADED -->
+<div class="section">
+<h1>8. Where This Is Headed</h1>
+<p>The plan already locked in for the rebuild replaces all 7 self-minted tokens with <b>one real asset: Circle's USDC</b> — removing the two biggest problems at once.</p>
+
+<table>
+<tr><th></th><th>Today (7 self-minted tokens)</th><th>Target (USDC)</th></tr>
+<tr><td>Who can create it</td><td>Nivix's own treasury key — unlimited, no oversight</td><td>Circle only — regulated, audited issuer</td></tr>
+<tr><td>Is it backed?</td><td>No on-chain proof; trust = internal bookkeeping</td><td>Publicly attested 1:1 reserves, audited monthly</td></tr>
+<tr><td>How many tokens exist</td><td>7 (6 of them entirely decorative)</td><td>1 — used for every corridor, every currency pair</td></tr>
+<tr><td>What currency labels mean</td><td>Confusing — "USD"/"INR" tokens are not real dollars/rupees</td><td>No on-chain currency tokens at all — INR/USD/EUR stay off-chain, handled by licensed partners; USDC is just the settlement rail in the middle</td></tr>
+</table>
+
+<div class="callout fix">
+  <b class="label">Same shape, real asset:</b> the 12-step flow in Section 5 doesn't change conceptually. Step 5 ("mint from nothing") becomes "release real, already-funded USDC from the treasury." Step 8 ("burn") becomes "USDC moves back to the treasury or onward to the next hop." The fiat legs at either end — collection and payout — stay exactly as they are; they just connect to one trustworthy asset instead of seven fabricated ones.
+</div>
+</div>
+
+<!-- APPENDIX -->
+<div class="section">
+<h1>Appendix — Glossary</h1>
+<dl class="glossary">
+<dt>SPL Token</dt><dd>Solana's standard for creating custom tokens — anyone can create one; whoever holds the "mint authority" key can create new units of it.</dd>
+<dt>Mint authority</dt><dd>The private key authorized to create new units of a specific token. In this system, one treasury key holds mint authority over all 7 currency-named tokens.</dd>
+<dt>Mint (verb)</dt><dd>The act of creating new tokens and assigning them to a wallet. Increases total supply.</dd>
+<dt>Burn</dt><dd>The act of permanently destroying tokens from a wallet. Decreases total supply. Must be authorized by the token account's owner.</dd>
+<dt>Associated Token Account (ATA)</dt><dd>The specific on-chain account where a wallet's balance of one particular token is stored.</dd>
+<dt>Treasury wallet</dt><dd>The Solana keypair Nivix's backend controls, used here as both the mint authority and the fee-payer for transactions.</dd>
+<dt>USDC</dt><dd>A real, regulated stablecoin issued by Circle, redeemable 1:1 for US dollars — the asset intended to replace all 7 self-minted tokens.</dd>
+</dl>
+<footer class="pagefoot">Nivix — How Minting &amp; Burning Actually Works · For internal / technical discussion · August 2026</footer>
+</div>
+
+</body>
+</html>

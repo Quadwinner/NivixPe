@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+
 import PersonIcon from '@mui/icons-material/Person';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
+
+import SendIcon from '@mui/icons-material/Send';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
@@ -15,14 +15,14 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 const navItems = [
   { label: 'Home', path: '/', icon: HomeIcon },
   { label: 'KYC Verification', path: '/kyc', icon: VerifiedUserIcon },
-  { label: 'Automated Transfer', path: '/automated-transfer', icon: AutorenewIcon },
+  { label: 'Send Money', path: '/automated-transfer', icon: SendIcon },
   { label: 'KYC Admin', path: '/kyc-admin', icon: AdminPanelSettingsIcon },
   { label: 'Profile', path: '/profile', icon: PersonIcon },
 ];
 
-// POST-BETA nav items (re-enable after beta phase):
-// { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHorizIcon },
-// { label: 'Admin Dashboard', path: '/admin-dashboard', icon: DashboardIcon },
+// POST-BETA nav items (re-enable after beta phase; re-add the icon imports too):
+// { label: 'Liquidity Pools', path: '/liquidity-pools', icon: SwapHoriz },
+// { label: 'Admin Dashboard', path: '/admin-dashboard', icon: Dashboard },
 
 
 const Header: React.FC = () => {
@@ -34,7 +34,15 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b" style={{ borderColor: '#E5E8EF' }}>
+    <header
+      className="sticky top-0 z-50 border-b"
+      style={{
+        borderColor: 'rgba(4,33,64,0.08)',
+        backgroundColor: 'rgba(255,255,255,0.82)',
+        backdropFilter: 'saturate(180%) blur(16px)',
+        WebkitBackdropFilter: 'saturate(180%) blur(16px)',
+      }}
+    >
       <nav className="w-full px-4 md:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo — NivixPe brand */}

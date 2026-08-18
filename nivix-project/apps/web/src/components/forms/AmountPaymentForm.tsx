@@ -1,32 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Grid,
-  Alert,
-  Divider,
-  Chip,
-  InputAdornment,
-  CircularProgress,
-  LinearProgress,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
-} from '@mui/material';
-import {
-  CurrencyRupee,
-  Security,
-  Speed,
-  ArrowBack,
-  Payment,
-  SwapHoriz
-} from '@mui/icons-material';
+  ShieldCheck,
+  Zap,
+  ArrowLeft,
+  CreditCard,
+  AlertCircle,
+  Loader2,
+} from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
+
+/* Shared visual constants, matching the redesigned wizard shell. */
+const SH1 = '0 1px 2px rgba(4,33,64,.04), 0 1px 3px rgba(4,33,64,.06)';
+const GRAD = 'linear-gradient(135deg, #0A4174 0%, #0C7075 100%)';
+const LABEL =
+  'font-display mb-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-500';
 
 // Add Razorpay to window interface
 declare global {
@@ -511,268 +498,284 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
     }
   };
 
+  const amountError = error && error.includes('amount') ? error : null;
+  const otherError = error && !error.includes('amount') ? error : null;
+  const fromSymbol = getCurrencySymbol(fromCurrency);
+  const toSymbol = getCurrencySymbol(toCurrency);
+
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Transfer Amount
-        </Typography>
+    <div>
+      {/* ── Heading ── */}
+      <div className="mb-7">
+        <h2 className="font-display text-xl font-bold tracking-[-0.01em] text-ink-900">
+          Amount &amp; payment
+        </h2>
+        <p className="mt-1.5 text-[15px] leading-relaxed text-ink-500">
+          How much are you sending to{' '}
+          <span className="font-semibold text-ink-800">{recipientDetails.name}</span>?
+        </p>
+      </div>
 
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Enter the amount you want to send to {recipientDetails.name}
-        </Typography>
-
-        {/* Currency Selection */}
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel>From Currency</InputLabel>
-              <Select
-                value={fromCurrency}
-                onChange={(e) => setFromCurrency(e.target.value)}
-                label="From Currency"
-              >
-                {availableCurrencies.map((currency) => (
-                  <MenuItem key={currency.code} value={currency.code}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Box sx={{ mr: 1, fontSize: '20px' }}>{currency.icon}</Box>
-                      <Typography>{currency.code} - {currency.name}</Typography>
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel>Token you receive</InputLabel>
-              <Select
-                value={toCurrency}
-                onChange={(e) => setToCurrency(e.target.value)}
-                label="Token you receive"
-              >
-                {receiveTokenCurrencies.map((currency) => (
-                  <MenuItem key={currency.code} value={currency.code}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Box sx={{ mr: 1, fontSize: '20px' }}>{currency.icon}</Box>
-                      <Typography>{currency.code} — on-chain token</Typography>
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        {/* Quick Amount Selection */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Quick Select
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {quickAmounts.map((quickAmount) => (
-              <Chip
+      {/* ── Quick select ── */}
+      <div className="mb-5">
+        <p className={LABEL}>Quick select</p>
+        <div className="flex flex-wrap gap-2">
+          {quickAmounts.map((quickAmount) => {
+            const isActive = amount === quickAmount;
+            return (
+              <button
                 key={quickAmount}
-                label={`${getCurrencySymbol(fromCurrency)}${quickAmount.toLocaleString()}`}
+                type="button"
                 onClick={() => handleAmountChange(quickAmount)}
-                variant={amount === quickAmount ? 'filled' : 'outlined'}
-                color={amount === quickAmount ? 'primary' : 'default'}
-              />
-            ))}
-          </Box>
-        </Box>
+                className={`font-mono rounded-full px-4 py-2 text-[13px] font-bold outline-none transition-all focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)] ${
+                  isActive
+                    ? 'text-white'
+                    : 'border border-[rgba(4,33,64,0.14)] bg-white text-ink-600 hover:border-teal-300 hover:text-navy-700'
+                }`}
+                style={isActive ? { background: GRAD } : { boxShadow: SH1 }}
+              >
+                {fromSymbol}
+                {quickAmount.toLocaleString()}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-        {/* Amount Input */}
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              label={`Amount (${fromCurrency})`}
+      {/* ── Amount ── */}
+      <div className="mb-5">
+        <label className={LABEL} htmlFor="transfer-amount">
+          You send
+        </label>
+        <div
+          className={`rounded-xl border bg-white px-5 py-4 transition-all focus-within:ring-4 ${
+            amountError
+              ? 'border-[#FF4D4F] focus-within:ring-[rgba(255,77,79,0.14)]'
+              : 'border-[rgba(4,33,64,0.14)] focus-within:border-navy-600 focus-within:ring-[rgba(10,65,116,0.14)]'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-2xl font-bold text-ink-400">{fromSymbol}</span>
+            <input
+              id="transfer-amount"
               type="number"
               value={amount}
               onChange={(e) => handleAmountChange(Number(e.target.value))}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                      {getCurrencySymbol(fromCurrency)}
-                    </Typography>
-                  </InputAdornment>
-                )
-              }}
-              inputProps={{ min: 100, max: 200000 }}
-              error={!!error && error.includes('amount')}
-              helperText={error && error.includes('amount') ? error : `Min: ${getCurrencySymbol(fromCurrency)}100, Max: ${getCurrencySymbol(fromCurrency)}2,00,000`}
+              min={100}
+              max={200000}
+              className="font-mono w-full border-none bg-transparent p-0 text-3xl font-bold text-ink-900 outline-none focus:ring-0"
             />
-          </Grid>
-        </Grid>
-
-        {/* Transfer Summary */}
-        {amount > 0 && (
-          <Card sx={{
-            mt: 3,
-            bgcolor: 'transparent',
-            border: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: 'rgba(158, 158, 158, 0.08)'
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="subtitle2">
-                  Transfer Summary
-                </Typography>
-                {isLoadingRates && (
-                  <CircularProgress size={16} sx={{ ml: 1 }} />
-                )}
-              </Box>
-
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Amount ({fromCurrency})
-                  </Typography>
-                  <Typography variant="body1" color="text.primary" fontWeight="bold">
-                    {getCurrencySymbol(fromCurrency)}{amount.toLocaleString()}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Exchange Rate
-                  </Typography>
-                  <Typography variant="body1" color="text.primary">
-                    1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    {toCurrency} Equivalent
-                  </Typography>
-                  <Typography variant="body1" color="text.primary">
-                    {getCurrencySymbol(toCurrency)}{cryptoEquivalent.toFixed(2)} {toCurrency}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Platform Fee ({(fees * 100).toFixed(1)}%)
-                  </Typography>
-                  <Typography variant="body1" color="warning.main">
-                    -{getCurrencySymbol(toCurrency)}{feeAmount.toFixed(2)} {toCurrency}
-                  </Typography>
-                </Grid>
-              </Grid>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="subtitle2">
-                  Recipient Receives:
-                </Typography>
-                <Typography variant="h6" color="primary">
-                  {getCurrencySymbol(toCurrency)}{netAmount.toFixed(2)} {toCurrency}
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, gap: 1 }}>
-                <Speed color="primary" fontSize="small" />
-                <Typography variant="caption" color="primary">
-                  Automated processing: ~60 seconds
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
+            <select
+              value={fromCurrency}
+              onChange={(e) => setFromCurrency(e.target.value)}
+              aria-label="From currency"
+              className="font-display shrink-0 rounded-lg border border-ink-100 bg-white px-3 py-2 text-sm font-semibold text-ink-900 outline-none focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+              style={{ boxShadow: SH1 }}
+            >
+              {availableCurrencies.map((currency) => (
+                <option key={currency.code} value={currency.code}>
+                  {currency.code}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {amountError ? (
+          <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium" style={{ color: '#C2292B' }}>
+            <AlertCircle size={13} className="shrink-0" />
+            {amountError}
+          </p>
+        ) : (
+          <p className="mt-1.5 text-xs text-ink-400">
+            Min {fromSymbol}100 · Max {fromSymbol}2,00,000
+          </p>
         )}
+      </div>
 
-        {/* Security Information */}
-        <Alert severity="info" sx={{ mt: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Security fontSize="small" />
-            <Typography variant="body2">
-              Your payment is secured by Razorpay and processed via USD tokens
-            </Typography>
-          </Box>
-        </Alert>
+      {/* ── Token received ── */}
+      <div className="mb-6">
+        <label className={LABEL} htmlFor="receive-token">
+          Token you receive
+        </label>
+        <select
+          id="receive-token"
+          value={toCurrency}
+          onChange={(e) => setToCurrency(e.target.value)}
+          className="font-display h-[52px] w-full rounded-xl border border-[rgba(4,33,64,0.14)] bg-white px-4 text-[15px] font-medium text-ink-900 outline-none transition-all focus:border-navy-600 focus:ring-4 focus:ring-[rgba(10,65,116,0.14)]"
+        >
+          {receiveTokenCurrencies.map((currency) => (
+            <option key={currency.code} value={currency.code}>
+              {currency.code} — on-chain token
+            </option>
+          ))}
+        </select>
+      </div>
 
-        {/* Error Display */}
-        {error && !error.includes('amount') && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
+      {/* ── Summary ── */}
+      {amount > 0 && (
+        <div
+          className="mb-5 overflow-hidden rounded-2xl border"
+          style={{ borderColor: 'rgba(12,112,117,0.22)', backgroundColor: 'rgba(225,245,245,0.35)' }}
+        >
+          <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: '1px solid rgba(12,112,117,0.16)' }}>
+            <span className={`${LABEL} mb-0`}>Transfer summary</span>
+            {isLoadingRates && <Loader2 size={14} className="animate-spin text-navy-400" />}
+          </div>
 
-        {/* Processing State */}
-        {isProcessing && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              Preparing payment gateway...
-            </Typography>
-            <LinearProgress />
-          </Box>
-        )}
+          <div className="space-y-3 px-5 py-4">
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="text-[13px] text-ink-500">Amount ({fromCurrency})</span>
+              <span className="font-mono text-sm font-bold text-ink-900">
+                {fromSymbol}
+                {amount.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="text-[13px] text-ink-500">Exchange rate</span>
+              <span className="font-mono text-sm text-ink-800">
+                1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="text-[13px] text-ink-500">{toCurrency} equivalent</span>
+              <span className="font-mono text-sm text-ink-800">
+                {toSymbol}
+                {cryptoEquivalent.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="text-[13px] text-ink-500">
+                Platform fee ({(fees * 100).toFixed(1)}%)
+              </span>
+              <span className="font-mono text-sm font-semibold" style={{ color: '#8A6200' }}>
+                -{toSymbol}
+                {feeAmount.toFixed(2)}
+              </span>
+            </div>
+          </div>
 
-        {/* Action Buttons */}
-        <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
-          <Button
-            variant="outlined"
-            onClick={onBack}
-            startIcon={<ArrowBack />}
-            disabled={isProcessing}
+          <div
+            className="flex items-center justify-between gap-4 px-5 py-4"
+            style={{ borderTop: '1px solid rgba(12,112,117,0.16)', backgroundColor: 'rgba(255,255,255,0.6)' }}
           >
-            Back
-          </Button>
+            <span className="font-display text-sm font-bold text-ink-900">Recipient receives</span>
+            <span className="font-mono text-xl font-bold text-teal-600">
+              {toSymbol}
+              {netAmount.toFixed(2)} {toCurrency}
+            </span>
+          </div>
 
-          <Button
-            variant="contained"
-            onClick={openRazorpayCheckout}
-            disabled={
-              amount <= 0 || isProcessing || !validateAmount() || !connected || !publicKey
-            }
-            startIcon={<Payment />}
-            sx={{ flex: 1 }}
-            size="large"
-          >
-            {isProcessing ? 'Processing...' : `Pay ₹${amount.toLocaleString()}`}
-          </Button>
-        </Box>
+          <div className="flex items-center gap-2 px-5 pb-4">
+            <Zap size={13} className="text-teal-500" />
+            <span className="text-xs text-ink-500">Automated processing: ~60 seconds</span>
+          </div>
+        </div>
+      )}
 
-        {/* Recipient Details Summary */}
-        <Card sx={{
-          mt: 3,
-          bgcolor: 'transparent',
-          border: '1px solid',
-          borderColor: 'primary.main',
-          backgroundColor: 'rgba(25, 118, 210, 0.08)'
-        }}>
-          <CardContent>
-            <Typography variant="subtitle2" gutterBottom>
-              Transfer Details
-            </Typography>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <Typography variant="caption" color="text.secondary">To:</Typography>
-                <Typography variant="body2" color="text.primary">{recipientDetails.name}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption" color="text.secondary">Account:</Typography>
-                <Typography variant="body2" color="text.primary" sx={{ fontFamily: 'monospace' }}>
-                  ***{recipientDetails.accountNumber.slice(-4)}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption" color="text.secondary">IFSC:</Typography>
-                <Typography variant="body2" color="text.primary">{recipientDetails.ifscCode}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption" color="text.secondary">Phone:</Typography>
-                <Typography variant="body2" color="text.primary">{recipientDetails.phone}</Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </CardContent>
-    </Card>
+      {/* ── Recipient recap ── */}
+      <div
+        className="mb-5 rounded-2xl border border-[rgba(4,33,64,0.08)] bg-white p-5"
+        style={{ boxShadow: SH1 }}
+      >
+        <p className={LABEL}>Transfer details</p>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3.5">
+          {[
+            { k: 'To', v: recipientDetails.name, mono: false },
+            { k: 'Account', v: `••••${recipientDetails.accountNumber.slice(-4)}`, mono: true },
+            { k: 'IFSC', v: recipientDetails.ifscCode, mono: true },
+            { k: 'Phone', v: recipientDetails.phone, mono: true },
+          ].map((row) => (
+            <div key={row.k}>
+              <p className="text-[11px] uppercase tracking-[0.1em] text-ink-400">{row.k}</p>
+              <p
+                className={`mt-0.5 text-sm font-semibold text-ink-800 ${row.mono ? 'font-mono' : ''}`}
+              >
+                {row.v}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Security note ── */}
+      <div
+        className="mb-5 flex items-start gap-3 rounded-xl px-4 py-3.5"
+        style={{ backgroundColor: 'rgba(10,65,116,0.06)' }}
+      >
+        <ShieldCheck size={16} className="mt-0.5 shrink-0 text-navy-600" />
+        <p className="text-[13px] leading-relaxed text-ink-600">
+          Your payment is secured by Razorpay and settled on-chain via USD tokens.
+        </p>
+      </div>
+
+      {/* ── Error ── */}
+      {otherError && (
+        <div
+          role="alert"
+          className="mb-5 flex items-start gap-3 rounded-xl border px-4 py-3.5"
+          style={{ backgroundColor: 'rgba(255,77,79,0.08)', borderColor: 'rgba(255,77,79,0.26)' }}
+        >
+          <AlertCircle size={16} className="mt-0.5 shrink-0" style={{ color: '#C2292B' }} />
+          <p className="text-sm leading-relaxed" style={{ color: '#C2292B' }}>
+            {otherError}
+          </p>
+        </div>
+      )}
+
+      {/* ── Processing ── */}
+      {isProcessing && (
+        <div className="mb-5">
+          <p className="mb-2 flex items-center gap-2 text-[13px] font-medium text-ink-500">
+            <Loader2 size={14} className="animate-spin" />
+            Preparing payment gateway...
+          </p>
+          <div className="h-1 w-full overflow-hidden rounded-full bg-ink-100">
+            <div className="h-full w-1/3 animate-pulse rounded-full" style={{ background: GRAD }} />
+          </div>
+        </div>
+      )}
+
+      {/* ── Actions ── */}
+      <div className="flex flex-col gap-3 border-t border-[rgba(4,33,64,0.08)] pt-7 sm:flex-row">
+        <button
+          type="button"
+          onClick={onBack}
+          disabled={isProcessing}
+          className="font-display inline-flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[rgba(4,33,64,0.14)] bg-white px-6 text-sm font-semibold text-ink-700 outline-none transition-colors hover:bg-ink-50 focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)] disabled:cursor-not-allowed disabled:opacity-50"
+          style={{ boxShadow: SH1 }}
+        >
+          <ArrowLeft size={16} />
+          Back
+        </button>
+
+        <button
+          type="button"
+          onClick={openRazorpayCheckout}
+          disabled={amount <= 0 || isProcessing || !validateAmount() || !connected || !publicKey}
+          className="font-display inline-flex h-[52px] flex-1 items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white outline-none transition-all hover:-translate-y-px focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.24)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+          style={{ background: GRAD, boxShadow: '0 4px 14px rgba(10,65,116,0.24)' }}
+        >
+          {isProcessing ? (
+            <>
+              <Loader2 size={17} className="animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <CreditCard size={17} />
+              Pay {fromSymbol}
+              {amount.toLocaleString()}
+            </>
+          )}
+        </button>
+      </div>
+
+      {!connected && (
+        <p className="mt-3 text-center text-[13px] text-ink-400">
+          Connect your wallet to continue.
+        </p>
+      )}
+    </div>
   );
 };
 

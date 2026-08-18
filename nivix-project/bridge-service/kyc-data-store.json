@@ -151,14 +151,17 @@
   "CauHK3m4DRTe6yPrBTDYQrzSvjsi8xN6BhppkZLCuZv9": {
     "userId": "user_CauHK3m4",
     "solanaAddress": "CauHK3m4DRTe6yPrBTDYQrzSvjsi8xN6BhppkZLCuZv9",
-    "fullName": "Shubham Kushwaha",
+    "fullName": "Test User",
     "countryCode": "IN",
     "idDocuments": [
-      "passport"
+      {
+        "type": "passport",
+        "number": "TEST123456"
+      }
     ],
-    "verificationDate": "2026-04-15T17:38:14.770Z",
+    "verificationDate": "2026-06-25T09:56:22.790Z",
     "riskScore": 50,
-    "lastUpdated": "2026-04-15T17:38:15.085Z"
+    "lastUpdated": "2026-06-25T09:56:23.021Z"
   },
   "TestAddress123456789": {
     "userId": "test_user_new",
@@ -261,5 +264,54 @@
     "verificationDate": "2025-09-18T20:56:25.488Z",
     "riskScore": 50,
     "lastUpdated": "2025-09-18T20:56:25.617Z"
+  },
+  "SoLKiroBridge2222222222222222222222222222": {
+    "userId": "kiro-bridge-test",
+    "solanaAddress": "SoLKiroBridge2222222222222222222222222222",
+    "fullName": "Kiro Bridge Test",
+    "countryCode": "IND",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2026-08-17T22:09:36.046Z",
+    "riskScore": 50,
+    "lastUpdated": "2026-08-17T22:09:36.223Z"
+  },
+  "SoLKiroRace3333333333333333333333333333": {
+    "userId": "kiro-race-test",
+    "solanaAddress": "SoLKiroRace3333333333333333333333333333",
+    "fullName": "Kiro Race Test",
+    "countryCode": "IND",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2026-08-17T22:20:41.043Z",
+    "riskScore": 50,
+    "lastUpdated": "2026-08-17T22:20:45.293Z"
+  },
+  "SoLKiroHonest4444444444444444444444444444": {
+    "userId": "kiro-honest-test",
+    "solanaAddress": "SoLKiroHonest4444444444444444444444444444",
+    "fullName": "Kiro Honest Test",
+    "countryCode": "IND",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2026-08-17T22:22:58.686Z",
+    "riskScore": 50,
+    "lastUpdated": "2026-08-17T22:23:02.919Z"
+  },
+  "SoLKiroFallback55555555555555555555555555": {
+    "userId": "kiro-fallback-test",
+    "solanaAddress": "SoLKiroFallback55555555555555555555555555",
+    "fullName": "Kiro Fallback Test",
+    "countryCode": "IND",
+    "idDocuments": [
+      "passport"
+    ],
+    "verificationDate": "2026-08-17T22:23:37.732Z",
+    "riskScore": 50,
+    "kycVerified": false,
+    "lastUpdated": "2026-08-17T22:24:10.083Z"
   }
 }

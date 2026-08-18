@@ -3,20 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { motion } from 'framer-motion';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import SendIcon from '@mui/icons-material/Send';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import PersonIcon from '@mui/icons-material/Person';
-import PaymentIcon from '@mui/icons-material/Payment';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import {
+  ShieldCheck,
+  User,
+  CreditCard,
+  RefreshCw,
+  CheckCheck,
+  Check,
+  Wallet,
+  Landmark,
+  Zap,
+  AlertCircle,
+} from 'lucide-react';
 import KYCStatusCheck from '../components/kyc/KYCStatusCheck';
 import RecipientForm from '../components/forms/RecipientForm';
 import AmountPaymentForm from '../components/forms/AmountPaymentForm';
 import ProcessingStatus from '../components/processing/ProcessingStatus';
 import SuccessReceipt from '../components/receipt/SuccessReceipt';
-import { Card } from '../components/ui/Card';
+
+/* Visual language matches the redesigned Home page:
+   1280px frame, navy-tinted elevation, Sora headings, Space Mono figures. */
+const ease = [0.16, 1, 0.3, 1] as const;
+const SHADOW_1 = '0 1px 2px rgba(4,33,64,.04), 0 1px 3px rgba(4,33,64,.06)';
+const SHADOW_3 = '0 4px 8px rgba(4,33,64,.04), 0 12px 28px rgba(4,33,64,.08)';
+const GRAD_PRIMARY = 'linear-gradient(135deg, #0A4174 0%, #0C7075 100%)';
 
 interface RecipientDetails {
   name: string;
@@ -38,7 +48,8 @@ interface PaymentData {
   automatedTransfer?: boolean;
 }
 
-interface ProcessingStatus {
+/** Renamed from `ProcessingStatus` so it no longer shadows the imported component. */
+interface ProcessingState {
   currentStep: string;
   progress: number;
   mintTxHash?: string;
@@ -65,22 +76,40 @@ interface TransferReceipt {
 }
 
 const steps = [
-  { label: 'KYC Verification', icon: VerifiedUserIcon },
-  { label: 'Recipient Details', icon: PersonIcon },
-  { label: 'Amount & Payment', icon: PaymentIcon },
-  { label: 'Processing', icon: AutorenewIcon },
-  { label: 'Complete', icon: DoneAllIcon }
+  { label: 'Verify identity', icon: ShieldCheck },
+  { label: 'Recipient', icon: User },
+  { label: 'Amount & payment', icon: CreditCard },
+  { label: 'Processing', icon: RefreshCw },
+  { label: 'Receipt', icon: CheckCheck },
 ];
 
-const AutomatedTransfer: React.FC = () => {
+const reassurance = [
+  {
+    icon: ShieldCheck,
+    title: 'Private KYC',
+    body: 'Verified against a permissioned Hyperledger Fabric network. Your documents never touch a public chain.',
+  },
+  {
+    icon: Zap,
+    title: 'Live settlement',
+    body: 'Mint, burn and payout are tracked step by step as each one confirms on-chain.',
+  },
+  {
+    icon: Landmark,
+    title: 'Straight to the bank',
+    body: 'Funds land in any Indian bank account by IFSC, with the payout reference on your receipt.',
+  },
+];
+
+const SendMoney: React.FC = () => {
   const { publicKey, connected } = useWallet();
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [kycStatus, setKycStatus] = useState<any>(null);
+  const [, setKycStatus] = useState<any>(null);
   const [recipientDetails, setRecipientDetails] = useState<RecipientDetails | null>(null);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
-  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus | null>(null);
+  const [, setProcessingStatus] = useState<ProcessingState | null>(null);
   const [receipt, setReceipt] = useState<TransferReceipt | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,16 +154,22 @@ const AutomatedTransfer: React.FC = () => {
   const renderStepContent = () => {
     if (!connected) {
       return (
-        <div className="text-center py-16">
-          <div className="mb-8 relative inline-block">
-            <div className="absolute inset-0 blur-3xl rounded-full animate-pulse" style={{ backgroundColor: 'rgba(12,112,117,0.2)' }} />
-            <AccountBalanceWalletIcon className="w-24 h-24 mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '6rem', color: 'var(--color-teal-600)' }} />
-          </div>
-          <h3 className="text-2xl font-bold mb-3" style={{ color: 'var(--color-ink-900)' }}>Connect Your Wallet</h3>
-          <p className="mb-8 max-w-md mx-auto leading-relaxed" style={{ color: 'var(--color-ink-500)' }}>
-            Please connect your Solana wallet to start the automated money transfer process
+        <div className="px-6 py-16 text-center">
+          <span
+            aria-hidden="true"
+            className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-white"
+            style={{ background: GRAD_PRIMARY, boxShadow: SHADOW_3 }}
+          >
+            <Wallet size={28} />
+          </span>
+          <h3 className="font-display text-xl font-bold text-ink-900">Connect your wallet</h3>
+          <p className="mx-auto mt-2.5 max-w-md text-[15px] leading-relaxed text-ink-500">
+            You approve the token burn from your own wallet during processing, so nothing moves
+            without your signature.
           </p>
-          <WalletMultiButton className="!bg-gradient-to-r !from-teal-500 !to-teal-400 hover:!from-teal-400 hover:!to-teal-300 !rounded-xl !px-8 !py-3 !font-semibold !shadow-lg hover:!shadow-xl !transition-all !duration-300" />
+          <div className="mt-8 flex justify-center">
+            <WalletMultiButton />
+          </div>
         </div>
       );
     }
@@ -184,208 +219,179 @@ const AutomatedTransfer: React.FC = () => {
     }
   };
 
+  const progressPercent =
+    steps.length > 1 ? (Math.min(currentStep, steps.length - 1) / (steps.length - 1)) * 100 : 0;
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-5xl mx-auto py-8 px-4">
-        {/* Header Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+    <div className="min-h-screen bg-[#FBFCFD]">
+      <div className="mx-auto max-w-[1100px] px-6 py-14 md:px-12 md:py-20">
+        {/* ── Page header ── */}
+        <motion.header
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          transition={{ duration: 0.5, ease }}
+          className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
         >
-          <div className="mb-6 relative inline-block">
-            <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="absolute inset-0 blur-3xl rounded-full"
-              style={{ background: 'linear-gradient(135deg, rgba(12,112,117,0.3), rgba(10,65,116,0.3))' }}
-            />
-            <motion.div
-              animate={{
-                y: [0, -10, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              <SendIcon className="w-16 h-16 mx-auto relative z-10 drop-shadow-2xl" style={{ fontSize: '4rem', color: 'var(--color-teal-600)' }} />
-            </motion.div>
+          <div>
+            <p className="font-display mb-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-500">
+              India–UAE corridor
+            </p>
+            <h1 className="font-display text-[30px] font-bold leading-[1.1] tracking-[-0.03em] text-ink-900 md:text-[40px]">
+              Send money
+            </h1>
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink-500">
+              Pay in with UPI or card, settle on Solana, and land funds in any Indian bank account.
+              Every step is confirmed on-chain and shown live.
+            </p>
           </div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight font-display"
-            style={{ letterSpacing: '-0.02em', background: 'linear-gradient(135deg, var(--color-navy-700), var(--color-teal-600))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-          >
-            Automated Money Transfer
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-body"
-            style={{ color: 'var(--color-ink-500)' }}
-          >
-            Send money directly to bank accounts with real-time blockchain processing
-          </motion.p>
-        </motion.div>
-
-        {/* Main Card */}
-        <Card className="bg-white shadow-2xl mb-8" style={{ borderColor: 'rgba(12,112,117,0.2)' }}>
-          {/* Step Progress */}
           {connected && (
-            <div className="mb-10">
-              <div className="relative">
-                {/* Desktop Progress Bar */}
-                <div className="hidden md:flex items-center justify-between">
+            <div className="shrink-0">
+              <WalletMultiButton />
+            </div>
+          )}
+        </motion.header>
+
+        {/* ── Wizard ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.08, ease }}
+        >
+          <div
+            className="overflow-hidden rounded-2xl border border-[rgba(4,33,64,0.08)] bg-white"
+            style={{ boxShadow: SHADOW_3 }}
+          >
+            {connected && (
+              <div
+                className="border-b border-[rgba(4,33,64,0.08)] px-6 py-7 md:px-8"
+                style={{ backgroundColor: '#F4F6F9' }}
+              >
+                {/* Mobile: compact progress */}
+                <div className="sm:hidden">
+                  <div className="mb-2 flex items-baseline justify-between">
+                    <span className="font-display text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400">
+                      Step {Math.min(currentStep + 1, steps.length)} of {steps.length}
+                    </span>
+                    <span className="font-display text-sm font-semibold text-ink-900">
+                      {steps[Math.min(currentStep, steps.length - 1)].label}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-200">
+                    <div
+                      className="h-full rounded-full transition-[width] duration-500"
+                      style={{
+                        width: `${((Math.min(currentStep, steps.length - 1) + 1) / steps.length) * 100}%`,
+                        background: GRAD_PRIMARY,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Desktop: full stepper */}
+                <ol className="relative hidden items-start justify-between sm:flex" aria-label="Progress">
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-5 h-0.5 bg-ink-200"
+                    style={{ left: `${50 / steps.length}%`, right: `${50 / steps.length}%` }}
+                  >
+                    <span
+                      className="block h-full transition-[width] duration-500"
+                      style={{ width: `${progressPercent}%`, background: GRAD_PRIMARY }}
+                    />
+                  </span>
+
                   {steps.map((step, index) => {
-                    const StepIcon = step.icon;
-                    const isCompleted = index < currentStep;
+                    const isComplete = index < currentStep;
                     const isCurrent = index === currentStep;
-                    const isPending = index > currentStep;
+                    const Icon = step.icon;
 
                     return (
-                      <React.Fragment key={step.label}>
-                        <div className="flex flex-col items-center flex-1 relative z-10">
-                          <div 
-                            className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold transition-all duration-300 mb-3 ${
-                              isCompleted
-                                ? 'text-white shadow-lg scale-110'
-                                : isCurrent
-                                ? 'text-white shadow-xl scale-110 animate-pulse'
-                                : 'bg-gray-100 text-gray-400 border-2 border-gray-200'
-                            } ${isCurrent ? 'ring-4 ring-teal-500/30' : ''}`} 
-                            style={isCompleted ? { background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' } : isCurrent ? { background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))' } : {}}
-                          >
-                            {isCompleted ? (
-                              <CheckCircleIcon className="w-8 h-8" />
-                            ) : (
-                              <StepIcon className="w-8 h-8" />
-                            )}
-                          </div>
-                          <p className={`text-xs font-semibold text-center transition-colors ${
-                            isCompleted || isCurrent ? 'text-text' : 'text-text-muted'
-                          }`}>
-                            {step.label}
-                          </p>
-                        </div>
-                        {index < steps.length - 1 && (
-                          <div className="flex-1 h-1.5 mx-4 -mt-6 rounded-full overflow-hidden bg-gray-200">
-                            <div
-                              className={`h-full transition-all duration-500 rounded-full ${
-                                index < currentStep
-                                  ? 'w-full'
-                                  : 'w-0'
-                              }`}
-                              style={index < currentStep ? { background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' } : {}}
-                            />
-                          </div>
-                        )}
-                      </React.Fragment>
+                      <li
+                        key={step.label}
+                        className="relative flex flex-1 flex-col items-center gap-2 text-center"
+                        aria-current={isCurrent ? 'step' : undefined}
+                      >
+                        <span
+                          className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300"
+                          style={{
+                            background: isComplete || isCurrent ? GRAD_PRIMARY : '#FFFFFF',
+                            borderColor:
+                              isComplete || isCurrent ? 'transparent' : 'rgba(4,33,64,0.14)',
+                            color: isComplete || isCurrent ? '#FFFFFF' : '#A6AEBB',
+                            boxShadow: isCurrent ? '0 0 0 4px rgba(12,112,117,0.16)' : undefined,
+                          }}
+                        >
+                          {isComplete ? <Check size={17} strokeWidth={3} /> : <Icon size={17} />}
+                        </span>
+                        <span
+                          className={`font-display max-w-[8.5rem] text-[11px] font-semibold uppercase leading-tight tracking-[0.1em] ${
+                            isCurrent
+                              ? 'text-ink-900'
+                              : isComplete
+                              ? 'text-ink-500'
+                              : 'text-ink-300'
+                          }`}
+                        >
+                          {step.label}
+                        </span>
+                      </li>
                     );
                   })}
-                </div>
-
-                {/* Mobile Progress */}
-                <div className="md:hidden">
-                  <div className="flex items-center justify-center mb-6">
-                    {steps.map((step, index) => {
-                      const StepIcon = step.icon;
-                      const isCurrent = index === currentStep;
-                      if (!isCurrent) return null;
-
-                      return (
-                        <div key={step.label} className="flex flex-col items-center">
-                          <div className="w-20 h-20 rounded-2xl text-white flex items-center justify-center mb-3 shadow-xl" style={{ background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))' }}>
-                            <StepIcon className="w-10 h-10" />
-                          </div>
-                          <p className="text-sm font-bold" style={{ color: 'var(--color-ink-900)' }}>{step.label}</p>
-                          <p className="text-xs mt-1" style={{ color: 'var(--color-ink-500)' }}>Step {index + 1} of {steps.length}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="flex items-center gap-2 justify-center">
-                    {steps.map((_, index) => (
-                      <div
-                        key={index}
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          index < currentStep
-                            ? 'w-8'
-                            : index === currentStep
-                            ? 'w-16'
-                            : 'w-8 bg-gray-200'
-                        }`}
-                        style={index < currentStep ? { backgroundColor: 'var(--color-teal-500)' } : index === currentStep ? { backgroundColor: 'var(--color-navy-600)' } : {}}
-                      />
-                    ))}
-                  </div>
-                </div>
+                </ol>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-red-100/50 border-2 border-red-300 rounded-2xl flex items-center gap-3 shadow-lg animate-scale-in">
-              <div className="w-10 h-10 bg-red-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="text-2xl">❌</span>
-              </div>
-              <p className="text-sm font-medium text-red-900">{error}</p>
-            </div>
-          )}
+            <div className="px-6 py-8 md:px-8">
+              {error && (
+                <div
+                  role="alert"
+                  className="mb-6 flex items-start gap-3 rounded-xl border p-4"
+                  style={{
+                    backgroundColor: 'rgba(255,77,79,0.08)',
+                    borderColor: 'rgba(255,77,79,0.26)',
+                  }}
+                >
+                  <AlertCircle size={17} className="mt-0.5 shrink-0" style={{ color: '#C2292B' }} />
+                  <p className="text-sm leading-relaxed" style={{ color: '#C2292B' }}>
+                    {error}
+                  </p>
+                </div>
+              )}
 
-          {/* Step Content */}
-          <div className="animate-fade-in">
-            {renderStepContent()}
+              <div key={currentStep}>{renderStepContent()}</div>
+            </div>
           </div>
-        </Card>
+        </motion.div>
 
-        {/* Info Cards */}
+        {/* ── Reassurance, pre-connect only ── */}
         {!connected && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--color-navy-500), var(--color-navy-600))' }}>
-                <VerifiedUserIcon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-lg font-bold mb-2 font-display" style={{ color: 'var(--color-ink-900)' }}>Secure KYC</h3>
-              <p className="text-sm font-body" style={{ color: 'var(--color-ink-500)' }}>
-                Private verification with Hyperledger Fabric blockchain
-              </p>
-            </Card>
-
-            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600))' }}>
-                <AutorenewIcon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-lg font-bold mb-2 font-display" style={{ color: 'var(--color-ink-900)' }}>Real-time Processing</h3>
-              <p className="text-sm font-body" style={{ color: 'var(--color-ink-500)' }}>
-                Automated transfers with instant blockchain confirmation
-              </p>
-            </Card>
-
-            <Card className="text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--color-navy-600), var(--color-teal-600))' }}>
-                <PaymentIcon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-lg font-bold mb-2 font-display" style={{ color: 'var(--color-ink-900)' }}>Direct to Bank</h3>
-              <p className="text-sm font-body" style={{ color: 'var(--color-ink-500)' }}>
-                Send money directly to any bank account instantly
-              </p>
-            </Card>
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
+            {reassurance.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.14 + index * 0.07, ease }}
+                >
+                  <div
+                    className="h-full rounded-2xl border border-[rgba(4,33,64,0.08)] bg-white p-6"
+                    style={{ boxShadow: SHADOW_1 }}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl text-white"
+                      style={{ background: GRAD_PRIMARY }}
+                    >
+                      <Icon size={19} />
+                    </span>
+                    <h3 className="font-display text-base font-bold text-ink-900">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-ink-500">{item.body}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -393,4 +399,4 @@ const AutomatedTransfer: React.FC = () => {
   );
 };
 
-export default AutomatedTransfer;
+export default SendMoney;

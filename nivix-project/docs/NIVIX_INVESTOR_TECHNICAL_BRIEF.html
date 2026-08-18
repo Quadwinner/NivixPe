@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nivix — Investor & Technical Briefing</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1a2233;
+    font-size: 10.8pt;
+    line-height: 1.55;
+    margin: 0;
+  }
+  h1, h2, h3, h4 { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #0f2b46; }
+  h1 { font-size: 19pt; border-bottom: 3px solid #1b6f5c; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 14pt; color: #0f2b46; margin-top: 26px; border-left: 5px solid #1b6f5c; padding-left: 10px; }
+  h3 { font-size: 11.8pt; color: #17405e; margin-top: 18px; }
+  p { margin: 8px 0; }
+  .section { page-break-before: always; }
+  .no-break { page-break-before: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px 0; font-size: 9.6pt; }
+  th, td { border: 1px solid #cdd7e1; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #0f2b46; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #f4f7fa; }
+  .tag { display: inline-block; background: #eaf3f0; color: #1b6f5c; border: 1px solid #1b6f5c; border-radius: 3px; padding: 1px 8px; font-size: 8.5pt; font-weight: 600; letter-spacing: .3px; }
+  .callout {
+    background: #f4f8f7; border-left: 4px solid #1b6f5c; padding: 10px 14px; margin: 14px 0; border-radius: 3px; font-size: 10.2pt;
+  }
+  .callout.warn { background: #fdf6ec; border-left-color: #b8860b; }
+  .callout.fix { background: #eef5fb; border-left-color: #1c5d8f; }
+  .callout b.label { color: #1b6f5c; }
+  .warn b.label { color: #b8860b; }
+  .fix b.label { color: #1c5d8f; }
+  pre.flow {
+    background: #0f2b46; color: #d9e6f0; padding: 14px 16px; border-radius: 6px;
+    font-family: "Courier New", monospace; font-size: 8.6pt; line-height: 1.45; overflow-x: auto; white-space: pre;
+  }
+  .flowbox {
+    display: flex; align-items: stretch; gap: 6px; margin: 16px 0; font-size: 9pt; flex-wrap: wrap;
+  }
+  .flowbox .step {
+    flex: 1; min-width: 110px; background: #fff; border: 1.5px solid #1b6f5c; border-radius: 6px;
+    padding: 10px 8px; text-align: center; position: relative;
+  }
+  .flowbox .step .n { display:block; font-weight:700; color:#1b6f5c; font-size: 8.5pt; margin-bottom:3px;}
+  .flowbox .arrow { align-self: center; font-size: 16pt; color: #1b6f5c; font-weight: 700; }
+  .kv-list { margin: 10px 0; padding-left: 0; list-style: none; }
+  .kv-list li { padding: 4px 0 4px 0; border-bottom: 1px dotted #cdd7e1; }
+  .kv-list b { color: #0f2b46; }
+  .cover {
+    height: 257mm; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 0 6mm;
+  }
+  .cover .tagline { color: #1b6f5c; font-weight: 700; letter-spacing: 2px; font-size: 11pt; text-transform: uppercase; margin-bottom: 18px; }
+  .cover h1 { border: none; font-size: 34pt; margin: 0 0 6px 0; }
+  .cover .sub { font-size: 15pt; color: #3a4a5c; margin-bottom: 40px; }
+  .cover .meta { font-size: 10pt; color: #55636f; line-height: 1.9; border-top: 1px solid #cdd7e1; padding-top: 14px; margin-top: 30px; }
+  .cover .meta b { color: #0f2b46; }
+  .confbar { margin-top: 60px; background: #0f2b46; color: #fff; padding: 8px 14px; font-size: 9pt; border-radius: 4px; display: inline-block; letter-spacing: .5px;}
+  .toc-list { list-style: none; padding: 0; font-size: 11pt; }
+  .toc-list li { padding: 7px 0; border-bottom: 1px dotted #cdd7e1; display: flex; justify-content: space-between; }
+  .toc-list .num { color: #1b6f5c; font-weight: 700; margin-right: 10px; }
+  .badge-row { display:flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 18px 0; }
+  .badge { background:#eaf3f0; border:1px solid #1b6f5c; color:#0f2b46; font-size:8.6pt; padding:4px 10px; border-radius: 12px; }
+  .two-col { display: flex; gap: 18px; }
+  .two-col > div { flex: 1; }
+  footer.pagefoot { font-size: 8pt; color: #8494a3; text-align: center; margin-top: 30px; }
+  .glossary dt { font-weight: 700; color: #0f2b46; margin-top: 8px; }
+  .glossary dd { margin: 2px 0 0 0; color: #33414d; }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="tagline">Investor &amp; Technical Briefing</div>
+  <h1>Nivix</h1>
+  <div class="sub">Cross-border payments settled in seconds, not days</div>
+  <div class="badge-row">
+    <span class="badge">Solana + USDC settlement</span>
+    <span class="badge">Hyperledger Fabric compliance</span>
+    <span class="badge">GIFT City IFSC / IFSCA</span>
+  </div>
+  <div class="meta">
+    <div><b>Company:</b> NivixPe Private Limited</div>
+    <div><b>Incubation:</b> Bennett University Hatchery</div>
+    <div><b>Version:</b> 2.0 — supersedes the July 2026 money-flow memo</div>
+    <div><b>Date:</b> August 2026</div>
+  </div>
+  <div class="confbar">CONFIDENTIAL — PREPARED FOR INVESTOR REVIEW</div>
+</div>
+
+<!-- TOC -->
+<div class="section">
+<h1>Contents</h1>
+<ul class="toc-list">
+  <li><span><span class="num">1.</span>Executive Summary</span></li>
+  <li><span><span class="num">2.</span>The Problem</span></li>
+  <li><span><span class="num">3.</span>How Nivix Moves Money</span></li>
+  <li><span><span class="num">4.</span>Technical Architecture</span></li>
+  <li><span><span class="num">5.</span>Settlement Reality: What Circle Actually Does</span></li>
+  <li><span><span class="num">6.</span>Legal &amp; Regulatory Structure</span></li>
+  <li><span><span class="num">7.</span>Revenue Model</span></li>
+  <li><span><span class="num">8.</span>Build Status &amp; Roadmap</span></li>
+  <li><span><span class="num">9.</span>Competitive Landscape</span></li>
+  <li><span><span class="num">10.</span>Risk Management</span></li>
+  <li><span><span class="num">11.</span>Investor FAQ</span></li>
+  <li><span><span class="num">A.</span>Appendix — Technology Stack</span></li>
+  <li><span><span class="num">B.</span>Appendix — Glossary</span></li>
+</ul>
+</div>
+
+<!-- 1. EXEC SUMMARY -->
+<div class="section">
+<h1>1. Executive Summary</h1>
+<p>Nivix is a cross-border payments platform that settles international transfers in <b>seconds instead of days</b>, at a cost of <b>under $1</b> instead of the $25&ndash;45 typically charged by bank wires. It does this by using <b>USDC</b> — a fully regulated, dollar-backed stablecoin issued by Circle — as the settlement layer between two licensed local payout partners, one in the sender's country and one in the recipient's.</p>
+
+<p>Two things make this legally and technically sound, and both are deliberate design choices, not accidents:</p>
+
+<ul>
+  <li><b>Nivix never issues its own token.</b> Every dollar of value on-chain is real, audited USDC. This avoids the unlicensed-stablecoin problem that sinks most "crypto remittance" projects.</li>
+  <li><b>Nivix operates under GIFT City IFSC</b>, a jurisdiction India's own regulator (IFSCA) treats as a non-resident zone for foreign-exchange law. This is what makes a stablecoin-settled corridor legal for us when it would not be legal from mainland India directly.</li>
+</ul>
+
+<div class="callout">
+  <b class="label">The one-line pitch:</b> Licensed fiat partners collect and pay out local currency on each end. We hold our own pre-funded USDC treasury in the middle and move it on Solana in about two seconds. We own the treasury, the routing logic, and the compliance ledger — the pieces that create defensibility and margin.
+</div>
+
+<p>This document has two audiences in mind. If you are evaluating the business, Sections 1&ndash;3 and 6&ndash;10 are the ones that matter. If you or your technical advisor want to verify the engineering underneath the pitch, Sections 4, 5, and Appendix A go deep enough to do that. Section 5 in particular corrects a simplification from our earlier investor memo — we'd rather you hear the precise version from us than discover the gap yourselves.</p>
+</div>
+
+<!-- 2. PROBLEM -->
+<div class="section">
+<h1>2. The Problem</h1>
+<p>Cross-border retail and SME payments still run on infrastructure designed in the 1970s (SWIFT correspondent banking):</p>
+<table>
+<tr><th>Metric</th><th>Traditional banking / SWIFT</th><th>Modern fintech (Wise, Remitly)</th></tr>
+<tr><td>Settlement time</td><td>3&ndash;5 business days</td><td>1&ndash;2 days (still batches through banking hours)</td></tr>
+<tr><td>Fee on a $100 transfer</td><td>$25&ndash;45</td><td>$5&ndash;15</td></tr>
+<tr><td>Transparency</td><td>Opaque — no visibility into where funds sit mid-transfer</td><td>Partial tracking, still opaque internally</td></tr>
+<tr><td>Availability</td><td>Banking hours only</td><td>24/7 front-end, but still bank-hour settlement underneath</td></tr>
+</table>
+<p>The bottleneck is always the same: money has to physically move between correspondent banks, each taking a cut and a day. Stablecoins solve the movement problem — a USDC transfer settles on Solana in about two seconds for a fraction of a cent — but only if the fiat legs on either end are handled by properly licensed entities. That licensing question, not the technology, is why most "crypto for remittance" projects stall. It's also why we built the legal structure (Section 6) before the payment rails.</p>
+</div>
+
+<!-- 3. HOW MONEY MOVES -->
+<div class="section">
+<h1>3. How Nivix Moves Money</h1>
+
+<h3>3.1 Who does what</h3>
+<table>
+<tr><th>Entity</th><th>Holds</th><th>Role</th></tr>
+<tr><td><b>On-ramp fiat partner</b> (e.g. Razorpay/Cashfree in India)</td><td>Local fiat only — INR, never crypto</td><td>Collects the sender's payment, confirms it to Nivix via webhook</td></tr>
+<tr><td><b>Nivix treasury</b></td><td>Pre-funded USDC pool on Solana</td><td>Releases USDC the instant fiat is confirmed; receives USDC back on reverse flows; owns the compliance ledger</td></tr>
+<tr><td><b>Off-ramp fiat partner</b> (destination country)</td><td>Local fiat only — USD/EUR/etc., never crypto</td><td>Pays the recipient's bank account in local currency (see Section 5 for exactly how this leg works)</td></tr>
+<tr><td><b>Hyperledger Fabric</b> (multi-organisation)</td><td>KYC and compliance records</td><td>Immutable, private audit trail — no single party, including Nivix, can alter a record alone</td></tr>
+<tr><td><b>Solana</b> (public chain)</td><td>USDC settlement transactions</td><td>Fast, cheap, publicly verifiable money movement and proof of reserves</td></tr>
+</table>
+
+<div class="callout">
+  <b class="label">Design principle:</b> fiat partners never touch crypto, and Nivix never touches customer fiat directly beyond the confirmation webhook. This separation of duties is what keeps each hop within existing licensing regimes instead of requiring Nivix itself to be licensed as a money transmitter in every country.
+</div>
+
+<h3>3.2 Step by step — India → USA example</h3>
+<div class="flowbox">
+  <div class="step"><span class="n">① SENDER</span>Pays ₹8,300 via UPI / bank transfer</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">② ON-RAMP PARTNER</span>Confirms receipt to Nivix by webhook</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">③ NIVIX TREASURY</span>Releases 100 USDC on Solana (~2 sec)</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">④ OFF-RAMP PARTNER</span>Pays recipient ~$99 via local rail</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><span class="n">⑤ BOTH PARTIES</span>Get confirmation + receipt in-app</div>
+</div>
+
+<table>
+<tr><th>Step</th><th>What happens</th><th>Who</th><th>Time</th></tr>
+<tr><td>①</td><td>Sender pays local currency via UPI/bank transfer</td><td>Licensed, locally-regulated on-ramp partner</td><td>Instant</td></tr>
+<tr><td>②</td><td>Payment confirmed to Nivix, signature verified</td><td>Nivix API</td><td>Seconds</td></tr>
+<tr><td>③</td><td>Nivix releases USDC from its own treasury on Solana</td><td>Nivix treasury wallet</td><td>~2 seconds</td></tr>
+<tr><td>④</td><td>Off-ramp partner pays the recipient in local currency</td><td>Licensed off-ramp partner (see Section 5)</td><td>Minutes&ndash;hours, rail-dependent</td></tr>
+<tr><td>⑤</td><td>Both sides see status + receipt</td><td>Nivix app</td><td>Instant</td></tr>
+</table>
+
+<h3>3.3 Why a treasury instead of a pass-through</h3>
+<p>An alternative design would have Nivix simply forward whatever the on-ramp partner sends, without holding its own balance. We rejected that:</p>
+<table>
+<tr><th>No treasury (pass-through only)</th><th>Own treasury (our choice)</th></tr>
+<tr><td>Settlement waits on the partner's own conversion speed</td><td>USDC is already in our wallet — release is instant</td></tr>
+<tr><td>We don't control the spread</td><td>We control the full margin on both legs</td></tr>
+<tr><td>A partner outage stalls the whole transfer</td><td>Treasury float gives us buffer and independence</td></tr>
+</table>
+
+<h3>3.4 Keeping the treasury funded</h3>
+<p>The treasury is a float, not a per-transaction top-up:</p>
+<pre class="flow">TWO-WAY CORRIDOR (India ⇄ USA):
+  India→USA leg:  ₹ in  (treasury's INR side grows)  |  USDC out (treasury shrinks)
+  USA→India leg:  $ in via reverse flow (USDC side grows) |  ₹ out (INR side shrinks)
+  NET EFFECT: balanced two-way traffic self-balances the treasury automatically.
+
+ONE-SIDED CORRIDOR (e.g. 90% India→USA, 10% reverse):
+  Accumulated INR is periodically converted to USDC (weekly/monthly, not per-transfer)
+  Auto-trigger: buy USDC when treasury capacity < 30%.  Alert ops if < 10%.</pre>
+</div>
+
+<!-- 4. TECHNICAL ARCHITECTURE -->
+<div class="section">
+<h1>4. Technical Architecture</h1>
+<p>This section is for readers (or your technical advisors) who want to verify the engineering, not just the pitch.</p>
+
+<h3>4.1 Why two blockchains, not one</h3>
+<table>
+<tr><th>Concern</th><th>Chain used</th><th>Why not the other one</th></tr>
+<tr><td>Money settlement (must be publicly verifiable)</td><td><b>Solana</b> — USDC transfers, treasury balance, proof of reserves</td><td>A private ledger can't prove solvency to the outside world; a public one can</td></tr>
+<tr><td>Compliance records (KYC, PII, risk decisions)</td><td><b>Hyperledger Fabric</b>, multi-organisation</td><td>Personal identity data cannot legally sit on a public chain anyone can read</td></tr>
+</table>
+
+<div class="callout">
+  <b class="label">The fraud-safety property that matters to a diligence team:</b> Fabric is deployed multi-org (Nivix + an independent endorsing organisation). Every KYC write requires endorsement from <i>both</i> organisations before it commits. Nivix alone cannot alter or fabricate a compliance record — the same class of control failure that sank FTX is structurally closed off here, because no single party controls the ledger.
+</div>
+
+<h3>4.2 System diagram</h3>
+<pre class="flow">React (auth + KYC + transfer UI)
+        │  JWT
+        ▼
+Nivix API (Node.js / TypeScript, Express)
+        │
+        ├──► KYC VENDOR (Sumsub / HyperVerge)  — identity verification
+        │            │ webhook: verified / risk score
+        │            ▼
+        ├──► HYPERLEDGER FABRIC (multi-org, dual-endorsed)
+        │     nivix-kyc chaincode · PII in private data collections
+        │            │
+        ▼            ▼
+   POSTGRES (users, KYC mirror, audit mirror)  ◄── fast reads
+   REDIS + BullMQ (async jobs, retries, idempotency)
+        │
+        ▼
+   SOLANA (USDC treasury, settlement transactions, 2-sec finality)</pre>
+
+<h3>4.3 Repository &amp; stack</h3>
+<div class="two-col">
+<div>
+<h4 style="margin-top:0;">Monorepo layout</h4>
+<ul class="kv-list">
+<li><b>apps/api</b> — Express + TypeScript + Prisma; auth, KYC endpoints, webhook intake</li>
+<li><b>apps/worker</b> — BullMQ job processor; owns the Fabric gateway client</li>
+<li><b>apps/web</b> — React + Material UI frontend</li>
+<li><b>packages/shared</b> — Zod schemas and shared types used by both API and worker</li>
+</ul>
+</div>
+<div>
+<h4 style="margin-top:0;">Core technologies</h4>
+<ul class="kv-list">
+<li><b>Settlement:</b> Solana + Circle USDC</li>
+<li><b>Compliance ledger:</b> Hyperledger Fabric (multi-org), Go chaincode</li>
+<li><b>Backend:</b> Node.js, TypeScript, Prisma ORM</li>
+<li><b>Data:</b> PostgreSQL (operational + fast-read mirror), Redis (jobs/queues)</li>
+<li><b>Auth:</b> JWT, role-based access (user / compliance / admin)</li>
+</ul>
+</div>
+</div>
+
+<h3>4.4 Build-for-the-swap: local now, cloud later</h3>
+<p>The current AWS account is mid-verification, so Phase 1 is built entirely on local Docker infrastructure — but every hosting dependency sits behind a small interface, so migrating to managed cloud services later is a configuration change, not a rewrite:</p>
+<table>
+<tr><th>Concern</th><th>Local (now)</th><th>AWS (when verified)</th></tr>
+<tr><td>Compliance ledger</td><td>Fabric test-network (Docker, Org1+Org2)</td><td>AWS Managed Blockchain (Nivix + genuinely independent endorser)</td></tr>
+<tr><td>Database</td><td>Postgres container</td><td>RDS Postgres</td></tr>
+<tr><td>Cache / queues</td><td>Redis container</td><td>ElastiCache</td></tr>
+<tr><td>Secrets</td><td>Gitignored <code>.env</code> behind a <code>SecretsProvider</code> interface</td><td>AWS Secrets Manager</td></tr>
+<tr><td>Encryption keys</td><td>Local master key behind an <code>Encryptor</code> interface</td><td>AWS KMS</td></tr>
+</table>
+<p style="font-size:9pt;color:#55636f;"><i>Caveat we hold ourselves to:</i> running Org1+Org2 both on one machine proves the dual-endorsement <b>mechanics</b> — it is not yet tamper-proof against Nivix itself. That property arrives when the independent endorser is onboarded onto separate infrastructure at the AWS-migration step, which is already in progress as a parallel workstream.</p>
+</div>
+
+<!-- 5. SETTLEMENT REALITY (Circle correction) -->
+<div class="section">
+<h1>5. Settlement Reality: What Circle Actually Does</h1>
+<p>This section exists because an earlier internal explanation of the off-ramp leg was oversimplified. We're correcting it here deliberately, because it's exactly the kind of gap a technical due-diligence reviewer would probe for — better it comes from us.</p>
+
+<div class="callout warn">
+<b class="label">The simplification we're correcting:</b> Our July memo described "Circle Mint" as the off-ramp partner that pays the recipient directly. Having read Circle's own API documentation closely, that is not what Circle Mint does.
+</div>
+
+<h3>5.1 What Circle Mint actually is</h3>
+<p>Circle Mint lets an approved business redeem its own USDC 1:1 for real US dollars (or EURC for euros), wired into <b>a bank account that business has already pre-registered with Circle</b>. Circle's own quickstart guide shows the redemption call requires a <code>destination</code> object referencing an account ID created in an earlier step — there is no field for an arbitrary third party's bank details:</p>
+<pre class="flow">"destination": {
+  "type": "wire",
+  "id": "9d1fa351-b24d-442a-8aa5-e717db1ed636"   ← must be OUR pre-linked account
+}</pre>
+<p>In other words: <b>Circle Mint turns our own USDC into our own dollars.</b> It is treasury infrastructure for Nivix, not a payout API to Nivix's customers. Access also requires Circle's own KYB/sanctions review (days to weeks) and is limited to wire/SEPA rails at participating banks in eligible regions.</p>
+
+<h3>5.2 The corrected model: two hops, not one</h3>
+<p>The international leg of a transfer therefore needs <b>two separate, licensed steps</b>, not one:</p>
+<pre class="flow">Nivix USDC treasury
+      │
+      ▼
+ HOP 1 — Circle Mint          Redeem USDC 1:1 → real USD/EUR,
+ (treasury conversion)         wired into NIVIX'S OWN bank account.
+      │                       This is our liquidity — not the
+      │                       recipient's money yet.
+      ▼
+ HOP 2 — Last-mile payout     From our own bank account, pay the
+ (licensed local partner:      NAMED RECIPIENT via wire/ACH/local rail.
+ e.g. Wise Platform, Nium,     This is the leg that actually reaches
+ Payoneer, or direct bank      the person on the other end.
+ wire/ACH API)</pre>
+
+<div class="callout fix">
+<b class="label">Why this is actually a strength, not a weakness:</b> no single partner ever touches both the crypto leg and the fiat-to-recipient leg. That separation is a compliance feature — it mirrors the same multi-party control principle we apply on the Fabric side (Section 4.1), just applied to the money rails instead of the ledger.
+</div>
+
+<h3>5.3 What's already proven on the India side</h3>
+<p>On the India (INR) side, this two-hop concern doesn't arise the same way: our current integration with <b>Cashfree Payouts</b> bundles both jobs into a single API — it holds settlement funds and pays named beneficiaries directly (bank transfer, or a claim-link "Cashgram" the recipient redeems to a bank account or UPI of their choice). This is the flow already demonstrated end-to-end in our proof-of-concept: sender pays INR &rarr; on-chain settlement &rarr; recipient receives INR in their own account.</p>
+<p>What remains open is the <b>equivalent last-mile partner for each destination country</b> — that integration work is scoped as Phase 2 (Milestone M2/E5) of the build plan and has not started yet. It is a scope item, not a design flaw: the treasury, the Solana settlement rail, and the compliance ledger are all corridor-agnostic and don't change when we add a country.</p>
+
+<h3>5.4 How to say this to a technical reviewer</h3>
+<div class="callout">
+"Circle Mint is our treasury conversion layer — it turns our own USDC into real, regulated dollars in our own account, 1:1. The last mile — actually paying the named recipient — is a separate, licensed payout integration per corridor: Cashfree today in India, and an equivalent partner (Wise Platform, Nium, or a direct bank wire/ACH API) for each new country we add. Two regulated hops, each auditable independently."
+</div>
+</div>
+
+<!-- 6. LEGAL -->
+<div class="section">
+<h1>6. Legal &amp; Regulatory Structure</h1>
+<table>
+<tr><th>Aspect</th><th>Status</th></tr>
+<tr><td>Legal home</td><td>GIFT City IFSC, Gujarat — regulated by IFSCA</td></tr>
+<tr><td>FEMA status</td><td>IFSC is treated as a <b>non-resident jurisdiction</b> — mainland India's foreign-exchange restrictions on crypto don't apply inside it</td></tr>
+<tr><td>Entry route</td><td>IFSCA FinTech Regulatory Sandbox — explicitly permits a stablecoin-settled pilot with real, limited customers</td></tr>
+<tr><td>Report submitted to IFSCA</td><td>Yes</td></tr>
+<tr><td>Company / incubation</td><td>NivixPe Private Limited, Bennett University Hatchery</td></tr>
+<tr><td>Tax treatment</td><td>Up to a 20-year tax holiday available in GIFT City under Budget 2026 provisions</td></tr>
+<tr><td>KYC / AML</td><td>KYC vendor (Sumsub/HyperVerge) for verification; Hyperledger Fabric (multi-org) for the immutable compliance record</td></tr>
+<tr><td>Data protection</td><td>DPDPA 2023-aligned; PII stored only in Fabric private data collections, never on the public chain</td></tr>
+</table>
+<div class="callout">
+<b class="label">The rule that keeps the whole model legal:</b> Nivix orchestrates and records. Licensed fiat partners handle local currency on each end. Nivix itself holds USDC, never customer fiat. The IFSCA sandbox is what permits that stablecoin settlement inside its jurisdiction.
+</div>
+<p style="font-size:9pt;color:#55636f;">This is a regulatory pathway, not a loophole for mainland retail INR flows — money originating or terminating outside the IFSC still needs the standard LRS/AD-bank route or a FIU-registered VDASP partner for its domestic leg.</p>
+</div>
+
+<!-- 7. REVENUE -->
+<div class="section">
+<h1>7. Revenue Model</h1>
+<table>
+<tr><th>Stream</th><th>Source</th><th>Typical margin</th></tr>
+<tr><td>Platform fee</td><td>Flat % per transaction</td><td>0.3&ndash;0.5%</td></tr>
+<tr><td>FX spread</td><td>Difference between the locked user rate and the market rate</td><td>0.2&ndash;0.5%</td></tr>
+<tr><td>Treasury yield</td><td>Idle USDC in the treasury earns interest (Circle offers ~4.5% APY on qualifying balances)</td><td>~4.5% APY on idle float</td></tr>
+<tr><td>Volume incentives</td><td>Fiat partner rebates at volume tiers</td><td>Variable</td></tr>
+</table>
+<p><b>Blended take rate: 0.5&ndash;1.0% per transaction</b>, versus 5&ndash;10% typical for traditional remittance.</p>
+<pre class="flow">Illustrative economics at $1M monthly volume (10,000 transactions @ $100 avg):
+  Gross margin per transaction:     $0.60 – $1.00
+  Monthly revenue:                  $6,000 – $10,000
+  Annualised:                       $72,000 – $120,000
+(Illustrative only — does not include treasury yield or partner rebates.)</pre>
+</div>
+
+<!-- 8. STATUS & ROADMAP -->
+<div class="section">
+<h1>8. Build Status &amp; Roadmap</h1>
+<h3>8.1 What's demonstrated today</h3>
+<ul>
+  <li>End-to-end proof-of-concept: sender pays INR &rarr; on-chain token settlement &rarr; recipient receives INR via Cashfree payout</li>
+  <li>KYC flow (submission, verification, admin review) exercised in the legacy prototype</li>
+  <li>Hyperledger Fabric running 2-organisation locally, KYC chaincode deployed</li>
+  <li>Frontend transfer wizard: KYC check &rarr; recipient details &rarr; amount &rarr; processing &rarr; receipt</li>
+  <li>Legal report submitted to IFSCA</li>
+</ul>
+<h3>8.2 What's actively being rebuilt (Phase 1 — identity &amp; compliance backbone)</h3>
+<p>The prototype proved the mechanics; we are now rebuilding the identity and compliance layer properly, in a clean TypeScript monorepo, before wiring money movement back in:</p>
+<ul>
+  <li><span class="tag">DONE</span> Clean monorepo, CI, local Docker infrastructure (Postgres + Redis)</li>
+  <li><span class="tag">DONE</span> Auth (register / login / JWT / role-based access), tested end-to-end</li>
+  <li><span class="tag">DONE</span> KYC vendor integration path, PII envelope encryption, audit logging</li>
+  <li><span class="tag">DONE</span> Hyperledger Fabric write path via the official Fabric Gateway SDK — KYC approval is recorded on-chain and mirrored to Postgres for fast reads, replacing the prototype's silent-failure write path</li>
+  <li><span class="tag">NEXT</span> USDC settlement on Solana (Milestone M2)</li>
+</ul>
+<h3>8.3 Roadmap</h3>
+<table>
+<tr><th>Phase</th><th>Delivers</th></tr>
+<tr><td><b>Phase 1</b> — Identity &amp; compliance <span style="color:#1b6f5c;">(in progress)</span></td><td>Auth, KYC vendor integration, multi-org Hyperledger Fabric, audit trail</td></tr>
+<tr><td><b>Phase 2</b> — Money movement</td><td>USDC settlement on Solana, on-ramp integration, off-ramp per-corridor (the two-hop model in Section 5), quotes/FX</td></tr>
+<tr><td><b>Phase 3</b> — Sandbox pilot</td><td>Deploy into the IFSCA sandbox, limited live transactions, regulator reporting</td></tr>
+<tr><td><b>Phase 4</b> — Scale</td><td>Additional corridors, additional partners, progression toward full IFSCA licensing</td></tr>
+</table>
+</div>
+
+<!-- 9. COMPETITIVE -->
+<div class="section">
+<h1>9. Competitive Landscape</h1>
+<table>
+<tr><th></th><th>Traditional (SWIFT / banks)</th><th>Wise / Remitly</th><th>Nivix</th></tr>
+<tr><td>Settlement time</td><td>3&ndash;5 days</td><td>1&ndash;2 days</td><td><b>~2 seconds</b> (on-chain leg)</td></tr>
+<tr><td>Fee</td><td>$25&ndash;45</td><td>$5&ndash;15</td><td><b>&lt; $1</b> (on-chain leg)</td></tr>
+<tr><td>Transparency</td><td>Opaque</td><td>Partial tracking</td><td>Publicly verifiable on-chain settlement + auditable compliance ledger</td></tr>
+<tr><td>Availability</td><td>Business hours</td><td>24/7 front-end</td><td>24/7, gated only by fiat-partner rail hours on each end</td></tr>
+</table>
+<p style="font-size:9pt;color:#55636f;">Note: the sub-$1, ~2-second figures describe the on-chain settlement hop specifically. End-to-end time still includes the fiat collection and payout legs on either side (Section 3.2), which run at the speed of the local rail used.</p>
+</div>
+
+<!-- 10. RISK -->
+<div class="section">
+<h1>10. Risk Management</h1>
+<table>
+<tr><th>Risk</th><th>Mitigation</th></tr>
+<tr><td>Treasury depletion on one-sided corridors</td><td>Auto-rebalance trigger at 30% capacity; ops alert at 10%</td></tr>
+<tr><td>USDC de-peg</td><td>Circle is the most regulated stablecoin issuer, backed by US Treasuries, audited monthly; real-time monitoring; ability to pause instantly</td></tr>
+<tr><td>Payout partner outage</td><td>Provider interfaces are swappable per corridor; multiple partners qualifiable per corridor</td></tr>
+<tr><td>Regulatory change</td><td>IFSCA sandbox status gives legal cover; proactive compliance posture; corridor-specific licensing added as needed</td></tr>
+<tr><td>Fraud / money laundering</td><td>Mandatory KYC, sanctions screening, transaction limits, multi-org Fabric ledger that no single party can alter</td></tr>
+<tr><td>Key compromise</td><td>Treasury secured with multisig + HSM in production; secrets held in a vault, never in source control; least-privilege access</td></tr>
+</table>
+</div>
+
+<!-- 11. FAQ -->
+<div class="section">
+<h1>11. Investor FAQ</h1>
+<h3>Where does the money actually come from?</h3>
+<p>From our pre-funded USDC treasury. When a sender pays local currency, that currency lands in our bank account via the on-ramp partner. We release the equivalent USDC from our own Solana treasury. The treasury refills from two-way traffic plus periodic conversion of accumulated fiat — see Section 3.4.</p>
+
+<h3>What does Nivix actually own and control?</h3>
+<p>The USDC treasury, the orchestration and routing layer, and the compliance engine (the Hyperledger audit trail). We do not hold customer fiat directly beyond a payment's confirmation webhook, we do not issue our own token, and we do not carry unhedged FX risk.</p>
+
+<h3>How do you make money?</h3>
+<p>Platform fee (0.3&ndash;0.5%) plus FX spread (0.2&ndash;0.5%) plus treasury yield on idle USDC. See Section 7 for the full model and illustrative economics.</p>
+
+<h3>Why Solana instead of just using SWIFT?</h3>
+<p>Speed (seconds versus days), cost (fractions of a cent versus $25&ndash;45), and a publicly verifiable settlement trail instead of opaque internal bank records — and it runs 24/7, not on banking hours.</p>
+
+<h3>Why Hyperledger as well as Solana?</h3>
+<p>They do different jobs. Solana is public — it's how anyone can verify our treasury reserves and settlement history. Hyperledger is private — it's where KYC and personal data live, visible only to authorized parties. Public money movement plus private compliance is the combination that lets us be both transparent and legally compliant with data protection law.</p>
+
+<h3>Does Circle handle the whole off-ramp?</h3>
+<p>No — see Section 5. Circle Mint converts our own USDC into our own fiat. Actually paying the named recipient is a second, separate licensed integration per corridor (Cashfree today in India; an equivalent partner needed for each new country).</p>
+
+<h3>Do you need to refill the treasury before every transaction?</h3>
+<p>No. Two-way corridors self-balance automatically. One-sided corridors are rebalanced periodically (weekly/monthly), with automatic threshold alerts — never per-transaction.</p>
+
+<h3>What if USDC loses its peg?</h3>
+<p>USDC is the most heavily regulated major stablecoin — backed 1:1 by US Treasuries and cash, audited monthly. A de-peg event would be an industry-wide shock, not a Nivix-specific one. We monitor continuously and can pause settlement instantly if needed.</p>
+
+<h3>What is the moat here?</h3>
+<p>First-mover regulatory positioning in GIFT City for stablecoin-settled remittance; a dual-blockchain compliance design that is hard to replicate quickly and that regulators respond well to; a treasury model that gives genuinely instant settlement instead of waiting on a partner's own conversion speed; and a routing engine designed from day one to add corridors without re-architecting.</p>
+</div>
+
+<!-- APPENDIX A -->
+<div class="section">
+<h1>Appendix A — Technology Stack</h1>
+<table>
+<tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+<tr><td>Settlement</td><td>Solana + Circle USDC</td><td>Fast, low-cost, publicly verifiable money movement</td></tr>
+<tr><td>Compliance ledger</td><td>Hyperledger Fabric (multi-org)</td><td>Private, tamper-resistant KYC and audit records</td></tr>
+<tr><td>Backend</td><td>Node.js, TypeScript, Express, Prisma, BullMQ</td><td>API surface and asynchronous job processing</td></tr>
+<tr><td>Database</td><td>PostgreSQL</td><td>Operational data and a fast-read mirror of Fabric state</td></tr>
+<tr><td>Queue / cache</td><td>Redis + BullMQ</td><td>Job queue for Fabric writes, webhooks, retries</td></tr>
+<tr><td>Frontend</td><td>React + Material UI</td><td>Customer-facing application</td></tr>
+<tr><td>On-ramp (India)</td><td>Razorpay / Cashfree</td><td>INR collection</td></tr>
+<tr><td>Off-ramp (India)</td><td>Cashfree Payouts</td><td>INR payout to named recipients (bank transfer or claim-link)</td></tr>
+<tr><td>Treasury conversion</td><td>Circle Mint</td><td>1:1 USDC/EURC redemption into Nivix's own bank account (Section 5)</td></tr>
+<tr><td>KYC verification</td><td>Sumsub / HyperVerge</td><td>Identity verification vendor</td></tr>
+<tr><td>Hosting</td><td>Local Docker today; AWS (Managed Blockchain, RDS, ElastiCache) planned</td><td>Infrastructure, migrated config-only per Section 4.4</td></tr>
+</table>
+</div>
+
+<!-- APPENDIX B -->
+<div class="section">
+<h1>Appendix B — Glossary</h1>
+<dl class="glossary">
+<dt>USDC</dt><dd>A stablecoin issued by Circle, redeemable 1:1 for US dollars and backed by cash and short-term US Treasuries.</dd>
+<dt>Solana</dt><dd>A public blockchain used here purely as a fast, cheap settlement rail for USDC — not for anything requiring privacy.</dd>
+<dt>Hyperledger Fabric</dt><dd>A private, permissioned blockchain framework used for the compliance ledger. "Multi-org" means more than one independent organisation must approve (endorse) each write.</dd>
+<dt>On-ramp / off-ramp</dt><dd>The fiat entry and exit points of a transfer — the licensed local partners who collect and pay out local currency.</dd>
+<dt>IFSC / IFSCA</dt><dd>India's International Financial Services Centre (GIFT City, Gujarat) and its regulator, the International Financial Services Centres Authority — a jurisdiction treated as non-resident for Indian foreign-exchange law.</dd>
+<dt>Circle Mint</dt><dd>Circle's business product for redeeming USDC/EURC 1:1 into a pre-registered bank account belonging to the redeeming business (see Section 5).</dd>
+<dt>KYC / KYB</dt><dd>Know Your Customer / Know Your Business — identity and entity verification required before onboarding.</dd>
+<dt>Endorsement (Fabric)</dt><dd>The requirement that a transaction be approved by specified organisations' peers before it is committed to the ledger.</dd>
+</dl>
+<footer class="pagefoot">Nivix — Investor &amp; Technical Briefing · Confidential · Prepared for investor review · August 2026</footer>
+</div>
+
+</body>
+</html>
