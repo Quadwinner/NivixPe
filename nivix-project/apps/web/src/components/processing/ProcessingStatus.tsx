@@ -1,19 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Stepper,
-  Step,
-  StepLabel,
-  LinearProgress,
-  Alert,
-  Chip,
-  Grid,
-  CircularProgress,
-  Button
-} from '@mui/material';
+import { Check, AlertCircle, Loader2, Flame } from 'lucide-react';
+// MUI icons are still referenced by the `steps` state below; only the MUI
+// layout components were replaced with Tailwind markup.
 import {
   CheckCircle,
   LocalFireDepartment,
@@ -21,7 +9,6 @@ import {
   Send,
   AccountBalance,
   Security,
-  Speed
 } from '@mui/icons-material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
@@ -30,6 +17,10 @@ import {
   createBurnInstruction,
   getMint
 } from '@solana/spl-token';
+
+/* Visual constants, matching the redesigned wizard shell. */
+const PS_SH1 = '0 1px 2px rgba(4,33,64,.04), 0 1px 3px rgba(4,33,64,.06)';
+const PS_GRAD = 'linear-gradient(135deg, #0A4174 0%, #0C7075 100%)';
 
 interface RecipientDetails {
   name: string;
@@ -726,190 +717,293 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getStepColor = (status: ProcessingStep['status']) => {
-    switch (status) {
-      case 'completed': return 'success.main';
-      case 'processing': return 'primary.main';
-      case 'error': return 'error.main';
-      default: return 'grey.400';
-    }
+  // Step colours are now driven by `statusStyles` in the render below.
+
+  const statusStyles: Record<
+    ProcessingStep['status'],
+    { bg: string; ring?: string; text: string }
+  > = {
+    completed: { bg: 'linear-gradient(135deg, #0F9688 0%, #0C7075 100%)', text: '#FFFFFF' },
+    processing: {
+      bg: 'linear-gradient(135deg, #0A4174 0%, #0C7075 100%)',
+      ring: '0 0 0 4px rgba(12,112,117,0.18)',
+      text: '#FFFFFF',
+    },
+    error: { bg: '#FF4D4F', text: '#FFFFFF' },
+    pending: { bg: '#FFFFFF', text: '#A6AEBB' },
   };
 
   return (
-    <Card>
-      <CardContent>
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Automated Processing
-          </Typography>
+    <div>
+      {/* ── Header: elapsed + progress ── */}
+      <div className="mb-8">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="font-display text-xl font-bold tracking-[-0.01em] text-ink-900">
+              Processing your transfer
+            </h2>
+            <p className="mt-1.5 text-[15px] leading-relaxed text-ink-500">
+              Keep this page open. Each step is confirmed on-chain as it completes.
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="font-mono text-2xl font-bold leading-none text-navy-600">
+              {formatTime(elapsedTime)}
+            </p>
+            <p className="font-display mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-400">
+              Elapsed
+            </p>
+          </div>
+        </div>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
-            <Speed color="primary" />
-            <Typography variant="body2" color="text.secondary">
-              Processing Time: {formatTime(elapsedTime)}
-            </Typography>
-          </Box>
-
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{ height: 8, borderRadius: 4, mb: 1 }}
+        <div
+          className="h-2 w-full overflow-hidden rounded-full"
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          style={{ backgroundColor: '#E8EBF1' }}
+        >
+          <div
+            className="h-full rounded-full transition-[width] duration-700"
+            style={{ width: `${progress}%`, background: PS_GRAD }}
           />
+        </div>
+        <p className="font-mono mt-2 text-[12px] text-ink-400">
+          {progress.toFixed(0)}% complete
+        </p>
+      </div>
 
-          <Typography variant="body2" color="text.secondary">
-            {progress.toFixed(0)}% Complete
-          </Typography>
-        </Box>
+      {/* ── Vertical timeline ── */}
+      <ol className="relative">
+        {steps.map((step, index) => {
+          const style = statusStyles[step.status];
+          const isLast = index === steps.length - 1;
 
-        {/* Processing Steps */}
-        <Stepper activeStep={currentStepIndex} orientation="vertical">
-          {steps.map((step) => (
-            <Step key={step.id}>
-              <StepLabel
-                StepIconComponent={() => (
-                  <Box
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: getStepColor(step.status),
-                      color: 'white',
-                      mr: 1
-                    }}
-                  >
-                    {step.status === 'processing' ? (
-                      <CircularProgress size={16} color="inherit" />
-                    ) : (
-                      React.cloneElement(step.icon as React.ReactElement, { sx: { fontSize: 16 } })
-                    )}
-                  </Box>
-                )}
+          return (
+            <li key={step.id} className="relative flex gap-4 pb-6 last:pb-0">
+              {/* Connector */}
+              {!isLast && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-[15px] top-9 h-[calc(100%-1.5rem)] w-0.5"
+                  style={{
+                    backgroundColor: step.status === 'completed' ? '#0F9688' : '#E8EBF1',
+                  }}
+                />
+              )}
+
+              {/* Marker */}
+              <span
+                className="relative z-10 mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300"
+                style={{
+                  background: style.bg,
+                  color: style.text,
+                  borderColor: step.status === 'pending' ? 'rgba(4,33,64,0.14)' : 'transparent',
+                  boxShadow: style.ring,
+                }}
               >
-                <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                {step.status === 'processing' ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : step.status === 'completed' ? (
+                  <Check size={15} strokeWidth={3} />
+                ) : step.status === 'error' ? (
+                  <AlertCircle size={15} />
+                ) : (
+                  <span className="font-mono text-[11px] font-bold">{index + 1}</span>
+                )}
+              </span>
+
+              {/* Body */}
+              <div className="min-w-0 flex-1 pt-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p
+                    className={`font-display text-[15px] font-bold ${
+                      step.status === 'pending' ? 'text-ink-400' : 'text-ink-900'
+                    }`}
+                  >
                     {step.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {step.description}
-                  </Typography>
-
+                  </p>
                   {step.status === 'processing' && (
-                    <Chip
-                      label="Processing..."
-                      size="small"
-                      color="primary"
-                      sx={{ mt: 1 }}
-                    />
+                    <span
+                      className="font-display rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em]"
+                      style={{ backgroundColor: 'rgba(12,112,117,0.12)', color: '#0C7075' }}
+                    >
+                      In progress
+                    </span>
                   )}
+                </div>
 
-                  {step.status === 'completed' && step.timestamp && (
-                    <Typography variant="caption" color="success.main" display="block" sx={{ mt: 1 }}>
-                      ✓ Completed at {new Date(step.timestamp).toLocaleTimeString()}
-                    </Typography>
-                  )}
+                <p className="mt-1 text-[13px] leading-relaxed text-ink-500">{step.description}</p>
 
-                  {step.txHash && (
-                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
-                      TX: {step.txHash.substring(0, 8)}...{step.txHash.substring(-8)}
-                    </Typography>
-                  )}
-                </Box>
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+                {step.status === 'completed' && step.timestamp && (
+                  <p
+                    className="mt-1.5 flex items-center gap-1.5 text-[12px] font-medium"
+                    style={{ color: '#06845F' }}
+                  >
+                    <Check size={12} strokeWidth={3} />
+                    Completed at {new Date(step.timestamp).toLocaleTimeString()}
+                  </p>
+                )}
 
-        {/* Transfer Details */}
-        <Card sx={{ mt: 3, bgcolor: 'grey.50' }}>
-          <CardContent>
-            <Typography variant="subtitle2" gutterBottom>
-              Transfer Details
-            </Typography>
+                {step.txHash && (
+                  <p className="font-mono mt-1.5 break-all text-[11px] text-ink-400">
+                    tx {step.txHash.substring(0, 10)}…{step.txHash.slice(-8)}
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
 
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">Amount:</Typography>
-                <Typography variant="body2" fontWeight="bold">
-                  {paymentData.amount.toFixed(2)} USDC
-                </Typography>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">To:</Typography>
-                <Typography variant="body2">
-                  {paymentData.recipientDetails.name}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">Account:</Typography>
-                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                  ***{paymentData.recipientDetails.accountNumber.slice(-4)}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">Session ID:</Typography>
-                <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-                  {paymentData.sessionId.substring(0, 12)}...
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-
-        {/* Error Display */}
-        {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        {/* Burn Confirmation Required */}
-        {burnRequired && currentStepIndex === 2 && !isBurning && (
-          <Alert severity="warning" sx={{ mt: 2 }}>
-            <Typography variant="body2" gutterBottom>
-              🔥 <strong>Token Burn Required:</strong> To complete the transfer, you need to approve burning your {paymentData.amount} USD tokens.
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              This will convert your tokens to fiat and send {paymentData.recipientDetails.name} the money.
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={burnUserTokens}
-              disabled={!publicKey || isBurning}
-              startIcon={isBurning ? <CircularProgress size={16} /> : <LocalFireDepartment />}
-              color="warning"
-              sx={{ mt: 2 }}
+      {/* ── Burn confirmation ── */}
+      {burnRequired && currentStepIndex === 2 && !isBurning && (
+        <div
+          className="mt-7 rounded-2xl border p-5"
+          style={{ backgroundColor: 'rgba(255,184,0,0.09)', borderColor: 'rgba(255,184,0,0.32)' }}
+        >
+          <div className="flex items-start gap-3">
+            <span
+              aria-hidden="true"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+              style={{ backgroundColor: 'rgba(255,184,0,0.18)', color: '#8A6200' }}
             >
-              {isBurning ? 'Burning Tokens...' : '🔥 Confirm & Burn Tokens'}
-            </Button>
-          </Alert>
-        )}
+              <Flame size={17} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-[15px] font-bold" style={{ color: '#7A5600' }}>
+                Your approval is needed
+              </p>
+              <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: '#7A5600' }}>
+                Approve burning {paymentData.amount} USD tokens from your wallet. This converts them
+                to fiat and releases the payout to {paymentData.recipientDetails.name}. Nothing moves
+                without your signature.
+              </p>
+              <button
+                type="button"
+                onClick={burnUserTokens}
+                disabled={!publicKey || isBurning}
+                className="font-display mt-4 inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm font-semibold text-white outline-none transition-all hover:-translate-y-px focus-visible:ring-4 focus-visible:ring-[rgba(255,184,0,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
+                style={{ backgroundColor: '#B98700', boxShadow: '0 4px 14px rgba(185,135,0,0.28)' }}
+              >
+                <Flame size={16} />
+                Confirm and burn tokens
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-        {/* Success Message */}
-        {isComplete && (
-          <Alert severity="success" sx={{ mt: 2 }}>
-            <Typography variant="body2">
-              🎉 Transfer completed successfully! Money has been sent to {paymentData.recipientDetails.name}.
-            </Typography>
-          </Alert>
-        )}
+      {isBurning && (
+        <div
+          className="mt-7 flex items-center gap-3 rounded-2xl border p-5"
+          style={{ backgroundColor: 'rgba(255,184,0,0.09)', borderColor: 'rgba(255,184,0,0.32)' }}
+        >
+          <Loader2 size={17} className="animate-spin" style={{ color: '#8A6200' }} />
+          <p className="text-sm font-medium" style={{ color: '#7A5600' }}>
+            Burning tokens — confirm the transaction in your wallet.
+          </p>
+        </div>
+      )}
 
-        {/* Connection Status */}
-        <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Chip
-            label={wsConnection ? 'Real-time updates active' : 'Polling for updates'}
-            size="small"
-            color={wsConnection ? 'success' : 'warning'}
-            variant="outlined"
+      {/* ── Error ── */}
+      {error && (
+        <div
+          role="alert"
+          className="mt-7 flex items-start gap-3 rounded-2xl border p-4"
+          style={{ backgroundColor: 'rgba(255,77,79,0.08)', borderColor: 'rgba(255,77,79,0.26)' }}
+        >
+          <AlertCircle size={17} className="mt-0.5 shrink-0" style={{ color: '#C2292B' }} />
+          <p className="text-sm leading-relaxed" style={{ color: '#C2292B' }}>
+            {error}
+          </p>
+        </div>
+      )}
+
+      {/* ── Success ── */}
+      {isComplete && (
+        <div
+          className="mt-7 flex items-start gap-3 rounded-2xl border p-5"
+          style={{ backgroundColor: 'rgba(0,196,140,0.10)', borderColor: 'rgba(0,196,140,0.30)' }}
+        >
+          <span
+            aria-hidden="true"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+            style={{ backgroundColor: 'rgba(0,196,140,0.20)', color: '#06845F' }}
+          >
+            <Check size={18} strokeWidth={3} />
+          </span>
+          <div>
+            <p className="font-display text-[15px] font-bold" style={{ color: '#06845F' }}>
+              Transfer complete
+            </p>
+            <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#06845F' }}>
+              The money has been sent to {paymentData.recipientDetails.name}.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Transfer details ── */}
+      <div
+        className="mt-7 rounded-2xl border border-[rgba(4,33,64,0.08)] bg-white p-5"
+        style={{ boxShadow: PS_SH1 }}
+      >
+        <p className="font-display mb-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-500">
+          Transfer details
+        </p>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+          {[
+            { k: 'Amount', v: `${paymentData.amount.toFixed(2)} USDC`, mono: true },
+            { k: 'To', v: paymentData.recipientDetails.name, mono: false },
+            {
+              k: 'Account',
+              v: `••••${paymentData.recipientDetails.accountNumber.slice(-4)}`,
+              mono: true,
+            },
+            { k: 'Session', v: `${paymentData.sessionId.substring(0, 12)}…`, mono: true },
+          ].map((row) => (
+            <div key={row.k}>
+              <p className="text-[11px] uppercase tracking-[0.1em] text-ink-400">{row.k}</p>
+              <p
+                className={`mt-0.5 break-all text-sm font-semibold text-ink-800 ${
+                  row.mono ? 'font-mono' : ''
+                }`}
+              >
+                {row.v}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Connection status ── */}
+      <div className="mt-5 flex justify-center">
+        <span
+          className="font-display inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em]"
+          style={
+            wsConnection
+              ? {
+                  backgroundColor: 'rgba(0,196,140,0.10)',
+                  borderColor: 'rgba(0,196,140,0.28)',
+                  color: '#06845F',
+                }
+              : {
+                  backgroundColor: 'rgba(255,184,0,0.10)',
+                  borderColor: 'rgba(255,184,0,0.30)',
+                  color: '#8A6200',
+                }
+          }
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${wsConnection ? 'animate-pulse' : ''}`}
+            style={{ backgroundColor: wsConnection ? '#00C48C' : '#B98700' }}
           />
-        </Box>
-      </CardContent>
-    </Card>
+          {wsConnection ? 'Live updates active' : 'Polling for updates'}
+        </span>
+      </div>
+    </div>
   );
 };
 

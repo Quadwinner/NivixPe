@@ -1,29 +1,15 @@
 import React, { useState } from 'react';
 import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Button,
-  Grid,
-  Alert,
-  Divider,
-  IconButton,
-  Tooltip,
-  Chip
-} from '@mui/material';
-import {
-  CheckCircle,
+  Check,
+  Copy,
+  Clock,
   Download,
-  Send,
-  Share,
-  Print,
+  Printer,
+  Share2,
   Home,
-  ContentCopy,
-  AccountBalance,
-  Speed,
-  Security
-} from '@mui/icons-material';
+  ArrowRight,
+  ExternalLink,
+} from 'lucide-react';
 
 interface RecipientDetails {
   name: string;
@@ -235,311 +221,262 @@ const SuccessReceipt: React.FC<SuccessReceiptProps> = ({
     }
   };
 
+  const SR_SH1 = '0 1px 2px rgba(4,33,64,.04), 0 1px 3px rgba(4,33,64,.06)';
+  const SR_GRAD = 'linear-gradient(135deg, #0A4174 0%, #0C7075 100%)';
+
+  const CopyRow: React.FC<{ label: string; value: string; copyKey: string; mono?: boolean }> = ({
+    label,
+    value,
+    copyKey,
+    mono = true,
+  }) => (
+    <div
+      className="flex items-center justify-between gap-4 border-b py-3.5 last:border-b-0"
+      style={{ borderColor: 'rgba(4,33,64,0.07)' }}
+    >
+      <span className="font-display shrink-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400">
+        {label}
+      </span>
+      <div className="flex min-w-0 items-center gap-2">
+        <span
+          className={`min-w-0 break-all text-right text-[13px] font-semibold text-ink-800 ${
+            mono ? 'font-mono' : ''
+          }`}
+        >
+          {value}
+        </span>
+        <button
+          type="button"
+          onClick={() => handleCopy(value, copyKey)}
+          aria-label={`Copy ${label}`}
+          className="shrink-0 rounded-lg p-1.5 text-ink-400 outline-none transition-colors hover:bg-ink-50 hover:text-navy-600 focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+        >
+          {copied === copyKey ? (
+            <Check size={14} strokeWidth={3} style={{ color: '#06845F' }} />
+          ) : (
+            <Copy size={14} />
+          )}
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <Card>
-      <CardContent>
-        {/* Success Header */}
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
-          <Typography variant="h4" gutterBottom color="success.main">
-            Transfer Successful! 🎉
-          </Typography>
-          <Typography variant="h6" color="text.secondary">
-            Money has been sent to {receipt.recipient.name}
-          </Typography>
+    <div>
+      {/* ── Success header ── */}
+      <div className="mb-8 text-center">
+        <span
+          aria-hidden="true"
+          className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full text-white"
+          style={{
+            background: 'linear-gradient(135deg, #00C48C 0%, #0F9688 100%)',
+            boxShadow: '0 8px 24px rgba(0,196,140,0.28)',
+          }}
+        >
+          <Check size={30} strokeWidth={3} />
+        </span>
+        <h2 className="font-display text-2xl font-bold tracking-[-0.02em] text-ink-900">
+          Money sent
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-ink-500">
+          {receipt.recipient.name} will receive the payout in their bank account. Keep this receipt
+          for your records.
+        </p>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-            <Chip
-              icon={<Speed />}
-              label={`Completed in ${receipt.processingTime}`}
-              color="success"
-              variant="outlined"
-            />
-            <Chip
-              icon={<Security />}
-              label="Blockchain Verified"
-              color="primary"
-              variant="outlined"
-            />
-          </Box>
-        </Box>
-
-        {/* Transfer Summary */}
-        <Card sx={{
-          mb: 3,
-          bgcolor: 'transparent',
-          border: '1px solid',
-          borderColor: 'success.main',
-          backgroundColor: 'rgba(76, 175, 80, 0.08)'
-        }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom color="success.main">
-              💰 Transfer Summary
-            </Typography>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Amount Sent:</Typography>
-                <Typography variant="h5" fontWeight="bold" color="success.main">
-                  {receipt.amount.toFixed(2)} USDC
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Transaction ID:</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontFamily: 'monospace' }}>
-                    {receipt.transactionId}
-                  </Typography>
-                  <Tooltip title={copied === 'Transaction ID' ? 'Copied!' : 'Copy Transaction ID'}>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleCopy(receipt.transactionId, 'Transaction ID')}
-                    >
-                      <ContentCopy fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Processing Time:</Typography>
-                <Typography variant="body1" color="text.primary" fontWeight="bold">
-                  {receipt.processingTime}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Completed At:</Typography>
-                <Typography variant="body1" color="text.primary">
-                  {new Date(receipt.timestamp).toLocaleString()}
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-
-        {/* Recipient Details */}
-        <Card sx={{
-          mb: 3,
-          bgcolor: 'transparent',
-          border: '1px solid',
-          borderColor: 'divider',
-          backgroundColor: 'rgba(158, 158, 158, 0.08)'
-        }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              👤 Recipient Details
-            </Typography>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Name:</Typography>
-                <Typography variant="body1" color="text.primary" fontWeight="bold">
-                  {receipt.recipient.name}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Bank Account:</Typography>
-                <Typography variant="body1" color="text.primary" sx={{ fontFamily: 'monospace' }}>
-                  ***{receipt.recipient.accountNumber.slice(-4)}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">IFSC Code:</Typography>
-                <Typography variant="body1" color="text.primary" sx={{ fontFamily: 'monospace' }}>
-                  {receipt.recipient.ifscCode}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Contact:</Typography>
-                <Typography variant="body1" color="text.primary">
-                  {receipt.recipient.phone}
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-
-        {/* Blockchain Transactions */}
-        <Card sx={{
-          mb: 3,
-          bgcolor: 'transparent',
-          border: '1px solid',
-          borderColor: 'primary.main',
-          backgroundColor: 'rgba(25, 118, 210, 0.08)'
-        }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom color="primary.main">
-              🔗 Blockchain Transactions
-            </Typography>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="body2" color="text.secondary">Mint Transaction:</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
-                    {receipt.transactionHashes.mint}
-                  </Typography>
-                  <Tooltip title={copied === 'Mint TX' ? 'Copied!' : 'Copy Mint Transaction'}>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleCopy(receipt.transactionHashes.mint, 'Mint TX')}
-                    >
-                      <ContentCopy fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Typography variant="body2" color="text.secondary">Burn Transaction:</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
-                    {receipt.transactionHashes.burn}
-                  </Typography>
-                  <Tooltip title={copied === 'Burn TX' ? 'Copied!' : 'Copy Burn Transaction'}>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleCopy(receipt.transactionHashes.burn, 'Burn TX')}
-                    >
-                      <ContentCopy fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="body2" color="text.secondary">Payout ID:</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" color="text.primary" sx={{ fontFamily: 'monospace' }}>
-                    {receipt.payoutId}
-                  </Typography>
-                  <Tooltip title={copied === 'Payout ID' ? 'Copied!' : 'Copy Payout ID'}>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleCopy(receipt.payoutId, 'Payout ID')}
-                    >
-                      <ContentCopy fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-
-        {receipt.cashgramLink ? (
-          <Alert severity="info" sx={{ mb: 3 }}>
-            Cashgram link issued via Cashfree. The recipient can complete payout using the link below.
-            <Box sx={{ mt: 2 }}>
-              <Button
-                variant="contained"
-                size="small"
-                onClick={() => window.open(receipt.cashgramLink, '_blank', 'noopener,noreferrer')}
-              >
-                Open Cashgram Link
-              </Button>
-            </Box>
-          </Alert>
-        ) : null}
-
-        {/* Action Buttons */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Receipt Actions
-          </Typography>
-
-          <Grid container spacing={2}>
-            <Grid item xs={6} md={3}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Download />}
-                onClick={handleDownloadReceipt}
-              >
-                Download
-              </Button>
-            </Grid>
-
-            <Grid item xs={6} md={3}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Print />}
-                onClick={handlePrintReceipt}
-              >
-                Print
-              </Button>
-            </Grid>
-
-            <Grid item xs={6} md={3}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Share />}
-                onClick={handleShare}
-              >
-                Share
-              </Button>
-            </Grid>
-
-            <Grid item xs={6} md={3}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<AccountBalance />}
-                href={`https://explorer.solana.com/tx/${receipt.transactionHashes.mint}?cluster=devnet`}
-                target="_blank"
-              >
-                View on Explorer
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-
-        <Divider sx={{ my: 3 }} />
-
-        {/* Next Actions */}
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="outlined"
-            onClick={onGoHome}
-            startIcon={<Home />}
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+          <span
+            className="font-display inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em]"
+            style={{
+              backgroundColor: 'rgba(0,196,140,0.10)',
+              borderColor: 'rgba(0,196,140,0.28)',
+              color: '#06845F',
+            }}
           >
-            Go to Dashboard
-          </Button>
-
-          <Button
-            variant="contained"
-            onClick={onSendAnother}
-            startIcon={<Send />}
-            sx={{ flex: 1 }}
-            size="large"
+            <Check size={12} strokeWidth={3} />
+            Completed
+          </span>
+          <span
+            className="font-display inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em]"
+            style={{
+              backgroundColor: 'rgba(12,112,117,0.09)',
+              borderColor: 'rgba(12,112,117,0.24)',
+              color: '#0C7075',
+            }}
           >
-            Send Another Transfer
-          </Button>
-        </Box>
+            <Clock size={12} />
+            {receipt.processingTime}
+          </span>
+        </div>
+      </div>
 
-        {/* Security Note */}
-        <Alert severity="info" sx={{ mt: 3 }}>
-          <Typography variant="body2">
-            🔒 Your transfer is secured by blockchain technology and verified on Solana.
-            The recipient should receive the money in their bank account within 24 hours.
-          </Typography>
-        </Alert>
+      {/* ── Amount ── */}
+      <div
+        className="mb-6 rounded-2xl border p-6 text-center"
+        style={{
+          background: 'linear-gradient(180deg, rgba(225,245,245,0.55) 0%, #FFFFFF 100%)',
+          borderColor: 'rgba(12,112,117,0.22)',
+        }}
+      >
+        <p className="font-display text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400">
+          Amount sent
+        </p>
+        <p className="font-mono mt-2 text-[38px] font-bold leading-none text-teal-600">
+          {receipt.amount.toFixed(2)}
+        </p>
+        <p className="font-display mt-2 text-[13px] font-semibold text-ink-500">
+          to {receipt.recipient.name}
+        </p>
+        <p className="font-mono mt-1 text-[12px] text-ink-400">
+          ••••{receipt.recipient.accountNumber.slice(-4)} · {receipt.recipient.ifscCode}
+        </p>
+      </div>
 
-        {/* Copy Success Feedback */}
-        {copied && (
-          <Alert severity="success" sx={{ mt: 2 }}>
-            {copied} copied to clipboard!
-          </Alert>
+      {/* ── References ── */}
+      <div
+        className="mb-6 rounded-2xl border border-[rgba(4,33,64,0.08)] bg-white px-5 py-2"
+        style={{ boxShadow: SR_SH1 }}
+      >
+        <CopyRow label="Transaction ID" value={receipt.transactionId} copyKey="txid" />
+        <CopyRow label="Payout ID" value={receipt.payoutId} copyKey="payout" />
+        <CopyRow label="Session" value={receipt.sessionId} copyKey="session" />
+        {receipt.payoutProvider && (
+          <CopyRow
+            label="Provider"
+            value={receipt.payoutProvider}
+            copyKey="provider"
+            mono={false}
+          />
         )}
-      </CardContent>
-    </Card>
+        <div
+          className="flex items-center justify-between gap-4 border-b py-3.5 last:border-b-0"
+          style={{ borderColor: 'rgba(4,33,64,0.07)' }}
+        >
+          <span className="font-display shrink-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400">
+            Completed
+          </span>
+          <span className="text-right text-[13px] font-semibold text-ink-800">
+            {new Date(receipt.timestamp).toLocaleString()}
+          </span>
+        </div>
+      </div>
+
+      {/* ── On-chain proof ── */}
+      <div
+        className="mb-6 rounded-2xl border border-[rgba(4,33,64,0.08)] bg-white p-5"
+        style={{ boxShadow: SR_SH1 }}
+      >
+        <p className="font-display mb-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-500">
+          On-chain proof
+        </p>
+
+        <div className="space-y-3">
+          {[
+            { label: 'Mint transaction', hash: receipt.transactionHashes.mint },
+            { label: 'Burn transaction', hash: receipt.transactionHashes.burn },
+          ]
+            .filter((item) => item.hash)
+            .map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between gap-3 rounded-xl px-4 py-3"
+                style={{ backgroundColor: '#F4F6F9' }}
+              >
+                <div className="min-w-0">
+                  <p className="text-[11px] uppercase tracking-[0.1em] text-ink-400">
+                    {item.label}
+                  </p>
+                  <p className="font-mono mt-0.5 truncate text-[12px] text-ink-700">
+                    {item.hash.substring(0, 18)}…{item.hash.slice(-8)}
+                  </p>
+                </div>
+                <a
+                  href={`https://explorer.solana.com/tx/${item.hash}?cluster=devnet`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-navy-600 outline-none transition-colors hover:bg-white focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+                >
+                  View
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* ── Cashgram ── */}
+      {receipt.cashgramLink && (
+        <a
+          href={receipt.cashgramLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-6 flex items-center justify-between gap-3 rounded-2xl border p-4 outline-none transition-colors hover:bg-teal-50/40 focus-visible:ring-4 focus-visible:ring-[rgba(12,112,117,0.18)]"
+          style={{ borderColor: 'rgba(12,112,117,0.24)' }}
+        >
+          <span className="text-[13px] font-semibold text-ink-800">
+            Recipient claim link (Cashgram)
+          </span>
+          <ExternalLink size={15} className="shrink-0 text-teal-600" />
+        </a>
+      )}
+
+      {/* ── Actions ── */}
+      <div
+        className="flex flex-col gap-3 border-t pt-7 sm:flex-row"
+        style={{ borderColor: 'rgba(4,33,64,0.08)' }}
+      >
+        <button
+          type="button"
+          onClick={handleDownloadReceipt}
+          className="font-display inline-flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[rgba(4,33,64,0.14)] bg-white px-5 text-sm font-semibold text-ink-700 outline-none transition-colors hover:bg-ink-50 focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+          style={{ boxShadow: SR_SH1 }}
+        >
+          <Download size={16} />
+          Download
+        </button>
+
+        <button
+          type="button"
+          onClick={handlePrintReceipt}
+          className="font-display inline-flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[rgba(4,33,64,0.14)] bg-white px-5 text-sm font-semibold text-ink-700 outline-none transition-colors hover:bg-ink-50 focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+          style={{ boxShadow: SR_SH1 }}
+        >
+          <Printer size={16} />
+          Print
+        </button>
+
+        <button
+          type="button"
+          onClick={handleShare}
+          className="font-display inline-flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[rgba(4,33,64,0.14)] bg-white px-5 text-sm font-semibold text-ink-700 outline-none transition-colors hover:bg-ink-50 focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+          style={{ boxShadow: SR_SH1 }}
+        >
+          <Share2 size={16} />
+          Share
+        </button>
+      </div>
+
+      <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+        <button
+          type="button"
+          onClick={onGoHome}
+          className="font-display inline-flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[rgba(4,33,64,0.14)] bg-white px-6 text-sm font-semibold text-ink-700 outline-none transition-colors hover:bg-ink-50 focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.14)]"
+          style={{ boxShadow: SR_SH1 }}
+        >
+          <Home size={16} />
+          Back home
+        </button>
+
+        <button
+          type="button"
+          onClick={onSendAnother}
+          className="font-display inline-flex h-[52px] flex-1 items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white outline-none transition-all hover:-translate-y-px focus-visible:ring-4 focus-visible:ring-[rgba(10,65,116,0.24)]"
+          style={{ background: SR_GRAD, boxShadow: '0 4px 14px rgba(10,65,116,0.24)' }}
+        >
+          Send another transfer
+          <ArrowRight size={17} />
+        </button>
+      </div>
+    </div>
   );
 };
 
