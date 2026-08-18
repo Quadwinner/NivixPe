@@ -14,6 +14,12 @@ export interface ProcessingStatus {
 
 export type StatusCallback = (status: ProcessingStatus) => void;
 
+/* Derived from the bridge URL so the socket follows the deployed host and
+   upgrades to wss:// over HTTPS, instead of being pinned to localhost. */
+const BRIDGE_WS_URL = (process.env.REACT_APP_BRIDGE_URL || 'http://localhost:3002')
+  .replace(/\/$/, '')
+  .replace(/^http(s?):\/\//, (_match, secure) => (secure ? 'wss://' : 'ws://'));
+
 export class WebSocketService {
   private ws: WebSocket | null = null;
   private sessionId: string;
@@ -40,7 +46,7 @@ export class WebSocketService {
 
     return new Promise((resolve, reject) => {
       try {
-        const wsUrl = `ws://localhost:3002/status/${this.sessionId}`;
+        const wsUrl = `${BRIDGE_WS_URL}/status/${this.sessionId}`;
         console.log('Connecting to WebSocket:', wsUrl);
 
         this.ws = new WebSocket(wsUrl);

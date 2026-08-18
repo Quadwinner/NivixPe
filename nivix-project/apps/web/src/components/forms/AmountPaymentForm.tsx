@@ -55,6 +55,10 @@ const TREASURY_SUPPORTED_TOKEN_CODES = new Set([
   'USD', 'EUR', 'INR', 'GBP', 'JPY', 'CAD', 'AUD'
 ]);
 
+/* Matches the corridor defaults in bridge-service/src/offramp/offramp-engine.js:
+   platformFee 0.5% + networkFee 0.2% + corridorFee 0.1%. */
+const DEFAULT_FEE_RATE = 0.008;
+
 const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
   recipientDetails,
   onPaymentSuccess,
@@ -67,7 +71,12 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
   const [fromCurrency, setFromCurrency] = useState<string>('INR');
   const [toCurrency, setToCurrency] = useState<string>('USD');
   const [exchangeRate, setExchangeRate] = useState<number>(0.012); // Default INR to USD rate
-  const [fees] = useState<number>(0.015); // 1.5%
+
+  /* Fee ratio. Was hardcoded at 1.5%, which contradicted the backend: the
+     corridor defaults in bridge-service/src/offramp/offramp-engine.js are
+     platform 0.5% + network 0.2% + corridor 0.1% = 0.8%. This now reads the real
+     figure from /api/offramp/quote and falls back to that 0.8% default. */
+  const [fees, setFees] = useState<number>(DEFAULT_FEE_RATE);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -218,6 +227,28 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
       setExchangeRate(getFallbackRate(fromCurrency, toCurrency));
     } finally {
       setIsLoadingRates(false);
+    }
+
+    // Read the real fee breakdown for this corridor. Non-blocking: on any
+    // failure we keep the engine's default ratio rather than guessing.
+    try {
+      const quoteResponse = await fetch(`${BRIDGE_URL}/api/offramp/quote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fromCurrency, toCurrency, amount: 1000 }),
+      });
+
+      if (quoteResponse.ok) {
+        const quoteJson = await quoteResponse.json();
+        const converted = quoteJson?.quote?.convertedAmount;
+        const total = quoteJson?.quote?.totalFees;
+
+        if (typeof converted === 'number' && converted > 0 && typeof total === 'number') {
+          setFees(total / converted);
+        }
+      }
+    } catch (error) {
+      console.warn('Falling back to default fee ratio:', error);
     }
   };
 
@@ -645,7 +676,7 @@ const AmountPaymentForm: React.FC<AmountPaymentFormProps> = ({
             </div>
             <div className="flex items-baseline justify-between gap-4">
               <span className="text-[13px] text-ink-500">
-                Platform fee ({(fees * 100).toFixed(1)}%)
+                Total fee ({(fees * 100).toFixed(2)}%)
               </span>
               <span className="font-mono text-sm font-semibold" style={{ color: '#8A6200' }}>
                 -{toSymbol}

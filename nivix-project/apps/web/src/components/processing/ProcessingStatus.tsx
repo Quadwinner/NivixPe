@@ -164,7 +164,13 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
 
   const connectWebSocket = () => {
     try {
-      const ws = new WebSocket(`ws://localhost:3002/status/${paymentData.sessionId}`);
+      // Derived from BRIDGE_URL so it follows the deployed host and upgrades to
+      // wss:// automatically over HTTPS. Previously hardcoded to localhost,
+      // which broke real-time updates in any deployed environment.
+      const wsBase = BRIDGE_URL.replace(/^http(s?):\/\//, (_m, secure) =>
+        secure ? 'wss://' : 'ws://'
+      );
+      const ws = new WebSocket(`${wsBase}/status/${paymentData.sessionId}`);
 
       ws.onopen = () => {
         console.log('WebSocket connected');
